@@ -1,36 +1,97 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+## 패키지구조
 
-## Getting Started
+[App Router 활용]  
+app/ 디렉토리에서 파일 기반 라우팅 사용  
+Route Groups (auth), (dashboard) 로 관련 페이지 그룹화  
+loading.tsx, error.tsx 등 특수 파일들로 UX 개선
 
-First, run the development server:
+[컴포넌트 분류]  
+ui/: 재사용 가능한 기본 UI 컴포넌트  
+forms/: 폼 관련 컴포넌트  
+layout/: 레이아웃 컴포넌트  
+features/: 기능별 비즈니스 로직 컴포넌트
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+[유틸리티 및 설정]  
+lib/: 공통 유틸리티 함수들  
+hooks/: 커스텀 React 훅  
+store/: 상태 관리 (Zustand 추천)  
+types/: TypeScript 타입 정의
+
 ```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+tastyhouse-admin/
+├── public/
+│ ├── images/
+│ ├── icons/
+│ └── favicon.ico
+├── src/
+│ ├── app/
+│ │ ├── (auth)/
+│ │ │ ├── login/
+│ │ │ │ └── page.tsx
+│ │ │ └── signup/
+│ │ │ └── page.tsx
+│ │ ├── (dashboard)/
+│ │ │ ├── dashboard/
+│ │ │ │ ├── page.tsx
+│ │ │ │ └── loading.tsx
+│ │ │ └── settings/
+│ │ │ └── page.tsx
+│ │ ├── api/
+│ │ │ ├── auth/
+│ │ │ │ └── route.ts
+│ │ │ └── users/
+│ │ │ └── route.ts
+│ │ ├── globals.css
+│ │ ├── layout.tsx
+│ │ ├── loading.tsx
+│ │ ├── error.tsx
+│ │ ├── not-found.tsx
+│ │ └── page.tsx
+│ ├── components/
+│ │ ├── ui/
+│ │ │ ├── button.tsx
+│ │ │ ├── input.tsx
+│ │ │ ├── modal.tsx
+│ │ │ └── index.ts
+│ │ ├── forms/
+│ │ │ ├── LoginForm.tsx
+│ │ │ └── ContactForm.tsx
+│ │ ├── layout/
+│ │ │ ├── Header.tsx
+│ │ │ ├── Sidebar.tsx
+│ │ │ └── Footer.tsx
+│ │ └── features/
+│ │ ├── auth/
+│ │ │ ├── LoginButton.tsx
+│ │ │ └── AuthProvider.tsx
+│ │ └── dashboard/
+│ │ ├── DashboardCard.tsx
+│ │ └── UserProfile.tsx
+│ ├── lib/
+│ │ ├── utils.ts
+│ │ ├── validations.ts
+│ │ ├── constants.ts
+│ │ ├── auth.ts
+│ │ └── api.ts
+│ ├── hooks/
+│ │ ├── useAuth.ts
+│ │ ├── useLocalStorage.ts
+│ │ └── useApi.ts
+│ ├── store/
+│ │ ├── authStore.ts
+│ │ ├── userStore.ts
+│ │ └── index.ts
+│ ├── types/
+│ │ ├── auth.ts
+│ │ ├── user.ts
+│ │ └── api.ts
+│ └── styles/
+│ ├── globals.css
+│ └── components.css
+├── .env.local
+├── .env.example
+├── next.config.js
+├── tailwind.config.js
+├── tsconfig.json
+└── package.json
+```
