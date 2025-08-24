@@ -6,20 +6,7 @@ import {
   IconChevronsLeft,
   IconChevronsRight,
 } from '@tabler/icons-react'
-import {
-  ColumnDef,
-  ColumnFiltersState,
-  SortingState,
-  VisibilityState,
-  flexRender,
-  getCoreRowModel,
-  getFacetedRowModel,
-  getFacetedUniqueValues,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
-  useReactTable,
-} from '@tanstack/react-table'
+import { ColumnDef, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table'
 import * as React from 'react'
 import { z } from 'zod'
 
@@ -61,37 +48,29 @@ export function DataTable<T extends { id: number }>({
   data: T[]
 }) {
   const [rowSelection, setRowSelection] = React.useState({})
-  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
-  const [sorting, setSorting] = React.useState<SortingState>([])
   const [pagination, setPagination] = React.useState({
     pageIndex: 0,
     pageSize: 10,
   })
 
   const table = useReactTable({
-    data: initialData,
     columns,
+    data: initialData,
+    // 이걸 넣어주면 테이블이 내부적으로 자동 관리하는 게 아니라, 외부 useState로 관리하는 상태랑 동기화돼요.
     state: {
-      sorting,
-      columnVisibility,
-      rowSelection,
-      columnFilters,
-      pagination,
+      rowSelection, // 선택된 행(row)들을 관리하는 상태
+      pagination, // 현재 페이지, 페이지 크기 등을 관리하는 상태
     },
-    getRowId: (row: T) => row.id.toString(),
-    enableRowSelection: true,
-    onRowSelectionChange: setRowSelection,
-    onSortingChange: setSorting,
-    onColumnFiltersChange: setColumnFilters,
-    onColumnVisibilityChange: setColumnVisibility,
-    onPaginationChange: setPagination,
-    getCoreRowModel: getCoreRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    getFacetedRowModel: getFacetedRowModel(),
-    getFacetedUniqueValues: getFacetedUniqueValues(),
+    getCoreRowModel: getCoreRowModel(), // 테이블에서 기본 Row Model(행 구조) 을 생성하는 함수 -> 필수적으로 넣어줘야 테이블이 데이터를 읽어서 기본 행(row)을 만들 수 있어요.
+    getRowId: (row: T) => row.id.toString(), // 각 데이터 행에 고유한 ID를 지정하는 방법. -> 기본값은 rowIndex, 하지만 보통 DB id 같은 걸 쓰는 게 좋아요.
+    enableRowSelection: true, // 행 선택 기능을 켤지 여부. 체크박스 선택 같은 걸 쓸 때 필요해요.
+    onRowSelectionChange: setRowSelection, // 행 선택이 바뀔 때 실행되는 콜백 함수. -> 보통 useState의 setter를 넣어 상태를 업데이트합니다.
+    onPaginationChange: setPagination, // 페이지네이션 정보(현재 페이지, 페이지 크기 등)가 바뀔 때 호출되는 콜백 함수.
+    // getFilteredRowModel: getFilteredRowModel(), // 필터링된 데이터 모델을 만드는 함수. -> filters 상태랑 같이 쓰여서 검색/필터 기능을 구현할 때 필요.
+    // getPaginationRowModel: getPaginationRowModel(), // 페이지네이션 적용 후의 행 데이터 모델. -> "전체 데이터 중 현재 페이지에 보여줄 데이터"를 계산해줘요.
+    // getSortedRowModel: getSortedRowModel(), // 정렬된 데이터를 만드는 Row Model. -> 컬럼 헤더 클릭하면 오름/내림차순 정렬 같은 걸 처리해줍니다.
+    // getFacetedRowModel: getFacetedRowModel(), // Faceted Filtering 기능. -> 필터 UI에서 특정 컬럼 값들을 집계해서 보여줄 때 사용(예: "카테고리별 필터", "태그별 필터").
+    // getFacetedUniqueValues: getFacetedUniqueValues(), // Faceted Filtering 기능. -> 필터 UI에서 특정 컬럼 값들을 집계해서 보여줄 때 사용(예: "카테고리별 필터", "태그별 필터").
   })
 
   return (
@@ -131,7 +110,7 @@ export function DataTable<T extends { id: number }>({
               ) : (
                 <TableRow>
                   <TableCell colSpan={columns.length} className="h-24 text-center">
-                    No results.
+                    조회 결과가 없습니다.
                   </TableCell>
                 </TableRow>
               )}

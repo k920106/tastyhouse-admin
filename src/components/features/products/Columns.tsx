@@ -28,8 +28,6 @@ export const columns: ColumnDef<ProductListItem>[] = [
         />
       </div>
     ),
-    enableSorting: false,
-    enableHiding: false,
   },
   {
     accessorKey: 'id',

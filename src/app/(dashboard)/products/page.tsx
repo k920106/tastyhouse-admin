@@ -15,11 +15,10 @@ import { columns } from '@/src/components/features/products/Columns'
 import { Card, CardContent, CardFooter } from '@/src/components/ui/Card'
 import { Button } from '@/src/components/ui/Button'
 import { LuDownload } from 'react-icons/lu'
-import { ProductListItem } from '@/src/types/product'
 import { Combobox } from '@/src/components/ui/Combobox'
 import { Company } from '@/src/types/company'
 import { Brand } from '@/src/types/brand'
-import { Supply } from '@/src/types/\bsupply'
+import { Supply } from '@/src/types/supply'
 import {
   Select,
   SelectContent,
@@ -27,6 +26,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/src/components/ui/Select'
+import { ProductListItem } from '@/src/types/product'
 
 const data: ProductListItem[] = [
   {
@@ -214,7 +214,7 @@ const supplyData: Supply[] = [
   },
 ]
 
-export default function NoticePage() {
+export default function ProductListPage() {
   return (
     <>
       <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
