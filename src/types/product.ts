@@ -11,3 +11,12 @@ export type ProductListItem = {
   display: boolean
   sort: number
 }
+
+export interface ProductSearchForm {
+  companyId?: string
+  productCode?: string
+  name?: string
+  brandId?: string
+  supplierId?: string
+  display?: string
+}

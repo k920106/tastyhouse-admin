@@ -40,7 +40,7 @@ tastyhouse-admin/
 │ │ │ ├── auth/
 │ │ │ │ └── route.ts
 │ │ │ └── users/
-│ │ │ └── route.ts
+│ │ │ │ └── route.ts
 │ │ ├── globals.css
 │ │ ├── layout.tsx
 │ │ ├── loading.tsx

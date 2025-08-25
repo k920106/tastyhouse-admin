@@ -116,7 +116,7 @@ const data = {
       items: [
         {
           title: '할인쿠폰 관리',
-          url: '/',
+          url: '/events/coupons',
         },
         {
           title: '기획전 관리',
