@@ -15,45 +15,11 @@ import {
 } from '@/src/components/ui/Select'
 import { LuDownload } from 'react-icons/lu'
 import { ProductSearchForm as ProductSearchFormType, ProductListItem } from '@/src/types/product'
-import { Company } from '@/src/types/company'
-import { Brand } from '@/src/types/brand'
+import { BrandListItem } from '@/src/types/brand'
 import { Supply } from '@/src/types/supply'
+import { CompanyListItem } from '@/src/types/company'
 import { api } from '@/src/lib/api'
 import { DataTablesResponse } from '@/src/types/api'
-
-const companyData: Company[] = [
-  {
-    id: 1,
-    name: '밴드 기프트샵',
-  },
-  {
-    id: 2,
-    name: 'IBK',
-  },
-  {
-    id: 3,
-    name: '아파트너',
-  },
-]
-
-const brandData: Brand[] = [
-  {
-    id: 1,
-    name: '스타벅스',
-  },
-  {
-    id: 2,
-    name: '투썸플레이스',
-  },
-  {
-    id: 3,
-    name: '메가커피',
-  },
-  {
-    id: 4,
-    name: '컴포즈커피',
-  },
-]
 
 const supplyData: Supply[] = [
   {
@@ -79,12 +45,14 @@ interface ProductSearchFormProps {
     products: ProductListItem[],
     paginationInfo: { draw: number; total: number; filtered: number },
   ) => void
+  companies: CompanyListItem[]
+  brands: BrandListItem[]
 }
 
 export const ProductSearchForm = React.forwardRef<
   { refetch: (page?: number, size?: number) => void },
   ProductSearchFormProps
->(({ onProductsChange }, ref) => {
+>(({ onProductsChange, companies, brands }, ref) => {
   const [loading, setLoading] = useState(false)
   const [formData, setFormData] = useState<ProductSearchFormType>({})
   const [currentSize, setCurrentSize] = useState(10)
@@ -150,13 +118,12 @@ export const ProductSearchForm = React.forwardRef<
             <div className="grid gap-2">
               <Label htmlFor="companyName">매체사</Label>
               <Combobox
-                options={companyData}
+                options={companies}
                 valueKey="id"
                 labelKey="name"
                 placeholder="-"
                 value={formData.companyId}
                 onValueChange={(value) => {
-                  console.log('Company selected:', value)
                   setFormData((prev) => ({ ...prev, companyId: value }))
                 }}
               />
@@ -182,7 +149,7 @@ export const ProductSearchForm = React.forwardRef<
             <div className="grid gap-2">
               <Label htmlFor="brandName">교환처</Label>
               <Combobox
-                options={brandData}
+                options={brands}
                 valueKey="id"
                 labelKey="name"
                 placeholder="전체"

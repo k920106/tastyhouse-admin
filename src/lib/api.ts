@@ -6,7 +6,7 @@ interface apiOptions {
 }
 
 export class api {
-  private static baseUrl = '/api'
+  private static baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api'
 
   static async request<T = unknown>(endpoint: string, options: apiOptions = {}): Promise<T> {
     const { method = 'GET', body, headers = {}, timeout = 10000 } = options
@@ -35,10 +35,6 @@ export class api {
 
     try {
       const response = await fetch(`${this.baseUrl}${endpoint}`, config)
-      // console.log('hi')
-      // console.log(endpoint)
-      // const response = await fetch(`${endpoint}`, config)
-      console.log(response)
 
       // 타임아웃 클리어
       clearTimeout(timeoutId)

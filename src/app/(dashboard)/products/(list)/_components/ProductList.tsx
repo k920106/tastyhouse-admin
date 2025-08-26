@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -15,8 +15,60 @@ import { SidebarTrigger } from '@/src/components/ui/Sidebar'
 import { columns } from '@/src/components/features/products/Columns'
 import { ProductSearchForm } from '@/src/components/features/products/ProductSearchForm'
 import { ProductListItem } from '@/src/types/product'
+import { CompanyListItem } from '@/src/types/company'
+import { BrandListItem } from '@/src/types/brand'
+import { toast } from 'sonner'
 
-export default function ProductListPage() {
+interface ProductListProps {
+  companies: CompanyListItem[]
+  brands: BrandListItem[]
+}
+
+export default function ProductList({ companies, brands }: ProductListProps) {
+  const [hasShownToast, setHasShownToast] = useState(false)
+
+  useEffect(() => {
+    if (companies.length === 0 && !hasShownToast) {
+      toast('매체사를 조회할 수 없습니다.')
+      setHasShownToast(true)
+    }
+  }, [companies, hasShownToast])
+
+  useEffect(() => {
+    if (brands.length === 0 && !hasShownToast) {
+      toast('교환처를 조회할 수 없습니다.')
+      setHasShownToast(true)
+    }
+  }, [brands, hasShownToast])
+
+  // TODO
+  // TODO
+  // TODO
+  // TODO
+  // TODO
+  // TODO
+  // TODO
+  // TODO
+  // TODO
+  // TODO
+  // 전시 상태 -> 전체일 경우 오류
+  // Zustand 사용하여 검색 유지
+  // React-query 사용해보기
+  // TODO
+  // TODO
+  // TODO
+  // TODO
+  // TODO
+  // TODO
+  // TODO
+  // TODO
+  // TODO
+  // TODO
+  // TODO
+  // TODO
+  // TODO
+  // TODO
+
   const [products, setProducts] = useState<ProductListItem[]>([])
   const [totalCount, setTotalCount] = useState(0)
   const [currentPage, setCurrentPage] = useState(0)
@@ -64,7 +116,12 @@ export default function ProductListPage() {
       </header>
       <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
         <div className="flex-1 min-h-[100vh] md:min-h-min">
-          <ProductSearchForm onProductsChange={handleProductsChange} ref={searchFormRef} />
+          <ProductSearchForm
+            onProductsChange={handleProductsChange}
+            ref={searchFormRef}
+            companies={companies}
+            brands={brands}
+          />
           <DataTable
             columns={columns}
             data={products}

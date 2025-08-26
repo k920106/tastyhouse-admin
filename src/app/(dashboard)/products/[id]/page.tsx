@@ -1,3 +1,3 @@
-export default function ProductDetailPage() {
-  return <div>상세 페이지</div>
+export default async function ProductDetailPage() {
+  return <div>상품 리스트 페이지</div>
 }
