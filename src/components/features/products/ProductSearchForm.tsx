@@ -45,6 +45,7 @@ interface ProductSearchFormProps {
     products: ProductListItem[],
     paginationInfo: { draw: number; total: number; filtered: number },
   ) => void
+  onLoadingChange?: (loading: boolean) => void
   companies: CompanyListItem[]
   brands: BrandListItem[]
 }
@@ -52,13 +53,14 @@ interface ProductSearchFormProps {
 export const ProductSearchForm = React.forwardRef<
   { refetch: (page?: number, size?: number) => void },
   ProductSearchFormProps
->(({ onProductsChange, companies, brands }, ref) => {
+>(({ onProductsChange, onLoadingChange, companies, brands }, ref) => {
   const [loading, setLoading] = useState(false)
   const [formData, setFormData] = useState<ProductSearchFormType>({})
   const [currentSize, setCurrentSize] = useState(10)
 
   const fetchProducts = async (page: number = 0, size: number = 10) => {
     setLoading(true)
+    onLoadingChange?.(true)
     setCurrentSize(size)
 
     try {
@@ -91,13 +93,12 @@ export const ProductSearchForm = React.forwardRef<
       const endpoint = queryParams.toString() ? `/products?${queryParams.toString()}` : '/products'
 
       const response = await api.get<DataTablesResponse<ProductListItem>>(endpoint)
-      console.log(response.data)
-      console.log(response.pagination)
       onProductsChange(response.data, response.pagination)
     } catch (error) {
       console.error('Failed to fetch products:', error)
     } finally {
       setLoading(false)
+      onLoadingChange?.(false)
     }
   }
 

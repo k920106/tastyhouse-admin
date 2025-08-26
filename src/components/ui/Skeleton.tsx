@@ -10,4 +10,18 @@ function Skeleton({ className, ...props }: React.ComponentProps<'div'>) {
   )
 }
 
-export { Skeleton }
+function TableRowSkeleton({ columnCount = 6 }: { columnCount?: number }) {
+  return (
+    <>
+      {Array.from({ length: 10 }).map((_, rowIndex) => (
+        <tr key={rowIndex} className="border-b">
+          <td colSpan={columnCount} className="p-2">
+            <Skeleton className="h-[20px] w-full" />
+          </td>
+        </tr>
+      ))}
+    </>
+  )
+}
+
+export { Skeleton, TableRowSkeleton }

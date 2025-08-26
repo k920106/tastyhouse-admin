@@ -73,6 +73,7 @@ export default function ProductList({ companies, brands }: ProductListProps) {
   const [totalCount, setTotalCount] = useState(0)
   const [currentPage, setCurrentPage] = useState(0)
   const [pageSize, setPageSize] = useState(10)
+  const [loading, setLoading] = useState(false)
   const searchFormRef = useRef<{ refetch: (page?: number, size?: number) => void }>(null)
 
   const handleProductsChange = (
@@ -81,6 +82,10 @@ export default function ProductList({ companies, brands }: ProductListProps) {
   ) => {
     setProducts(newProducts)
     setTotalCount(paginationInfo.total)
+  }
+
+  const handleLoadingChange = (isLoading: boolean) => {
+    setLoading(isLoading)
   }
 
   const handlePaginationChange = (pageIndex: number, newPageSize: number) => {
@@ -118,6 +123,7 @@ export default function ProductList({ companies, brands }: ProductListProps) {
         <div className="flex-1 min-h-[100vh] md:min-h-min">
           <ProductSearchForm
             onProductsChange={handleProductsChange}
+            onLoadingChange={handleLoadingChange}
             ref={searchFormRef}
             companies={companies}
             brands={brands}
@@ -128,6 +134,7 @@ export default function ProductList({ companies, brands }: ProductListProps) {
             totalCount={totalCount}
             currentPage={currentPage}
             pageSize={pageSize}
+            loading={loading}
             onPaginationChange={handlePaginationChange}
           />
         </div>

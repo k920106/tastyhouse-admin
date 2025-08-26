@@ -29,6 +29,7 @@ import {
   TableRow,
 } from '@/src/components/ui/Table'
 import { Tabs, TabsContent } from '@/src/components/ui/Tabs'
+import { TableRowSkeleton } from '@/src/components/ui/Skeleton'
 
 export const schema = z.object({
   id: z.number(),
@@ -50,6 +51,7 @@ interface DataTableProps<T extends ProductListItem> {
   totalCount: number
   currentPage: number
   pageSize: number
+  loading?: boolean
   onPaginationChange: (pageIndex: number, pageSize: number) => void
 }
 
@@ -59,6 +61,7 @@ export function DataTable<T extends ProductListItem>({
   totalCount,
   currentPage,
   pageSize,
+  loading = false,
   onPaginationChange,
 }: DataTableProps<T>) {
   const [rowSelection, setRowSelection] = React.useState({})
@@ -120,7 +123,9 @@ export function DataTable<T extends ProductListItem>({
               ))}
             </TableHeader>
             <TableBody className="**:data-[slot=table-cell]:first:w-8">
-              {table.getRowModel().rows?.length ? (
+              {loading ? (
+                <TableRowSkeleton columnCount={columns.length} />
+              ) : table.getRowModel().rows?.length ? (
                 table.getRowModel().rows.map((row) => (
                   <TableRow key={row.id} data-state={row.getIsSelected() && 'selected'}>
                     {row.getVisibleCells().map((cell) => (
