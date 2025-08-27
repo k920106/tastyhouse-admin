@@ -25,10 +25,6 @@ import { useProductSearchStore } from '@/src/store/productSearchStore'
 import { Loader2Icon } from 'lucide-react'
 
 interface ProductSearchFormProps {
-  onProductsChange: (
-    products: ProductListItem[],
-    paginationInfo: { draw: number; total: number; filtered: number },
-  ) => void
   onLoadingChange?: (loading: boolean) => void
   companies: CompanyListItem[]
   brands: BrandListItem[]
@@ -38,7 +34,7 @@ interface ProductSearchFormProps {
 export const ProductSearchForm = React.forwardRef<
   { refetch: (page?: number, size?: number) => void },
   ProductSearchFormProps
->(({ onProductsChange, onLoadingChange, companies, brands, supplies }, ref) => {
+>(({ onLoadingChange, companies, brands, supplies }, ref) => {
   const [loading, setLoading] = useState(false)
   const [currentSize, setCurrentSize] = useState(10)
   const { searchForm, updateSearchForm, setProductsData } = useProductSearchStore()
@@ -83,7 +79,6 @@ export const ProductSearchForm = React.forwardRef<
 
       const response = await api.get<DataTablesResponse<ProductListItem>>(endpoint)
 
-      onProductsChange(response.data, response.pagination)
       setProductsData(response.data, response.pagination, page, size)
     } catch (error) {
       console.error('Failed to fetch products:', error)

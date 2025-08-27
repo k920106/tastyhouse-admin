@@ -14,7 +14,6 @@ import { Separator } from '@/src/components/ui/Separator'
 import { SidebarTrigger } from '@/src/components/ui/Sidebar'
 import { createColumns } from '@/src/components/features/products/Columns'
 import { ProductSearchForm } from '@/src/components/features/products/ProductSearchForm'
-import { ProductListItem } from '@/src/types/product'
 import { CompanyListItem } from '@/src/types/company'
 import { BrandListItem } from '@/src/types/brand'
 import { toast } from 'sonner'
@@ -32,7 +31,7 @@ export default function ProductList({ companies, brands, supplies }: ProductList
   const [loading, setLoading] = useState(false)
   const searchFormRef = useRef<{ refetch: (page?: number, size?: number) => void }>(null)
 
-  const { products, totalCount, currentPage, pageSize, setProductsData } = useProductSearchStore()
+  const { products, totalCount, currentPage, pageSize } = useProductSearchStore()
 
   useEffect(() => {
     if (companies.length === 0 && !hasShownToast) {
@@ -55,12 +54,6 @@ export default function ProductList({ companies, brands, supplies }: ProductList
     }
   }, [supplies, hasShownToast])
 
-  const handleProductsChange = (
-    _newProducts: ProductListItem[],
-    _paginationInfo: { draw: number; total: number; filtered: number },
-  ) => {
-    // Data is already saved to store in ProductSearchForm, so this is just for compatibility
-  }
 
   const handleLoadingChange = (isLoading: boolean) => {
     setLoading(isLoading)
@@ -98,7 +91,6 @@ export default function ProductList({ companies, brands, supplies }: ProductList
       <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
         <div className="flex-1 min-h-[100vh] md:min-h-min">
           <ProductSearchForm
-            onProductsChange={handleProductsChange}
             onLoadingChange={handleLoadingChange}
             ref={searchFormRef}
             companies={companies}
