@@ -19,6 +19,7 @@ import { CompanyListItem } from '@/src/types/company'
 import { BrandListItem } from '@/src/types/brand'
 import { toast } from 'sonner'
 import { SupplyListItem } from '@/src/types/supply'
+import { useProductSearchStore } from '@/src/store/productSearchStore'
 
 interface ProductListProps {
   companies: CompanyListItem[]
@@ -28,6 +29,10 @@ interface ProductListProps {
 
 export default function ProductList({ companies, brands, supplies }: ProductListProps) {
   const [hasShownToast, setHasShownToast] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const searchFormRef = useRef<{ refetch: (page?: number, size?: number) => void }>(null)
+
+  const { products, totalCount, currentPage, pageSize, setProductsData } = useProductSearchStore()
 
   useEffect(() => {
     if (companies.length === 0 && !hasShownToast) {
@@ -50,47 +55,11 @@ export default function ProductList({ companies, brands, supplies }: ProductList
     }
   }, [supplies, hasShownToast])
 
-  // TODO
-  // TODO
-  // TODO
-  // TODO
-  // TODO
-  // TODO
-  // TODO
-  // TODO
-  // TODO
-  // TODO
-  // 전시 상태 -> 전체일 경우 오류
-  // Zustand 사용하여 검색 유지
-  // React-query 사용해보기
-  // TODO
-  // TODO
-  // TODO
-  // TODO
-  // TODO
-  // TODO
-  // TODO
-  // TODO
-  // TODO
-  // TODO
-  // TODO
-  // TODO
-  // TODO
-  // TODO
-
-  const [products, setProducts] = useState<ProductListItem[]>([])
-  const [totalCount, setTotalCount] = useState(0)
-  const [currentPage, setCurrentPage] = useState(0)
-  const [pageSize, setPageSize] = useState(10)
-  const [loading, setLoading] = useState(false)
-  const searchFormRef = useRef<{ refetch: (page?: number, size?: number) => void }>(null)
-
   const handleProductsChange = (
-    newProducts: ProductListItem[],
-    paginationInfo: { draw: number; total: number; filtered: number },
+    _newProducts: ProductListItem[],
+    _paginationInfo: { draw: number; total: number; filtered: number },
   ) => {
-    setProducts(newProducts)
-    setTotalCount(paginationInfo.total)
+    // Data is already saved to store in ProductSearchForm, so this is just for compatibility
   }
 
   const handleLoadingChange = (isLoading: boolean) => {
@@ -98,8 +67,6 @@ export default function ProductList({ companies, brands, supplies }: ProductList
   }
 
   const handlePaginationChange = (pageIndex: number, newPageSize: number) => {
-    setCurrentPage(pageIndex)
-    setPageSize(newPageSize)
     if (searchFormRef.current?.refetch) {
       searchFormRef.current.refetch(pageIndex, newPageSize)
     }

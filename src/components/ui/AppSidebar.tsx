@@ -124,7 +124,7 @@ const data = {
         },
         {
           title: '룰렛 이벤트 관리',
-          url: '/',
+          url: '/events/roulettes',
         },
         {
           title: '럭키박스 이벤트 관리',

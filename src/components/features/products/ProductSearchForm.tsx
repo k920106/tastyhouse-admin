@@ -14,13 +14,15 @@ import {
   SelectValue,
 } from '@/src/components/ui/Select'
 import { LuDownload } from 'react-icons/lu'
-import { ProductSearchForm as ProductSearchFormType, ProductListItem } from '@/src/types/product'
+import { ProductListItem } from '@/src/types/product'
 import { BrandListItem } from '@/src/types/brand'
 import { SupplyListItem } from '@/src/types/supply'
 import { CompanyListItem } from '@/src/types/company'
 import { api } from '@/src/lib/api'
 import { DataTablesResponse } from '@/src/types/api'
 import { toast } from 'sonner'
+import { useProductSearchStore } from '@/src/store/productSearchStore'
+import { Loader2Icon } from 'lucide-react'
 
 interface ProductSearchFormProps {
   onProductsChange: (
@@ -38,8 +40,8 @@ export const ProductSearchForm = React.forwardRef<
   ProductSearchFormProps
 >(({ onProductsChange, onLoadingChange, companies, brands, supplies }, ref) => {
   const [loading, setLoading] = useState(false)
-  const [formData, setFormData] = useState<ProductSearchFormType>({})
   const [currentSize, setCurrentSize] = useState(10)
+  const { searchForm, updateSearchForm, setProductsData } = useProductSearchStore()
 
   const fetchProducts = async (page: number = 0, size: number = 10) => {
     setLoading(true)
@@ -48,23 +50,27 @@ export const ProductSearchForm = React.forwardRef<
 
     try {
       const requestData = {
-        ...formData,
+        ...searchForm,
         companyId:
-          formData.companyId && formData.companyId !== 'all'
-            ? Number(formData.companyId)
+          searchForm.companyId && searchForm.companyId !== 'all'
+            ? Number(searchForm.companyId)
             : undefined,
         brandId:
-          formData.brandId && formData.brandId !== 'all' ? Number(formData.brandId) : undefined,
+          searchForm.brandId && searchForm.brandId !== 'all'
+            ? Number(searchForm.brandId)
+            : undefined,
         supplyId:
-          formData.supplyId && formData.supplyId !== 'all' ? Number(formData.supplyId) : undefined,
+          searchForm.supplyId && searchForm.supplyId !== 'all'
+            ? Number(searchForm.supplyId)
+            : undefined,
         display:
-          formData.display && formData.display !== 'all' ? formData.display === 'true' : undefined,
+          searchForm.display && searchForm.display !== 'all'
+            ? searchForm.display === 'true'
+            : undefined,
         page,
         size,
         draw: 1,
       }
-
-      console.log(formData)
 
       const queryParams = new URLSearchParams()
       Object.entries(requestData).forEach(([key, value]) => {
@@ -78,6 +84,7 @@ export const ProductSearchForm = React.forwardRef<
       const response = await api.get<DataTablesResponse<ProductListItem>>(endpoint)
 
       onProductsChange(response.data, response.pagination)
+      setProductsData(response.data, response.pagination, page, size)
     } catch (error) {
       console.error('Failed to fetch products:', error)
       toast.error('오류가 발생하였습니다.')
@@ -108,9 +115,9 @@ export const ProductSearchForm = React.forwardRef<
                 valueKey="id"
                 labelKey="name"
                 placeholder="-"
-                value={formData.companyId}
+                value={searchForm.companyId}
                 onValueChange={(value) => {
-                  setFormData((prev) => ({ ...prev, companyId: value }))
+                  updateSearchForm({ companyId: value })
                 }}
               />
             </div>
@@ -119,8 +126,8 @@ export const ProductSearchForm = React.forwardRef<
               <Input
                 type="text"
                 id="productCode"
-                value={formData.productCode || ''}
-                onChange={(e) => setFormData((prev) => ({ ...prev, productCode: e.target.value }))}
+                value={searchForm.productCode || ''}
+                onChange={(e) => updateSearchForm({ productCode: e.target.value })}
               />
             </div>
             <div className="grid gap-2">
@@ -128,8 +135,8 @@ export const ProductSearchForm = React.forwardRef<
               <Input
                 type="text"
                 id="name"
-                value={formData.name || ''}
-                onChange={(e) => setFormData((prev) => ({ ...prev, name: e.target.value }))}
+                value={searchForm.name || ''}
+                onChange={(e) => updateSearchForm({ name: e.target.value })}
               />
             </div>
             <div className="grid gap-2">
@@ -139,10 +146,9 @@ export const ProductSearchForm = React.forwardRef<
                 valueKey="id"
                 labelKey="name"
                 placeholder="전체"
-                value={formData.brandId}
+                value={searchForm.brandId}
                 onValueChange={(value) => {
-                  console.log('Brand selected:', value)
-                  setFormData((prev) => ({ ...prev, brandId: value }))
+                  updateSearchForm({ brandId: value })
                 }}
               />
             </div>
@@ -153,10 +159,9 @@ export const ProductSearchForm = React.forwardRef<
                 valueKey="id"
                 labelKey="name"
                 placeholder="전체"
-                value={formData.supplyId}
+                value={searchForm.supplyId}
                 onValueChange={(value) => {
-                  console.log('Supplier selected:', value)
-                  setFormData((prev) => ({ ...prev, supplyId: value }))
+                  updateSearchForm({ supplyId: value })
                 }}
               />
             </div>
@@ -164,8 +169,8 @@ export const ProductSearchForm = React.forwardRef<
               <Label htmlFor="display">전시상태</Label>
               <Select
                 defaultValue="all"
-                value={formData.display || 'all'}
-                onValueChange={(value) => setFormData((prev) => ({ ...prev, display: value }))}
+                value={searchForm.display || 'all'}
+                onValueChange={(value) => updateSearchForm({ display: value })}
               >
                 <SelectTrigger className="w-full">
                   <SelectValue placeholder="전체" />
@@ -195,7 +200,14 @@ export const ProductSearchForm = React.forwardRef<
           <LuDownload />
         </Button>
         <Button type="submit" form="productSearchForm" disabled={loading}>
-          {loading ? '조회 중...' : '조회'}
+          {loading ? (
+            <>
+              <Loader2Icon className="animate-spin" />
+              조회 중...
+            </>
+          ) : (
+            '조회'
+          )}
         </Button>
       </CardFooter>
     </Card>
