@@ -57,10 +57,14 @@ export const ProductSearchForm = React.forwardRef<
           formData.brandId && formData.brandId !== 'all' ? Number(formData.brandId) : undefined,
         supplyId:
           formData.supplyId && formData.supplyId !== 'all' ? Number(formData.supplyId) : undefined,
+        display:
+          formData.display && formData.display !== 'all' ? formData.display === 'true' : undefined,
         page,
         size,
         draw: 1,
       }
+
+      console.log(formData)
 
       const queryParams = new URLSearchParams()
       Object.entries(requestData).forEach(([key, value]) => {
@@ -72,7 +76,7 @@ export const ProductSearchForm = React.forwardRef<
       const endpoint = queryParams.toString() ? `/products?${queryParams.toString()}` : '/products'
 
       const response = await api.get<DataTablesResponse<ProductListItem>>(endpoint)
-      console.log(response)
+
       onProductsChange(response.data, response.pagination)
     } catch (error) {
       console.error('Failed to fetch products:', error)
