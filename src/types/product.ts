@@ -7,7 +7,7 @@ export type ProductListItem = {
   validityPeriod: number
   exhibitionPrice: number
   regularPrice: number
-  supplier: number
+  supplyPrice: number
   display: boolean
   sort: number
 }
@@ -17,6 +17,6 @@ export interface ProductSearchForm {
   productCode?: string
   name?: string
   brandId?: string
-  supplierId?: string
+  supplyId?: string
   display?: string
 }

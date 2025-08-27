@@ -12,19 +12,21 @@ import {
 import { DataTable } from '@/src/components/features/products/DataTable'
 import { Separator } from '@/src/components/ui/Separator'
 import { SidebarTrigger } from '@/src/components/ui/Sidebar'
-import { columns } from '@/src/components/features/products/Columns'
+import { createColumns } from '@/src/components/features/products/Columns'
 import { ProductSearchForm } from '@/src/components/features/products/ProductSearchForm'
 import { ProductListItem } from '@/src/types/product'
 import { CompanyListItem } from '@/src/types/company'
 import { BrandListItem } from '@/src/types/brand'
 import { toast } from 'sonner'
+import { SupplyListItem } from '@/src/types/supply'
 
 interface ProductListProps {
   companies: CompanyListItem[]
   brands: BrandListItem[]
+  supplies: SupplyListItem[]
 }
 
-export default function ProductList({ companies, brands }: ProductListProps) {
+export default function ProductList({ companies, brands, supplies }: ProductListProps) {
   const [hasShownToast, setHasShownToast] = useState(false)
 
   useEffect(() => {
@@ -40,6 +42,13 @@ export default function ProductList({ companies, brands }: ProductListProps) {
       setHasShownToast(true)
     }
   }, [brands, hasShownToast])
+
+  useEffect(() => {
+    if (supplies.length === 0 && !hasShownToast) {
+      toast('공급사를 조회할 수 없습니다.')
+      setHasShownToast(true)
+    }
+  }, [supplies, hasShownToast])
 
   // TODO
   // TODO
@@ -127,9 +136,10 @@ export default function ProductList({ companies, brands }: ProductListProps) {
             ref={searchFormRef}
             companies={companies}
             brands={brands}
+            supplies={supplies}
           />
           <DataTable
-            columns={columns}
+            columns={createColumns(currentPage, pageSize)}
             data={products}
             totalCount={totalCount}
             currentPage={currentPage}
