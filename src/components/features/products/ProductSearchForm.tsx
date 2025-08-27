@@ -16,29 +16,11 @@ import {
 import { LuDownload } from 'react-icons/lu'
 import { ProductSearchForm as ProductSearchFormType, ProductListItem } from '@/src/types/product'
 import { BrandListItem } from '@/src/types/brand'
-import { Supply } from '@/src/types/supply'
+import { SupplyListItem } from '@/src/types/supply'
 import { CompanyListItem } from '@/src/types/company'
 import { api } from '@/src/lib/api'
 import { DataTablesResponse } from '@/src/types/api'
-
-const supplyData: Supply[] = [
-  {
-    id: 1,
-    name: '윈큐브마케팅',
-  },
-  {
-    id: 2,
-    name: '쿠프콘',
-  },
-  {
-    id: 3,
-    name: '슈퍼콘',
-  },
-  {
-    id: 4,
-    name: '스마트콘',
-  },
-]
+import { toast } from 'sonner'
 
 interface ProductSearchFormProps {
   onProductsChange: (
@@ -48,12 +30,13 @@ interface ProductSearchFormProps {
   onLoadingChange?: (loading: boolean) => void
   companies: CompanyListItem[]
   brands: BrandListItem[]
+  supplies: SupplyListItem[]
 }
 
 export const ProductSearchForm = React.forwardRef<
   { refetch: (page?: number, size?: number) => void },
   ProductSearchFormProps
->(({ onProductsChange, onLoadingChange, companies, brands }, ref) => {
+>(({ onProductsChange, onLoadingChange, companies, brands, supplies }, ref) => {
   const [loading, setLoading] = useState(false)
   const [formData, setFormData] = useState<ProductSearchFormType>({})
   const [currentSize, setCurrentSize] = useState(10)
@@ -73,9 +56,7 @@ export const ProductSearchForm = React.forwardRef<
         brandId:
           formData.brandId && formData.brandId !== 'all' ? Number(formData.brandId) : undefined,
         supplyId:
-          formData.supplierId && formData.supplierId !== 'all'
-            ? Number(formData.supplierId)
-            : undefined,
+          formData.supplyId && formData.supplyId !== 'all' ? Number(formData.supplyId) : undefined,
         page,
         size,
         draw: 1,
@@ -88,14 +69,14 @@ export const ProductSearchForm = React.forwardRef<
         }
       })
 
-      // delete requestData.supplierId
-
       const endpoint = queryParams.toString() ? `/products?${queryParams.toString()}` : '/products'
 
       const response = await api.get<DataTablesResponse<ProductListItem>>(endpoint)
+      console.log(response)
       onProductsChange(response.data, response.pagination)
     } catch (error) {
       console.error('Failed to fetch products:', error)
+      toast.error('오류가 발생하였습니다.')
     } finally {
       setLoading(false)
       onLoadingChange?.(false)
@@ -164,14 +145,14 @@ export const ProductSearchForm = React.forwardRef<
             <div className="grid gap-2">
               <Label htmlFor="supplier">공급사</Label>
               <Combobox
-                options={supplyData}
+                options={supplies}
                 valueKey="id"
                 labelKey="name"
                 placeholder="전체"
-                value={formData.supplierId}
+                value={formData.supplyId}
                 onValueChange={(value) => {
                   console.log('Supplier selected:', value)
-                  setFormData((prev) => ({ ...prev, supplierId: value }))
+                  setFormData((prev) => ({ ...prev, supplyId: value }))
                 }}
               />
             </div>

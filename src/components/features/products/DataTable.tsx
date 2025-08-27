@@ -11,6 +11,10 @@ import * as React from 'react'
 import { z } from 'zod'
 import { ProductListItem } from '@/src/types/product'
 
+interface ColumnMeta {
+  className?: string
+}
+
 import { Button } from '@/src/components/ui/Button'
 import { Label } from '@/src/components/ui/Label'
 import {
@@ -112,7 +116,11 @@ export function DataTable<T extends ProductListItem>({
                 <TableRow key={headerGroup.id}>
                   {headerGroup.headers.map((header) => {
                     return (
-                      <TableHead key={header.id} colSpan={header.colSpan}>
+                      <TableHead
+                        key={header.id}
+                        colSpan={header.colSpan}
+                        className={(header.column.columnDef.meta as ColumnMeta)?.className}
+                      >
                         {header.isPlaceholder
                           ? null
                           : flexRender(header.column.columnDef.header, header.getContext())}
@@ -129,7 +137,10 @@ export function DataTable<T extends ProductListItem>({
                 table.getRowModel().rows.map((row) => (
                   <TableRow key={row.id} data-state={row.getIsSelected() && 'selected'}>
                     {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id}>
+                      <TableCell
+                        key={cell.id}
+                        className={(cell.column.columnDef.meta as ColumnMeta)?.className}
+                      >
                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                       </TableCell>
                     ))}
