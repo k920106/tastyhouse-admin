@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
+import { useState, useEffect } from 'react'
 import { ProductSearchForm, ProductListItem } from '@/src/types/product'
 
 interface ProductSearchState {
@@ -8,6 +9,8 @@ interface ProductSearchState {
   totalCount: number
   currentPage: number
   pageSize: number
+  _hasHydrated: boolean
+  setHasHydrated: (hasHydrated: boolean) => void
   setSearchForm: (form: ProductSearchForm) => void
   updateSearchForm: (updates: Partial<ProductSearchForm>) => void
   resetSearchForm: () => void
@@ -15,7 +18,7 @@ interface ProductSearchState {
     products: ProductListItem[],
     paginationInfo: { draw: number; total: number; filtered: number },
     currentPage: number,
-    pageSize: number
+    pageSize: number,
   ) => void
   resetProductsData: () => void
 }
@@ -29,7 +32,7 @@ const initialSearchForm: ProductSearchForm = {
   display: 'all',
 }
 
-export const useProductSearchStore = create<ProductSearchState>()(
+const productSearchStore = create<ProductSearchState>()(
   persist(
     (set) => ({
       searchForm: initialSearchForm,
@@ -37,6 +40,11 @@ export const useProductSearchStore = create<ProductSearchState>()(
       totalCount: 0,
       currentPage: 0,
       pageSize: 10,
+      _hasHydrated: false,
+
+      setHasHydrated: (hasHydrated: boolean) => {
+        set({ _hasHydrated: hasHydrated })
+      },
 
       setSearchForm: (form: ProductSearchForm) => {
         set({ searchForm: form })
@@ -79,6 +87,30 @@ export const useProductSearchStore = create<ProductSearchState>()(
         currentPage: state.currentPage,
         pageSize: state.pageSize,
       }),
+      onRehydrateStorage: () => (state) => {
+        console.log('🔄 Zustand rehydration completed:', state?.searchForm)
+        state?.setHasHydrated(true)
+      },
     },
   ),
 )
+
+const useStore = <T, F>(
+  store: (callback: (state: T) => unknown) => unknown,
+  callback: (state: T) => F,
+) => {
+  const result = store(callback) as F
+  const [data, setData] = useState<F>()
+
+  useEffect(() => {
+    setData(result)
+  }, [result])
+
+  return data
+}
+
+export const useProductSearchStore = () => productSearchStore()
+
+export const useProductSearchStoreWithSelector = <T>(selector: (state: ProductSearchState) => T) => {
+  return useStore(productSearchStore, selector)
+}
