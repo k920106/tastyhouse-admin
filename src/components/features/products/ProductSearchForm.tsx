@@ -1,9 +1,7 @@
 'use client'
 
-import React, { useImperativeHandle } from 'react'
+import React, { useImperativeHandle, useCallback } from 'react'
 import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { z } from 'zod'
 import { Card, CardContent, CardFooter } from '@/src/components/ui/Card'
 import { Button } from '@/src/components/ui/Button'
 import { Input } from '@/src/components/ui/Input'
@@ -34,16 +32,14 @@ import {
   FormMessage,
 } from '@/src/components/ui/Form'
 
-const productSearchSchema = z.object({
-  companyId: z.string().optional(),
-  productCode: z.string().optional(),
-  name: z.string().optional(),
-  brandId: z.string().optional(),
-  supplyId: z.string().optional(),
-  display: z.string().optional(),
-})
-
-type ProductSearchFormData = z.infer<typeof productSearchSchema>
+interface ProductSearchFormData {
+  companyId?: string
+  productCode?: string
+  name?: string
+  brandId?: string
+  supplyId?: string
+  display?: string
+}
 
 interface ProductSearchFormProps {
   onLoadingChange?: (loading: boolean) => void
@@ -57,38 +53,21 @@ export const ProductSearchForm = React.forwardRef<
   ProductSearchFormProps
 >(({ onLoadingChange, companies, brands, supplies }, ref) => {
   const { searchForm, setProductsData, updateSearchForm, _hasHydrated } = useProductSearchStore()
-  // Hydration 완료 후에만 폼 초기화
+
   const form = useForm<ProductSearchFormData>({
-    resolver: zodResolver(productSearchSchema),
     defaultValues: {
-      companyId: '',
+      companyId: 'all',
       productCode: '',
       name: '',
-      brandId: '',
-      supplyId: '',
+      brandId: 'all',
+      supplyId: 'all',
       display: 'all',
     },
-    mode: 'onChange',
   })
 
-  // 디버그용 로그
   React.useEffect(() => {
-    console.log('Component state:', {
-      _hasHydrated,
-      'searchForm.display': searchForm.display,
-      'searchForm full': searchForm,
-    })
-  }, [_hasHydrated, searchForm])
-
-  // Hydration 완료 시 한 번만 실행
-  const hasHydratedRef = React.useRef(false)
-  React.useEffect(() => {
-    if (_hasHydrated && !hasHydratedRef.current) {
-      hasHydratedRef.current = true
-      console.log('🔄 Hydration completed, setting form values:')
-      console.log('  - searchForm.display:', searchForm.display)
-      console.log('  - full searchForm:', searchForm)
-      const newValues = {
+    if (_hasHydrated) {
+      const formValues = {
         companyId: searchForm.companyId || '',
         productCode: searchForm.productCode || '',
         name: searchForm.name || '',
@@ -96,85 +75,91 @@ export const ProductSearchForm = React.forwardRef<
         supplyId: searchForm.supplyId || '',
         display: searchForm.display || 'all',
       }
-      console.log('🔄 New form values:')
-      console.log('  - newValues.display:', newValues.display)
-      console.log('  - full newValues:', newValues)
-      // display 필드 제외하고 나머지만 form.setValue 사용
-      Object.entries(newValues).forEach(([key, value]) => {
-        if (key !== 'display') { // display는 직접 제어하므로 제외
-          console.log(`🔧 Setting field ${key}:`, value)
+
+      // Update form fields except display (handled separately)
+      Object.entries(formValues).forEach(([key, value]) => {
+        if (key !== 'display') {
           form.setValue(key as keyof ProductSearchFormData, value)
         }
       })
-      console.log('🔄 Display field handled separately via Zustand')
-
-      // reset 후 실제 값 확인
-      setTimeout(() => {
-        const formValues = form.getValues()
-        console.log('📋 Form values after reset:')
-        console.log('  - formValues.display:', formValues.display)
-        console.log('  - full formValues:', formValues)
-      }, 100)
     }
-  }, [_hasHydrated, searchForm]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [_hasHydrated, form, searchForm])
 
-  const fetchProducts = async (page: number = 0, size: number = 10) => {
-    onLoadingChange?.(true)
+  const fetchProducts = useCallback(
+    async (page: number = 0, size: number = 10) => {
+      onLoadingChange?.(true)
 
-    try {
-      const formData = form.getValues()
-      const requestData = {
-        ...formData,
-        companyId:
-          formData.companyId && formData.companyId !== 'all'
-            ? Number(formData.companyId)
-            : undefined,
-        brandId:
-          formData.brandId && formData.brandId !== 'all'
-            ? Number(formData.brandId)
-            : undefined,
-        supplyId:
-          formData.supplyId && formData.supplyId !== 'all'
-            ? Number(formData.supplyId)
-            : undefined,
-        display:
-          formData.display && formData.display !== 'all'
-            ? formData.display === 'true'
-            : undefined,
-        page,
-        size,
-        draw: 1,
-      }
-
-      const queryParams = new URLSearchParams()
-      Object.entries(requestData).forEach(([key, value]) => {
-        if (value !== undefined && value !== null && value !== '') {
-          queryParams.append(key, String(value))
+      try {
+        const requestData = {
+          companyId:
+            searchForm.companyId && searchForm.companyId !== 'all'
+              ? Number(searchForm.companyId)
+              : undefined,
+          brandId:
+            searchForm.brandId && searchForm.brandId !== 'all'
+              ? Number(searchForm.brandId)
+              : undefined,
+          supplyId:
+            searchForm.supplyId && searchForm.supplyId !== 'all'
+              ? Number(searchForm.supplyId)
+              : undefined,
+          display:
+            searchForm.display && searchForm.display !== 'all'
+              ? searchForm.display === 'true'
+              : undefined,
+          productCode: searchForm.productCode || undefined,
+          name: searchForm.name || undefined,
+          page,
+          size,
+          draw: 1,
         }
-      })
 
-      const endpoint = queryParams.toString() ? `/products?${queryParams.toString()}` : '/products'
-      const response = await api.get<DataTablesResponse<ProductListItem>>(endpoint)
+        const queryParams = new URLSearchParams()
+        Object.entries(requestData).forEach(([key, value]) => {
+          if (value !== undefined && value !== null && value !== '') {
+            queryParams.append(key, String(value))
+          }
+        })
 
-      setProductsData(response.data, response.pagination, page, size)
-    } catch (error) {
-      console.error('Failed to fetch products:', error)
-      toast.error('오류가 발생하였습니다.')
-    } finally {
-      onLoadingChange?.(false)
-    }
-  }
+        const endpoint = queryParams.toString()
+          ? `/products?${queryParams.toString()}`
+          : '/products'
+        const response = await api.get<DataTablesResponse<ProductListItem>>(endpoint)
 
-  const onSubmit = (data: ProductSearchFormData) => {
-    // Zustand 스토어 업데이트
-    updateSearchForm(data)
-    // API 호출
-    fetchProducts(0, 10)
-  }
+        setProductsData(response.data, response.pagination, page, size)
+      } catch (error) {
+        console.error('Failed to fetch products:', error)
+        toast.error('오류가 발생하였습니다.')
+      } finally {
+        onLoadingChange?.(false)
+      }
+    },
+    [searchForm, onLoadingChange, setProductsData],
+  )
 
-  useImperativeHandle(ref, () => ({
-    refetch: fetchProducts,
-  }))
+  const onSubmit = useCallback(
+    (data: ProductSearchFormData) => {
+      updateSearchForm(data)
+      fetchProducts(0, 10)
+    },
+    [updateSearchForm, fetchProducts],
+  )
+
+  const handleDisplayChange = useCallback(
+    (value: string) => {
+      updateSearchForm({ display: value })
+      form.setValue('display', value, { shouldValidate: true })
+    },
+    [updateSearchForm, form],
+  )
+
+  useImperativeHandle(
+    ref,
+    () => ({
+      refetch: fetchProducts,
+    }),
+    [fetchProducts],
+  )
 
   if (!_hasHydrated) {
     return (
@@ -220,11 +205,7 @@ export const ProductSearchForm = React.forwardRef<
                   <FormItem>
                     <FormLabel>상품코드</FormLabel>
                     <FormControl>
-                      <Input
-                        type="text"
-                        placeholder="상품코드 입력"
-                        {...field}
-                      />
+                      <Input type="text" placeholder="상품코드 입력" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -238,11 +219,7 @@ export const ProductSearchForm = React.forwardRef<
                   <FormItem>
                     <FormLabel>상품명</FormLabel>
                     <FormControl>
-                      <Input
-                        type="text"
-                        placeholder="상품명 입력"
-                        {...field}
-                      />
+                      <Input type="text" placeholder="상품명 입력" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -293,14 +270,7 @@ export const ProductSearchForm = React.forwardRef<
 
               <div className="grid gap-2">
                 <FormLabel>전시상태</FormLabel>
-                <Select
-                  value={_hasHydrated ? searchForm.display || 'all' : 'all'}
-                  onValueChange={(value) => {
-                    console.log('🔍 Direct Select onValueChange:', value)
-                    updateSearchForm({ display: value })
-                    form.setValue('display', value, { shouldValidate: true })
-                  }}
-                >
+                <Select value={searchForm.display || 'all'} onValueChange={handleDisplayChange}>
                   <SelectTrigger className="w-full">
                     <SelectValue placeholder="전체" />
                   </SelectTrigger>

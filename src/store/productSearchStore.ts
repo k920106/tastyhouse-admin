@@ -88,7 +88,6 @@ const productSearchStore = create<ProductSearchState>()(
         pageSize: state.pageSize,
       }),
       onRehydrateStorage: () => (state) => {
-        console.log('🔄 Zustand rehydration completed:', state?.searchForm)
         state?.setHasHydrated(true)
       },
     },
