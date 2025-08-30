@@ -17,6 +17,14 @@ hooks/: 커스텀 React 훅
 store/: 상태 관리 (Zustand 추천)  
 types/: TypeScript 타입 정의
 
+[_components, components 차이]  
+\_components 폴더  
+ㄴ 해당 라우트에서만 사용하는 단순한 UI 컴포넌트
+
+components 폴더  
+ㄴ 여러 곳에서 재사용될 수 있는 컴포넌트 (예시: src/components/features/products/components)  
+ㄴ 도메인별 비즈니스 로직을 포함한 재사용 가능한 컴포넌트
+
 ```
 tastyhouse-admin/
 ├── public/

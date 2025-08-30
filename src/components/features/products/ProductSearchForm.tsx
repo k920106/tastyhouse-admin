@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useImperativeHandle, useCallback } from 'react'
+import { useCallback } from 'react'
 import { Card, CardContent, CardFooter } from '@/src/components/ui/Card'
 import { Button } from '@/src/components/ui/Button'
 import { Input } from '@/src/components/ui/Input'
@@ -13,97 +13,20 @@ import {
   SelectValue,
 } from '@/src/components/ui/Select'
 import { LuDownload } from 'react-icons/lu'
-import { ProductListItem } from '@/src/types/product'
-import { BrandListItem } from '@/src/types/brand'
-import { SupplyListItem } from '@/src/types/supply'
-import { CompanyListItem } from '@/src/types/company'
-import { api } from '@/src/lib/api'
-import { DataTablesResponse } from '@/src/types/api'
-import { toast } from 'sonner'
-import { useProductSearchStore } from '@/src/store/productSearchStore'
+import { ProductSearchForm as ProductSearchFormType } from '@/src/types/product'
+import { useCompanyBrandSupply } from '@/src/hooks/useCompanyBrandSupply'
+import { useProductSearch } from '@/src/hooks/useProductSearch'
 
-interface ProductSearchFormProps {
-  onLoadingChange?: (loading: boolean) => void
-  companies: CompanyListItem[]
-  brands: BrandListItem[]
-  supplies: SupplyListItem[]
-}
+interface ProductSearchFormProps {}
 
-export const ProductSearchForm = React.forwardRef<
-  { refetch: (page?: number, size?: number) => void },
-  ProductSearchFormProps
->(({ onLoadingChange, companies, brands, supplies }, ref) => {
-  const { searchForm, setProductsData, updateSearchForm } = useProductSearchStore()
-
-  const fetchProducts = useCallback(
-    async (page: number = 0, size: number = 10) => {
-      onLoadingChange?.(true)
-
-      try {
-        const requestData = {
-          companyId:
-            searchForm.companyId && searchForm.companyId !== 'all'
-              ? Number(searchForm.companyId)
-              : undefined,
-          brandId:
-            searchForm.brandId && searchForm.brandId !== 'all'
-              ? Number(searchForm.brandId)
-              : undefined,
-          supplyId:
-            searchForm.supplyId && searchForm.supplyId !== 'all'
-              ? Number(searchForm.supplyId)
-              : undefined,
-          display:
-            searchForm.display && searchForm.display !== 'all'
-              ? searchForm.display === 'true'
-              : undefined,
-          productCode: searchForm.productCode || undefined,
-          name: searchForm.name || undefined,
-          page,
-          size,
-          draw: 1,
-        }
-
-        const queryParams = new URLSearchParams()
-        Object.entries(requestData).forEach(([key, value]) => {
-          if (value !== undefined && value !== null && value !== '') {
-            queryParams.append(key, String(value))
-          }
-        })
-
-        const endpoint = queryParams.toString()
-          ? `/products?${queryParams.toString()}`
-          : '/products'
-        const response = await api.get<DataTablesResponse<ProductListItem>>(endpoint)
-
-        setProductsData(response.data, response.pagination, page, size)
-      } catch (error) {
-        console.error('Failed to fetch products:', error)
-        toast.error('오류가 발생하였습니다.')
-      } finally {
-        onLoadingChange?.(false)
-      }
-    },
-    [searchForm, onLoadingChange, setProductsData],
-  )
-
-  const onSubmit = useCallback(() => {
-    fetchProducts(0, 10)
-  }, [fetchProducts])
-
+export default function ProductSearchForm({}: ProductSearchFormProps) {
+  const { searchForm, updateSearchForm, handleSearch, loading: searchLoading } = useProductSearch()
+  const { companies, brands, supplies, loading } = useCompanyBrandSupply()
   const handleDisplayChange = useCallback(
     (value: string) => {
       updateSearchForm({ display: value })
     },
     [updateSearchForm],
-  )
-
-  useImperativeHandle(
-    ref,
-    () => ({
-      refetch: fetchProducts,
-    }),
-    [fetchProducts],
   )
 
   return (
@@ -116,56 +39,52 @@ export const ProductSearchForm = React.forwardRef<
               options={companies}
               valueKey="id"
               labelKey="name"
-              placeholder="-"
+              placeholder={loading ? '로딩 중...' : '-'}
               value={searchForm.companyId || 'all'}
               onValueChange={(value) => updateSearchForm({ companyId: value })}
+              disabled={loading}
             />
           </div>
-
           <div className="grid gap-2">
             <label className="text-sm font-medium">상품코드</label>
             <Input
               type="text"
-              placeholder="상품코드 입력"
               value={searchForm.productCode || ''}
               onChange={(e) => updateSearchForm({ productCode: e.target.value })}
             />
           </div>
-
           <div className="grid gap-2">
             <label className="text-sm font-medium">상품명</label>
             <Input
               type="text"
-              placeholder="상품명 입력"
               value={searchForm.name || ''}
               onChange={(e) => updateSearchForm({ name: e.target.value })}
             />
           </div>
-
           <div className="grid gap-2">
             <label className="text-sm font-medium">교환처</label>
             <Combobox
               options={brands}
               valueKey="id"
               labelKey="name"
-              placeholder="전체"
+              placeholder={loading ? '로딩 중...' : '전체'}
               value={searchForm.brandId || 'all'}
               onValueChange={(value) => updateSearchForm({ brandId: value })}
+              disabled={loading}
             />
           </div>
-
           <div className="grid gap-2">
             <label className="text-sm font-medium">공급사</label>
             <Combobox
               options={supplies}
               valueKey="id"
               labelKey="name"
-              placeholder="전체"
+              placeholder={loading ? '로딩 중...' : '전체'}
               value={searchForm.supplyId || 'all'}
               onValueChange={(value) => updateSearchForm({ supplyId: value })}
+              disabled={loading}
             />
           </div>
-
           <div className="grid gap-2">
             <label className="text-sm font-medium">전시상태</label>
             <Select value={searchForm.display || 'all'} onValueChange={handleDisplayChange}>
@@ -195,12 +114,10 @@ export const ProductSearchForm = React.forwardRef<
           엑셀 다운로드
           <LuDownload />
         </Button>
-        <Button type="button" onClick={onSubmit}>
-          조회
+        <Button type="button" onClick={handleSearch} disabled={searchLoading}>
+          {searchLoading ? '조회 중...' : '조회'}
         </Button>
       </CardFooter>
     </Card>
   )
-})
-
-ProductSearchForm.displayName = 'ProductSearchForm'
+}

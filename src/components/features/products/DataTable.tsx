@@ -8,7 +8,7 @@ import {
 } from '@tabler/icons-react'
 import { ColumnDef, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table'
 import * as React from 'react'
-import { z } from 'zod'
+import { useCallback } from 'react'
 import { ProductListItem } from '@/src/types/product'
 
 interface ColumnMeta {
@@ -35,20 +35,6 @@ import {
 import { Tabs, TabsContent } from '@/src/components/ui/Tabs'
 import { TableRowSkeleton } from '@/src/components/ui/Skeleton'
 
-export const schema = z.object({
-  id: z.number(),
-  companyName: z.string(),
-  productCode: z.string(),
-  name: z.string(),
-  brandName: z.string(),
-  validityPeriod: z.number(),
-  exhibitionPrice: z.number(),
-  regularPrice: z.number(),
-  supplier: z.number(),
-  display: z.boolean(),
-  sort: z.number(),
-})
-
 interface DataTableProps<T extends ProductListItem> {
   columns: ColumnDef<T>[]
   data: T[]
@@ -56,7 +42,7 @@ interface DataTableProps<T extends ProductListItem> {
   currentPage: number
   pageSize: number
   loading?: boolean
-  onPaginationChange: (pageIndex: number, pageSize: number) => void
+  handlePageChange: (pageIndex: number, pageSize: number) => void
 }
 
 export function DataTable<T extends ProductListItem>({
@@ -66,7 +52,7 @@ export function DataTable<T extends ProductListItem>({
   currentPage,
   pageSize,
   loading = false,
-  onPaginationChange,
+  handlePageChange,
 }: DataTableProps<T>) {
   const [rowSelection, setRowSelection] = React.useState({})
 
@@ -93,15 +79,21 @@ export function DataTable<T extends ProductListItem>({
   const canPreviousPage = currentPage > 0
   const canNextPage = currentPage < pageCount - 1
 
-  const handlePageChange = (newPageIndex: number) => {
-    if (newPageIndex >= 0 && newPageIndex < pageCount) {
-      onPaginationChange(newPageIndex, pageSize)
-    }
-  }
+  const handlePageIndexChange = useCallback(
+    (newPageIndex: number) => {
+      if (newPageIndex >= 0 && newPageIndex < pageCount) {
+        handlePageChange(newPageIndex, pageSize)
+      }
+    },
+    [handlePageChange, pageCount, pageSize],
+  )
 
-  const handlePageSizeChange = (newPageSize: number) => {
-    onPaginationChange(0, newPageSize)
-  }
+  const handlePageSizeChange = useCallback(
+    (newPageSize: number) => {
+      handlePageChange(0, newPageSize)
+    },
+    [handlePageChange],
+  )
 
   return (
     <Tabs defaultValue="outline" className="w-full flex-col justify-start gap-6">
@@ -191,7 +183,7 @@ export function DataTable<T extends ProductListItem>({
               <Button
                 variant="outline"
                 className="hidden h-8 w-8 p-0 lg:flex"
-                onClick={() => handlePageChange(0)}
+                onClick={() => handlePageIndexChange(0)}
                 disabled={!canPreviousPage}
               >
                 <span className="sr-only">Go to first page</span>
@@ -201,7 +193,7 @@ export function DataTable<T extends ProductListItem>({
                 variant="outline"
                 className="size-8"
                 size="icon"
-                onClick={() => handlePageChange(currentPage - 1)}
+                onClick={() => handlePageIndexChange(currentPage - 1)}
                 disabled={!canPreviousPage}
               >
                 <span className="sr-only">Go to previous page</span>
@@ -211,7 +203,7 @@ export function DataTable<T extends ProductListItem>({
                 variant="outline"
                 className="size-8"
                 size="icon"
-                onClick={() => handlePageChange(currentPage + 1)}
+                onClick={() => handlePageIndexChange(currentPage + 1)}
                 disabled={!canNextPage}
               >
                 <span className="sr-only">Go to next page</span>
@@ -221,7 +213,7 @@ export function DataTable<T extends ProductListItem>({
                 variant="outline"
                 className="hidden size-8 lg:flex"
                 size="icon"
-                onClick={() => handlePageChange(pageCount - 1)}
+                onClick={() => handlePageIndexChange(pageCount - 1)}
                 disabled={!canNextPage}
               >
                 <span className="sr-only">Go to last page</span>

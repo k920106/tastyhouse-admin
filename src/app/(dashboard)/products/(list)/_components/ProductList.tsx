@@ -1,6 +1,5 @@
 'use client'
 
-import { useState, useRef, useEffect } from 'react'
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -13,57 +12,12 @@ import { DataTable } from '@/src/components/features/products/DataTable'
 import { Separator } from '@/src/components/ui/Separator'
 import { SidebarTrigger } from '@/src/components/ui/Sidebar'
 import { createColumns } from '@/src/components/features/products/Columns'
-import { ProductSearchForm } from '@/src/components/features/products/ProductSearchForm'
-import { CompanyListItem } from '@/src/types/company'
-import { BrandListItem } from '@/src/types/brand'
-import { toast } from 'sonner'
-import { SupplyListItem } from '@/src/types/supply'
-import { useProductSearchStore } from '@/src/store/productSearchStore'
+import ProductSearchForm from '@/src/components/features/products/ProductSearchForm'
+import { useProductSearch } from '@/src/hooks/useProductSearch'
 
-interface ProductListProps {
-  companies: CompanyListItem[]
-  brands: BrandListItem[]
-  supplies: SupplyListItem[]
-}
-
-export default function ProductList({ companies, brands, supplies }: ProductListProps) {
-  const [hasShownToast, setHasShownToast] = useState(false)
-  const [loading, setLoading] = useState(false)
-  const searchFormRef = useRef<{ refetch: (page?: number, size?: number) => void }>(null)
-
-  const { products, totalCount, currentPage, pageSize } = useProductSearchStore()
-
-  useEffect(() => {
-    if (companies.length === 0 && !hasShownToast) {
-      toast('매체사를 조회할 수 없습니다.')
-      setHasShownToast(true)
-    }
-  }, [companies, hasShownToast])
-
-  useEffect(() => {
-    if (brands.length === 0 && !hasShownToast) {
-      toast('교환처를 조회할 수 없습니다.')
-      setHasShownToast(true)
-    }
-  }, [brands, hasShownToast])
-
-  useEffect(() => {
-    if (supplies.length === 0 && !hasShownToast) {
-      toast('공급사를 조회할 수 없습니다.')
-      setHasShownToast(true)
-    }
-  }, [supplies, hasShownToast])
-
-
-  const handleLoadingChange = (isLoading: boolean) => {
-    setLoading(isLoading)
-  }
-
-  const handlePaginationChange = (pageIndex: number, newPageSize: number) => {
-    if (searchFormRef.current?.refetch) {
-      searchFormRef.current.refetch(pageIndex, newPageSize)
-    }
-  }
+export default function ProductList() {
+  const { products, totalCount, currentPage, pageSize, handlePageChange, loading } =
+    useProductSearch()
 
   return (
     <>
@@ -90,13 +44,7 @@ export default function ProductList({ companies, brands, supplies }: ProductList
       </header>
       <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
         <div className="flex-1 min-h-[100vh] md:min-h-min">
-          <ProductSearchForm
-            onLoadingChange={handleLoadingChange}
-            ref={searchFormRef}
-            companies={companies}
-            brands={brands}
-            supplies={supplies}
-          />
+          <ProductSearchForm />
           <DataTable
             columns={createColumns(currentPage, pageSize)}
             data={products}
@@ -104,7 +52,7 @@ export default function ProductList({ companies, brands, supplies }: ProductList
             currentPage={currentPage}
             pageSize={pageSize}
             loading={loading}
-            onPaginationChange={handlePaginationChange}
+            handlePageChange={handlePageChange}
           />
         </div>
       </div>

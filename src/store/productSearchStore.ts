@@ -1,7 +1,22 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import { useState, useEffect } from 'react'
 import { ProductSearchForm, ProductListItem } from '@/src/types/product'
+
+const INITIAL_SEARCH_FORM: ProductSearchForm = {
+  companyId: 'all',
+  productCode: '',
+  name: '',
+  brandId: 'all',
+  supplyId: 'all',
+  display: 'all',
+}
+
+const INITIAL_PAGINATION = {
+  products: [] as ProductListItem[],
+  totalCount: 0,
+  currentPage: 0,
+  pageSize: 10,
+}
 
 interface ProductSearchState {
   searchForm: ProductSearchForm
@@ -14,95 +29,49 @@ interface ProductSearchState {
   resetSearchForm: () => void
   setProductsData: (
     products: ProductListItem[],
-    paginationInfo: { draw: number; total: number; filtered: number },
+    paginationInfo: { total: number },
     currentPage: number,
     pageSize: number,
   ) => void
+  updatePagination: (currentPage: number, pageSize: number) => void
   resetProductsData: () => void
 }
 
-const initialSearchForm: ProductSearchForm = {
-  companyId: 'all',
-  productCode: '',
-  name: '',
-  brandId: 'all',
-  supplyId: 'all',
-  display: 'all',
-}
-
-const productSearchStore = create<ProductSearchState>()(
+export const useProductSearchStore = create<ProductSearchState>()(
   persist(
     (set) => ({
-      searchForm: initialSearchForm,
-      products: [],
-      totalCount: 0,
-      currentPage: 0,
-      pageSize: 10,
+      searchForm: INITIAL_SEARCH_FORM,
+      ...INITIAL_PAGINATION,
 
-      setSearchForm: (form: ProductSearchForm) => {
-        set({ searchForm: form })
-      },
+      setSearchForm: (form) => set({ searchForm: form }),
 
-      updateSearchForm: (updates: Partial<ProductSearchForm>) => {
+      updateSearchForm: (updates) =>
         set((state) => ({
           searchForm: { ...state.searchForm, ...updates },
-        }))
-      },
+        })),
 
-      resetSearchForm: () => {
-        set({ searchForm: initialSearchForm })
-      },
+      resetSearchForm: () => set({ searchForm: INITIAL_SEARCH_FORM }),
 
-      setProductsData: (products, paginationInfo, currentPage, pageSize) => {
+      setProductsData: (products, { total }, currentPage, pageSize) =>
         set({
           products,
-          totalCount: paginationInfo.total,
+          totalCount: total,
           currentPage,
           pageSize,
-        })
-      },
+        }),
 
-      resetProductsData: () => {
-        set({
-          products: [],
-          totalCount: 0,
-          currentPage: 0,
-          pageSize: 10,
-        })
-      },
+      updatePagination: (currentPage, pageSize) =>
+        set({ currentPage, pageSize }),
+
+      resetProductsData: () => set(INITIAL_PAGINATION),
     }),
     {
       name: 'product-search-store',
-      partialize: (state) => ({
-        searchForm: state.searchForm,
-        products: state.products,
-        totalCount: state.totalCount,
-        currentPage: state.currentPage,
-        pageSize: state.pageSize,
+      partialize: ({ searchForm, currentPage, pageSize }) => ({
+        searchForm,
+        currentPage,
+        pageSize,
       }),
-      onRehydrateStorage: () => () => {},
     },
   ),
 )
-
-const useStore = <T, F>(
-  store: (callback: (state: T) => unknown) => unknown,
-  callback: (state: T) => F,
-) => {
-  const result = store(callback) as F
-  const [data, setData] = useState<F>()
-
-  useEffect(() => {
-    setData(result)
-  }, [result])
-
-  return data
-}
-
-export const useProductSearchStore = () => productSearchStore()
-
-export const useProductSearchStoreWithSelector = <T>(
-  selector: (state: ProductSearchState) => T,
-) => {
-  return useStore(productSearchStore, selector)
-}
