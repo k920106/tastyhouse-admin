@@ -9,8 +9,6 @@ interface ProductSearchState {
   totalCount: number
   currentPage: number
   pageSize: number
-  _hasHydrated: boolean
-  setHasHydrated: (hasHydrated: boolean) => void
   setSearchForm: (form: ProductSearchForm) => void
   updateSearchForm: (updates: Partial<ProductSearchForm>) => void
   resetSearchForm: () => void
@@ -40,11 +38,6 @@ const productSearchStore = create<ProductSearchState>()(
       totalCount: 0,
       currentPage: 0,
       pageSize: 10,
-      _hasHydrated: false,
-
-      setHasHydrated: (hasHydrated: boolean) => {
-        set({ _hasHydrated: hasHydrated })
-      },
 
       setSearchForm: (form: ProductSearchForm) => {
         set({ searchForm: form })
@@ -87,9 +80,7 @@ const productSearchStore = create<ProductSearchState>()(
         currentPage: state.currentPage,
         pageSize: state.pageSize,
       }),
-      onRehydrateStorage: () => (state) => {
-        state?.setHasHydrated(true)
-      },
+      onRehydrateStorage: () => () => {},
     },
   ),
 )
@@ -110,6 +101,8 @@ const useStore = <T, F>(
 
 export const useProductSearchStore = () => productSearchStore()
 
-export const useProductSearchStoreWithSelector = <T>(selector: (state: ProductSearchState) => T) => {
+export const useProductSearchStoreWithSelector = <T>(
+  selector: (state: ProductSearchState) => T,
+) => {
   return useStore(productSearchStore, selector)
 }
