@@ -21,13 +21,11 @@ export interface ProductSearchHookResult {
   currentPage: number
   pageSize: number
   handlePageChange: (page: number, size?: number) => void
-  handlePageSizeChange: (size: number) => void
 
   // 로딩 상태
   loading: boolean
 
   // 액션
-  fetchProducts: (page?: number, size?: number) => Promise<void>
   handleSearch: () => Promise<void>
 }
 
@@ -37,6 +35,8 @@ export const useProductSearch = (): ProductSearchHookResult => {
 
   const fetchProducts = useCallback(
     async (page: number = store.currentPage, size: number = store.pageSize) => {
+      setLoading(true)
+
       try {
         const requestData = {
           companyId:
@@ -78,40 +78,24 @@ export const useProductSearch = (): ProductSearchHookResult => {
       } catch (error) {
         console.error('Failed to fetch products:', error)
         toast.error('오류가 발생하였습니다.')
+      } finally {
+        setLoading(false)
       }
     },
-    [store],
+    [store, setLoading],
   )
 
   const handlePageChange = useCallback(
     (newPage: number, newPageSize?: number) => {
       const targetPageSize = newPageSize ?? store.pageSize
       store.updatePagination(newPage, targetPageSize)
+      fetchProducts(newPage, targetPageSize)
     },
-    [store],
-  )
-
-  const handlePageSizeChange = useCallback(
-    (newPageSize: number) => {
-      store.updatePagination(0, newPageSize)
-    },
-    [store],
-  )
-
-  const onSubmit = useCallback(
-    async (page?: number, size?: number) => {
-      await fetchProducts(page ?? 0, size ?? store.pageSize)
-    },
-    [fetchProducts, store.pageSize],
+    [store, fetchProducts],
   )
 
   const handleSearch = useCallback(async () => {
-    setLoading(true)
-    try {
-      await fetchProducts()
-    } finally {
-      setLoading(false)
-    }
+    await fetchProducts()
   }, [fetchProducts])
 
   return {
@@ -128,13 +112,11 @@ export const useProductSearch = (): ProductSearchHookResult => {
     currentPage: store.currentPage,
     pageSize: store.pageSize,
     handlePageChange,
-    handlePageSizeChange,
 
     // 로딩 상태
     loading,
 
     // 액션
-    fetchProducts: onSubmit,
     handleSearch,
   }
 }

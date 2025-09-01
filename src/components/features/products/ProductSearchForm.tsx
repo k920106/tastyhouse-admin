@@ -1,6 +1,5 @@
 'use client'
 
-import { useCallback } from 'react'
 import { Card, CardContent, CardFooter } from '@/src/components/ui/Card'
 import { Button } from '@/src/components/ui/Button'
 import { Input } from '@/src/components/ui/Input'
@@ -13,21 +12,24 @@ import {
   SelectValue,
 } from '@/src/components/ui/Select'
 import { LuDownload } from 'react-icons/lu'
-import { ProductSearchForm as ProductSearchFormType } from '@/src/types/product'
 import { useCompanyBrandSupply } from '@/src/hooks/useCompanyBrandSupply'
-import { useProductSearch } from '@/src/hooks/useProductSearch'
+import { Loader2Icon } from 'lucide-react'
+import { ProductSearchForm as ProductSearchFormType } from '@/src/types/product'
 
-interface ProductSearchFormProps {}
+interface ProductSearchFormProps {
+  searchForm: ProductSearchFormType
+  updateSearchForm: (updates: Partial<ProductSearchFormType>) => void
+  handleSearch: () => Promise<void>
+  loading: boolean
+}
 
-export default function ProductSearchForm({}: ProductSearchFormProps) {
-  const { searchForm, updateSearchForm, handleSearch, loading: searchLoading } = useProductSearch()
+export default function ProductSearchForm({
+  searchForm,
+  updateSearchForm,
+  handleSearch,
+  loading: searchLoading,
+}: ProductSearchFormProps) {
   const { companies, brands, supplies, loading } = useCompanyBrandSupply()
-  const handleDisplayChange = useCallback(
-    (value: string) => {
-      updateSearchForm({ display: value })
-    },
-    [updateSearchForm],
-  )
 
   return (
     <Card className="w-full shadow-none">
@@ -87,7 +89,10 @@ export default function ProductSearchForm({}: ProductSearchFormProps) {
           </div>
           <div className="grid gap-2">
             <label className="text-sm font-medium">전시상태</label>
-            <Select value={searchForm.display || 'all'} onValueChange={handleDisplayChange}>
+            <Select
+              value={searchForm.display || 'all'}
+              onValueChange={(value) => updateSearchForm({ display: value })}
+            >
               <SelectTrigger className="w-full">
                 <SelectValue placeholder="전체" />
               </SelectTrigger>
@@ -115,7 +120,7 @@ export default function ProductSearchForm({}: ProductSearchFormProps) {
           <LuDownload />
         </Button>
         <Button type="button" onClick={handleSearch} disabled={searchLoading}>
-          {searchLoading ? '조회 중...' : '조회'}
+          {searchLoading ? <Loader2Icon className="animate-spin" /> : '조회'}
         </Button>
       </CardFooter>
     </Card>
