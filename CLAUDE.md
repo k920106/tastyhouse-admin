@@ -88,6 +88,39 @@ app/
 - Tailwind CSS with component-level styling
 - shadcn/ui configuration in `components.json`
 
+## Code Quality & ESLint Rules
+
+**CRITICAL: 코드 작성 시 반드시 준수해야 할 ESLint 규칙**
+
+### 필수 ESLint 규칙들:
+1. **`eol-last: 'error'`** - 모든 파일은 반드시 마지막에 개행으로 끝나야 함
+2. **`unused-imports/no-unused-imports: 'error'`** - 사용하지 않는 import 금지
+3. **`unused-imports/no-unused-vars: 'warn'`** - 사용하지 않는 변수는 `_` prefix 필요
+4. **`semi: ['error', 'never']`** - 세미콜론 사용 금지
+5. **`quotes: ['error', 'single']`** - 문자열에 단일 따옴표 사용
+6. **`jsx-quotes: ['error', 'prefer-double']`** - JSX에서는 더블 따옴표 사용
+7. **`comma-dangle: ['error', 'always-multiline']`** - 다중행에서 마지막 쉼표 필수
+
+### Prettier 자동 포맷팅:
+- `semi: false` - 세미콜론 제거
+- `singleQuote: true` - 단일 따옴표 사용
+- `trailingComma: 'all'` - 마지막 쉼표 항상 추가
+- `printWidth: 100` - 한 줄 최대 100자
+- `tabWidth: 2` - 들여쓰기 2칸
+
+### 파일 작성 시 체크리스트:
+- [ ] **파일 끝에 개행 추가** (가장 자주 놓치는 규칙!)
+- [ ] 사용하지 않는 변수는 `_` prefix 또는 제거
+- [ ] `any` 타입 대신 구체적인 타입 사용
+- [ ] 세미콜론 제거, 단일 따옴표 사용
+- [ ] JSX에서는 더블 따옴표 사용
+
+### 코드 품질 검사:
+```bash
+npm run lint    # ESLint 검사 (오류 시 반드시 수정 필요)
+npm run build   # TypeScript + ESLint 통합 검사
+```
+
 ## Korean Language Support
 
 The application supports Korean language:

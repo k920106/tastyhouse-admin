@@ -1,7 +1,7 @@
 'use client'
 
 import * as React from 'react'
-import { AudioWaveform, Bot, Command, GalleryVerticalEnd, SquareTerminal } from 'lucide-react'
+import { Bot, SquareTerminal } from 'lucide-react'
 
 import { NavMain } from '@/src/components/ui/NavMain'
 import { NavUser } from '@/src/components/ui/NavUser'
@@ -24,23 +24,6 @@ const data = {
     email: 'kms0902@wincubemkt.com',
     avatar: '/images/profile.png',
   },
-  teams: [
-    {
-      name: 'Acme Inc',
-      logo: GalleryVerticalEnd,
-      plan: 'Enterprise',
-    },
-    {
-      name: 'Acme Corp.',
-      logo: AudioWaveform,
-      plan: 'Startup',
-    },
-    {
-      name: 'Evil Corp.',
-      logo: Command,
-      plan: 'Free',
-    },
-  ],
   products: [
     {
       title: '상품 관리',
@@ -190,7 +173,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar {...props}>
       <SidebarHeader>
-        <TeamSwitcher teams={data.teams} />
+        <TeamSwitcher />
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.products} />

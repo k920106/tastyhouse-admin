@@ -26,7 +26,6 @@ interface ProductSearchState {
   pageSize: number
   setSearchForm: (form: ProductSearchForm) => void
   updateSearchForm: (updates: Partial<ProductSearchForm>) => void
-  resetSearchForm: () => void
   setProductsData: (
     products: ProductListItem[],
     paginationInfo: { total: number },
@@ -50,18 +49,15 @@ export const useProductSearchStore = create<ProductSearchState>()(
           searchForm: { ...state.searchForm, ...updates },
         })),
 
-      resetSearchForm: () => set({ searchForm: INITIAL_SEARCH_FORM }),
-
-      setProductsData: (products, { total }, currentPage, pageSize) =>
+      setProductsData: (products, paginationInfo, currentPage, pageSize) =>
         set({
           products,
-          totalCount: total,
+          totalCount: paginationInfo.total,
           currentPage,
           pageSize,
         }),
 
-      updatePagination: (currentPage, pageSize) =>
-        set({ currentPage, pageSize }),
+      updatePagination: (currentPage, pageSize) => set({ currentPage, pageSize }),
 
       resetProductsData: () => set(INITIAL_PAGINATION),
     }),

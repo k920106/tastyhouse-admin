@@ -12,24 +12,24 @@ import {
   SelectValue,
 } from '@/src/components/ui/Select'
 import { LuDownload } from 'react-icons/lu'
-import { useCompanyBrandSupply } from '@/src/hooks/useCompanyBrandSupply'
+import { useCompanyBrandSupplyQueries } from '@/src/hooks/queries/useCompanyBrandSupplyQueries'
 import { Loader2Icon } from 'lucide-react'
 import { ProductSearchForm as ProductSearchFormType } from '@/src/types/product'
 
 interface ProductSearchFormProps {
   searchForm: ProductSearchFormType
-  updateSearchForm: (updates: Partial<ProductSearchFormType>) => void
-  handleSearch: () => Promise<void>
   loading: boolean
+  updateSearchForm: (updates: Partial<ProductSearchFormType>) => void
+  handleSearch: () => void
 }
 
 export default function ProductSearchForm({
   searchForm,
+  loading: searchLoading,
   updateSearchForm,
   handleSearch,
-  loading: searchLoading,
 }: ProductSearchFormProps) {
-  const { companies, brands, supplies, loading } = useCompanyBrandSupply()
+  const { companies, brands, supplies, loading } = useCompanyBrandSupplyQueries()
 
   return (
     <Card className="w-full shadow-none">
