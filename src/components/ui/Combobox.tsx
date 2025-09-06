@@ -32,6 +32,7 @@ interface ComboboxProps<T = Record<string, unknown>> {
   disabled?: boolean
   valueKey: keyof T
   labelKey: keyof T
+  disabledOptions?: string[]
 }
 
 export function Combobox<T = Record<string, unknown>>({
@@ -46,6 +47,7 @@ export function Combobox<T = Record<string, unknown>>({
   disabled = false,
   valueKey,
   labelKey,
+  disabledOptions = [],
 }: ComboboxProps<T>) {
   const [open, setOpen] = React.useState(false)
   const [internalValue, setInternalValue] = React.useState(value)
@@ -101,6 +103,7 @@ export function Combobox<T = Record<string, unknown>>({
                   key={option.value}
                   value={`${option.value} ${option.label}`}
                   onSelect={() => handleSelect(option.value)}
+                  disabled={disabledOptions.includes(option.value)}
                 >
                   {option.label}
                   <Check
