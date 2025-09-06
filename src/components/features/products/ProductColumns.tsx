@@ -2,8 +2,8 @@
 
 import { ColumnDef } from '@tanstack/react-table'
 import { Checkbox } from '@/src/components/ui/Checkbox'
-import { ProductListItem } from '@/src/types/product'
-import { formatNumberWithCommas } from '@/src/lib/utils'
+import { ProductListItem, getProductDisplayStatusLabel } from '@/src/types/product'
+import { formatNumberWithCommas } from '@/src/lib/number-utils'
 
 export const createColumns = (
   currentPage: number,
@@ -42,7 +42,7 @@ export const createColumns = (
     meta: {
       className: 'border-x text-center',
     },
-    cell: ({ row }) => <div className="text-center">{currentPage * pageSize + row.index + 1}</div>,
+    cell: ({ row }) => <div>{currentPage * pageSize + row.index + 1}</div>,
   },
   {
     accessorKey: 'companyName',
@@ -113,7 +113,7 @@ export const createColumns = (
   {
     accessorKey: 'display',
     header: '전시상태',
-    cell: ({ getValue }) => (getValue<boolean>() ? '전시' : '미전시'),
+    cell: ({ getValue }) => getProductDisplayStatusLabel(getValue<boolean>()),
     meta: {
       className: 'border-x',
     },

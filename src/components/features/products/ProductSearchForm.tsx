@@ -14,7 +14,10 @@ import {
 import { LuDownload } from 'react-icons/lu'
 import { useCompanyBrandSupplyQueries } from '@/src/hooks/queries/useCompanyBrandSupplyQueries'
 import { Loader2Icon } from 'lucide-react'
-import { ProductSearchForm as ProductSearchFormType } from '@/src/types/product'
+import {
+  ProductSearchForm as ProductSearchFormType,
+  getProductDisplayStatusLabel,
+} from '@/src/types/product'
 
 interface ProductSearchFormProps {
   searchForm: ProductSearchFormType
@@ -107,8 +110,8 @@ export default function ProductSearchForm({
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">전체</SelectItem>
-                <SelectItem value="true">전시</SelectItem>
-                <SelectItem value="false">미전시</SelectItem>
+                <SelectItem value="true">{getProductDisplayStatusLabel(true)}</SelectItem>
+                <SelectItem value="false">{getProductDisplayStatusLabel(false)}</SelectItem>
               </SelectContent>
             </Select>
           </div>

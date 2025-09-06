@@ -1,7 +1,7 @@
 'use client'
 
 import { DataTable } from '@/src/components/features/products/DataTable'
-import { createColumns } from '@/src/components/features/products/Columns'
+import { createColumns } from '@/src/components/features/products/ProductColumns'
 import { ProductListItem } from '@/src/types/product'
 
 interface ProductDataTableProps {
