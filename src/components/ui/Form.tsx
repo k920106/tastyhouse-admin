@@ -3,7 +3,7 @@
 import * as React from 'react'
 import type { ControllerProps, FieldPath, FieldValues } from 'react-hook-form'
 import { Controller, FormProvider, useFormContext } from 'react-hook-form'
-import { cn } from '@/src/lib/util'
+import { cn } from '@/src/lib/class-utils'
 import { Label } from '@/src/components/ui/Label'
 
 const Form = FormProvider

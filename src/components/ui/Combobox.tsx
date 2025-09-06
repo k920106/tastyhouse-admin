@@ -3,7 +3,7 @@
 import * as React from 'react'
 import { Check, ChevronsUpDown } from 'lucide-react'
 
-import { cn } from '@/src/lib/util'
+import { cn } from '@/src/lib/class-utils'
 import { Button } from '@/src/components/ui/Button'
 import {
   Command,
@@ -63,10 +63,7 @@ export function Combobox<T = Record<string, unknown>>({
       originalData: option,
     }))
 
-    return [
-      { value: 'all', label: '전체', originalData: null },
-      ...mappedOptions,
-    ]
+    return [{ value: 'all', label: '전체', originalData: null }, ...mappedOptions]
   }, [options, valueKey, labelKey])
 
   const handleSelect = (currentValue: string) => {
