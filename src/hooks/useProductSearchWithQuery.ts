@@ -10,6 +10,13 @@ import { parseSearchParamsToForm, buildSearchParams } from '@/src/lib/url-utils'
 import { INITIAL_PRODUCT_SEARCH_FORM } from '@/src/constants/product'
 import { validateProductSearchForm } from '@/src/lib/validations/product'
 
+// 유틸리티 함수
+const parseIntSafely = (value: string | null, fallback: number): number => {
+  if (!value) return fallback
+  const parsed = parseInt(value, 10)
+  return isNaN(parsed) ? fallback : parsed
+}
+
 export interface ProductSearchHookResult {
   // 로딩 상태
   loading: boolean
@@ -20,7 +27,6 @@ export interface ProductSearchHookResult {
   // 검색 폼 관련
   searchForm: ProductSearchForm
   updateSearchForm: (updates: Partial<ProductSearchForm>) => void
-  updateSearchFormImmediate: (updates: Partial<ProductSearchForm>) => void
 
   // 페이지네이션 관련
   totalCount: number
@@ -39,54 +45,42 @@ export const useProductSearchWithQuery = (): ProductSearchHookResult => {
   const searchParams = useSearchParams()
   const router = useRouter()
 
-  // URL을 단일 진실 소스로 사용
+  // URL에서 초기 검색 조건 파싱 (페이지 로드 시 한 번만)
+  const initialSearchForm = useMemo(
+    () => parseSearchParamsToForm(searchParams, INITIAL_PRODUCT_SEARCH_FORM),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [],
+  )
+
+  // 모든 검색 폼 필드를 로컬 상태로 관리 (검색 버튼 클릭 전까지 URL에 반영되지 않음)
+  const [searchForm, setSearchForm] = useState<ProductSearchForm>(initialSearchForm)
+
+  // URL에서 현재 검색 조건 파싱 (실제 쿼리 실행용)
   const urlSearchForm = useMemo(
     () => parseSearchParamsToForm(searchParams, INITIAL_PRODUCT_SEARCH_FORM),
     [searchParams],
   )
 
-  // Input 필드의 로컬 상태 (검색 버튼 클릭 전까지 URL에 반영 안됨)
-  const [localInputs, setLocalInputs] = useState({
-    productCode: urlSearchForm.productCode || '',
-    name: urlSearchForm.name || '',
-  })
-
-  // URL 변경 시 로컬 상태도 동기화
-  useEffect(() => {
-    setLocalInputs({
-      productCode: urlSearchForm.productCode || '',
-      name: urlSearchForm.name || '',
-    })
-  }, [urlSearchForm.productCode, urlSearchForm.name])
-
-  // 최종 searchForm (URL 상태 + 로컬 Input 상태)
-  const searchForm = useMemo(
-    () => ({
-      ...urlSearchForm,
-      ...localInputs,
-    }),
-    [urlSearchForm, localInputs],
-  )
-
+  // 페이지네이션 정보
   const currentPage = useMemo(
-    () => parseInt(searchParams.get('page') || INITIAL_PAGINATION.currentPage.toString()),
+    () => parseIntSafely(searchParams.get('page'), INITIAL_PAGINATION.currentPage),
     [searchParams],
   )
 
   const pageSize = useMemo(
-    () => parseInt(searchParams.get('pageSize') || INITIAL_PAGINATION.pageSize.toString()),
+    () => parseIntSafely(searchParams.get('pageSize'), INITIAL_PAGINATION.pageSize),
     [searchParams],
   )
 
-  // 쿼리 파라미터가 존재할 때만 검색 실행
+  // 검색 버튼 클릭 시에만 쿼리 실행
   const shouldExecuteQuery = useMemo(() => {
-    const keys = searchParams.keys()
-    return Array.from(keys).length > 0
+    return searchParams.size > 0
   }, [searchParams])
 
+  // 데이터 조회 (URL 상태 기반)
   const { data, isLoading, error } = useProductsQuery(
     {
-      searchForm: urlSearchForm, // URL 상태만 사용 (로컬 Input 상태 제외)
+      searchForm: urlSearchForm,
       pagination: {
         page: currentPage,
         size: pageSize,
@@ -95,6 +89,7 @@ export const useProductSearchWithQuery = (): ProductSearchHookResult => {
     shouldExecuteQuery,
   )
 
+  // 에러 처리
   useEffect(() => {
     if (error) {
       console.error('상품 목록 조회 실패:', error)
@@ -102,48 +97,28 @@ export const useProductSearchWithQuery = (): ProductSearchHookResult => {
     }
   }, [error])
 
-  // Input 필드 업데이트 (로컬 상태만 변경, URL 반영 안함)
-  const updateSearchForm = useCallback(
-    (updates: Partial<ProductSearchForm>) => {
-      // Input 필드만 로컬 상태로 관리
-      const inputFields = { productCode: updates.productCode, name: updates.name }
-      const hasInputUpdates = inputFields.productCode !== undefined || inputFields.name !== undefined
-
-      if (hasInputUpdates) {
-        setLocalInputs((prev) => ({
-          ...prev,
-          ...(inputFields.productCode !== undefined && { productCode: inputFields.productCode }),
-          ...(inputFields.name !== undefined && { name: inputFields.name }),
-        }))
-      }
-
-      // Input 필드가 아닌 다른 필드는 즉시 URL에 반영
-      const nonInputUpdates = { ...updates }
-      delete nonInputUpdates.productCode
-      delete nonInputUpdates.name
-
-      if (Object.keys(nonInputUpdates).length > 0) {
-        const newSearchForm = { ...urlSearchForm, ...nonInputUpdates }
-        const params = buildSearchParams(newSearchForm, INITIAL_PRODUCT_SEARCH_FORM, 0, pageSize)
-        const url = params.toString() ? `?${params.toString()}` : ''
-        router.push(url, { scroll: false })
-      }
-    },
-    [urlSearchForm, pageSize, router],
-  )
-
-  // Combobox, Select 필드 업데이트 (URL 즉시 반영)
-  const updateSearchFormImmediate = useCallback(
-    (updates: Partial<ProductSearchForm>) => {
-      const newSearchForm = { ...urlSearchForm, ...updates }
-      const params = buildSearchParams(newSearchForm, INITIAL_PRODUCT_SEARCH_FORM, 0, pageSize)
+  // URL 업데이트 헬퍼
+  const updateUrl = useCallback(
+    (form: ProductSearchForm, page: number = 0, size: number = pageSize) => {
+      const params = buildSearchParams(form, INITIAL_PRODUCT_SEARCH_FORM, page, size)
       const url = params.toString() ? `?${params.toString()}` : ''
       router.push(url, { scroll: false })
     },
-    [urlSearchForm, pageSize, router],
+    [pageSize, router],
   )
 
-  // 검색 실행 (검증 포함)
+  // 검색 폼 업데이트
+  const updateSearchForm = useCallback((updates: Partial<ProductSearchForm>) => {
+    setSearchForm(
+      (prev) =>
+        ({
+          ...prev,
+          ...Object.fromEntries(Object.entries(updates).filter(([, value]) => value !== undefined)),
+        }) as ProductSearchForm,
+    )
+  }, [])
+
+  // 검색 실행
   const handleSearch = useCallback(() => {
     const validation = validateProductSearchForm(searchForm)
 
@@ -152,33 +127,29 @@ export const useProductSearchWithQuery = (): ProductSearchHookResult => {
       return
     }
 
-    // 검색 실행 (첫 페이지로 이동)
-    const params = buildSearchParams(searchForm, INITIAL_PRODUCT_SEARCH_FORM, 0, pageSize)
-    const url = params.toString() ? `?${params.toString()}` : ''
-    router.push(url, { scroll: false })
-  }, [searchForm, pageSize, router])
+    // 검색 조건을 URL에 반영하여 쿼리 실행
+    updateUrl(searchForm, 0)
+  }, [searchForm, updateUrl])
 
-  // 페이지네이션 핸들러 (통합)
+  // 페이지네이션 핸들러
   const handlePageChange = useCallback(
     (newPage: number, newPageSize?: number) => {
       const targetPageSize = newPageSize ?? pageSize
-      const params = buildSearchParams(searchForm, INITIAL_PRODUCT_SEARCH_FORM, newPage, targetPageSize)
-      const url = params.toString() ? `?${params.toString()}` : ''
-      router.push(url, { scroll: false })
+      // 현재 URL의 검색 조건을 유지하면서 페이지만 변경
+      updateUrl(urlSearchForm, newPage, targetPageSize)
     },
-    [searchForm, pageSize, router],
+    [urlSearchForm, pageSize, updateUrl],
   )
 
   return {
-    // 검색 폼
+    // 검색 폼 (로컬 상태)
     searchForm,
     updateSearchForm,
-    updateSearchFormImmediate,
 
-    // 상품 데이터 관련
+    // 상품 데이터
     products: data?.products || [],
 
-    // 페이지네이션 관련
+    // 페이지네이션
     totalCount: data?.totalCount || 0,
     currentPage,
     pageSize,

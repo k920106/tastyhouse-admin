@@ -13,7 +13,6 @@ export default function ProductManagement() {
         searchForm={productSearchHook.searchForm}
         loading={productSearchHook.loading}
         updateSearchForm={productSearchHook.updateSearchForm}
-        updateSearchFormImmediate={productSearchHook.updateSearchFormImmediate}
         handleSearch={productSearchHook.handleSearch}
       />
       <ProductDataTable

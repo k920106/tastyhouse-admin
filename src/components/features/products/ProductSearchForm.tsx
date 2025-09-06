@@ -20,7 +20,6 @@ interface ProductSearchFormProps {
   searchForm: ProductSearchFormType
   loading: boolean
   updateSearchForm: (updates: Partial<ProductSearchFormType>) => void
-  updateSearchFormImmediate: (updates: Partial<ProductSearchFormType>) => void
   handleSearch: () => void
 }
 
@@ -28,7 +27,6 @@ export default function ProductSearchForm({
   searchForm,
   loading: searchLoading,
   updateSearchForm,
-  updateSearchFormImmediate,
   handleSearch,
 }: ProductSearchFormProps) {
   const { companies, brands, supplies, loading } = useCompanyBrandSupplyQueries()
@@ -51,7 +49,7 @@ export default function ProductSearchForm({
               labelKey="name"
               placeholder={loading ? '로딩 중...' : '-'}
               value={searchForm.companyId || 'all'}
-              onValueChange={(value) => updateSearchFormImmediate({ companyId: value })}
+              onValueChange={(value) => updateSearchForm({ companyId: value })}
               disabled={loading}
               disabledOptions={['all']}
             />
@@ -82,7 +80,7 @@ export default function ProductSearchForm({
               labelKey="name"
               placeholder={loading ? '로딩 중...' : '전체'}
               value={searchForm.brandId || 'all'}
-              onValueChange={(value) => updateSearchFormImmediate({ brandId: value })}
+              onValueChange={(value) => updateSearchForm({ brandId: value })}
               disabled={loading}
             />
           </div>
@@ -94,7 +92,7 @@ export default function ProductSearchForm({
               labelKey="name"
               placeholder={loading ? '로딩 중...' : '전체'}
               value={searchForm.supplyId || 'all'}
-              onValueChange={(value) => updateSearchFormImmediate({ supplyId: value })}
+              onValueChange={(value) => updateSearchForm({ supplyId: value })}
               disabled={loading}
             />
           </div>
@@ -102,7 +100,7 @@ export default function ProductSearchForm({
             <label className="text-sm font-medium">전시상태</label>
             <Select
               value={searchForm.display || 'all'}
-              onValueChange={(value) => updateSearchFormImmediate({ display: value })}
+              onValueChange={(value) => updateSearchForm({ display: value })}
             >
               <SelectTrigger className="w-full">
                 <SelectValue placeholder="전체" />
