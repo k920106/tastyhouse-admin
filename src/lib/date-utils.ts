@@ -42,3 +42,16 @@ export function formatToYYYYMMDDHHMMSS(isoDate: string): string {
 
   return `${year}.${month}.${day} ${hours}:${minutes}:${seconds}`
 }
+
+/**
+ * 오늘 날짜를 YYYY-MM-DD 형식으로 반환
+ * @returns YYYY-MM-DD 형식의 문자열 (예: "2025-09-06")
+ */
+export function getTodayYYYYMMDD(): string {
+  const today = new Date()
+  const year = today.getFullYear()
+  const month = String(today.getMonth() + 1).padStart(2, '0')
+  const day = String(today.getDate()).padStart(2, '0')
+
+  return `${year}-${month}-${day}`
+}
