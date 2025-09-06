@@ -100,6 +100,8 @@ app/
 5. **`quotes: ['error', 'single']`** - 문자열에 단일 따옴표 사용
 6. **`jsx-quotes: ['error', 'prefer-double']`** - JSX에서는 더블 따옴표 사용
 7. **`comma-dangle: ['error', 'always-multiline']`** - 다중행에서 마지막 쉼표 필수
+8. **`@typescript-eslint/no-explicit-any: 'error'`** - `any` 타입 사용 금지, 구체적인 타입 사용 필수
+9. **`no-trailing-spaces: 'error'`** - 줄 끝 공백 금지 (trailing spaces 사용 금지)
 
 ### Prettier 자동 포맷팅:
 - `semi: false` - 세미콜론 제거
@@ -110,6 +112,7 @@ app/
 
 ### 파일 작성 시 체크리스트:
 - [ ] **파일 끝에 개행 추가** (가장 자주 놓치는 규칙!)
+- [ ] **줄 끝 공백 제거** (trailing spaces 금지!)
 - [ ] 사용하지 않는 변수는 `_` prefix 또는 제거
 - [ ] `any` 타입 대신 구체적인 타입 사용
 - [ ] 세미콜론 제거, 단일 따옴표 사용
