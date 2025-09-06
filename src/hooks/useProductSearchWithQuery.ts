@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useEffect, useMemo } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import { ProductSearchForm, ProductListItem } from '@/src/types/product'
 import { useProductsQuery } from './queries/useProductQueries'
@@ -20,6 +20,7 @@ export interface ProductSearchHookResult {
   // 검색 폼 관련
   searchForm: ProductSearchForm
   updateSearchForm: (updates: Partial<ProductSearchForm>) => void
+  updateSearchFormImmediate: (updates: Partial<ProductSearchForm>) => void
 
   // 페이지네이션 관련
   totalCount: number
@@ -39,9 +40,32 @@ export const useProductSearchWithQuery = (): ProductSearchHookResult => {
   const router = useRouter()
 
   // URL을 단일 진실 소스로 사용
-  const searchForm = useMemo(
+  const urlSearchForm = useMemo(
     () => parseSearchParamsToForm(searchParams, INITIAL_PRODUCT_SEARCH_FORM),
     [searchParams],
+  )
+
+  // Input 필드의 로컬 상태 (검색 버튼 클릭 전까지 URL에 반영 안됨)
+  const [localInputs, setLocalInputs] = useState({
+    productCode: urlSearchForm.productCode || '',
+    name: urlSearchForm.name || '',
+  })
+
+  // URL 변경 시 로컬 상태도 동기화
+  useEffect(() => {
+    setLocalInputs({
+      productCode: urlSearchForm.productCode || '',
+      name: urlSearchForm.name || '',
+    })
+  }, [urlSearchForm.productCode, urlSearchForm.name])
+
+  // 최종 searchForm (URL 상태 + 로컬 Input 상태)
+  const searchForm = useMemo(
+    () => ({
+      ...urlSearchForm,
+      ...localInputs,
+    }),
+    [urlSearchForm, localInputs],
   )
 
   const currentPage = useMemo(
@@ -62,7 +86,7 @@ export const useProductSearchWithQuery = (): ProductSearchHookResult => {
 
   const { data, isLoading, error } = useProductsQuery(
     {
-      searchForm,
+      searchForm: urlSearchForm, // URL 상태만 사용 (로컬 Input 상태 제외)
       pagination: {
         page: currentPage,
         size: pageSize,
@@ -78,15 +102,45 @@ export const useProductSearchWithQuery = (): ProductSearchHookResult => {
     }
   }, [error])
 
-  // 검색 폼 업데이트 (URL 즉시 반영)
+  // Input 필드 업데이트 (로컬 상태만 변경, URL 반영 안함)
   const updateSearchForm = useCallback(
     (updates: Partial<ProductSearchForm>) => {
-      const newSearchForm = { ...searchForm, ...updates }
+      // Input 필드만 로컬 상태로 관리
+      const inputFields = { productCode: updates.productCode, name: updates.name }
+      const hasInputUpdates = inputFields.productCode !== undefined || inputFields.name !== undefined
+
+      if (hasInputUpdates) {
+        setLocalInputs((prev) => ({
+          ...prev,
+          ...(inputFields.productCode !== undefined && { productCode: inputFields.productCode }),
+          ...(inputFields.name !== undefined && { name: inputFields.name }),
+        }))
+      }
+
+      // Input 필드가 아닌 다른 필드는 즉시 URL에 반영
+      const nonInputUpdates = { ...updates }
+      delete nonInputUpdates.productCode
+      delete nonInputUpdates.name
+
+      if (Object.keys(nonInputUpdates).length > 0) {
+        const newSearchForm = { ...urlSearchForm, ...nonInputUpdates }
+        const params = buildSearchParams(newSearchForm, INITIAL_PRODUCT_SEARCH_FORM, 0, pageSize)
+        const url = params.toString() ? `?${params.toString()}` : ''
+        router.push(url, { scroll: false })
+      }
+    },
+    [urlSearchForm, pageSize, router],
+  )
+
+  // Combobox, Select 필드 업데이트 (URL 즉시 반영)
+  const updateSearchFormImmediate = useCallback(
+    (updates: Partial<ProductSearchForm>) => {
+      const newSearchForm = { ...urlSearchForm, ...updates }
       const params = buildSearchParams(newSearchForm, INITIAL_PRODUCT_SEARCH_FORM, 0, pageSize)
       const url = params.toString() ? `?${params.toString()}` : ''
       router.push(url, { scroll: false })
     },
-    [searchForm, pageSize, router],
+    [urlSearchForm, pageSize, router],
   )
 
   // 검색 실행 (검증 포함)
@@ -119,6 +173,7 @@ export const useProductSearchWithQuery = (): ProductSearchHookResult => {
     // 검색 폼
     searchForm,
     updateSearchForm,
+    updateSearchFormImmediate,
 
     // 상품 데이터 관련
     products: data?.products || [],

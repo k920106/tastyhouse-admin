@@ -20,6 +20,7 @@ interface ProductSearchFormProps {
   searchForm: ProductSearchFormType
   loading: boolean
   updateSearchForm: (updates: Partial<ProductSearchFormType>) => void
+  updateSearchFormImmediate: (updates: Partial<ProductSearchFormType>) => void
   handleSearch: () => void
 }
 
@@ -27,9 +28,16 @@ export default function ProductSearchForm({
   searchForm,
   loading: searchLoading,
   updateSearchForm,
+  updateSearchFormImmediate,
   handleSearch,
 }: ProductSearchFormProps) {
   const { companies, brands, supplies, loading } = useCompanyBrandSupplyQueries()
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && !searchLoading) {
+      handleSearch()
+    }
+  }
 
   return (
     <Card className="w-full shadow-none">
@@ -43,7 +51,7 @@ export default function ProductSearchForm({
               labelKey="name"
               placeholder={loading ? '로딩 중...' : '-'}
               value={searchForm.companyId || 'all'}
-              onValueChange={(value) => updateSearchForm({ companyId: value })}
+              onValueChange={(value) => updateSearchFormImmediate({ companyId: value })}
               disabled={loading}
               disabledOptions={['all']}
             />
@@ -54,6 +62,7 @@ export default function ProductSearchForm({
               type="text"
               value={searchForm.productCode || ''}
               onChange={(e) => updateSearchForm({ productCode: e.target.value })}
+              onKeyDown={handleKeyDown}
             />
           </div>
           <div className="grid gap-2">
@@ -62,6 +71,7 @@ export default function ProductSearchForm({
               type="text"
               value={searchForm.name || ''}
               onChange={(e) => updateSearchForm({ name: e.target.value })}
+              onKeyDown={handleKeyDown}
             />
           </div>
           <div className="grid gap-2">
@@ -72,7 +82,7 @@ export default function ProductSearchForm({
               labelKey="name"
               placeholder={loading ? '로딩 중...' : '전체'}
               value={searchForm.brandId || 'all'}
-              onValueChange={(value) => updateSearchForm({ brandId: value })}
+              onValueChange={(value) => updateSearchFormImmediate({ brandId: value })}
               disabled={loading}
             />
           </div>
@@ -84,7 +94,7 @@ export default function ProductSearchForm({
               labelKey="name"
               placeholder={loading ? '로딩 중...' : '전체'}
               value={searchForm.supplyId || 'all'}
-              onValueChange={(value) => updateSearchForm({ supplyId: value })}
+              onValueChange={(value) => updateSearchFormImmediate({ supplyId: value })}
               disabled={loading}
             />
           </div>
@@ -92,7 +102,7 @@ export default function ProductSearchForm({
             <label className="text-sm font-medium">전시상태</label>
             <Select
               value={searchForm.display || 'all'}
-              onValueChange={(value) => updateSearchForm({ display: value })}
+              onValueChange={(value) => updateSearchFormImmediate({ display: value })}
             >
               <SelectTrigger className="w-full">
                 <SelectValue placeholder="전체" />
