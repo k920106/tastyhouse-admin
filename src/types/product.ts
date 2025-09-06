@@ -20,3 +20,12 @@ export interface ProductSearchForm {
   supplyId?: string
   display?: string
 }
+
+export const INITIAL_SEARCH_FORM: ProductSearchForm = {
+  companyId: 'all',
+  productCode: '',
+  name: '',
+  brandId: 'all',
+  supplyId: 'all',
+  display: 'all',
+}
