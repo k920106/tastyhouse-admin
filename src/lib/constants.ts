@@ -1,4 +1,4 @@
 export const INITIAL_PAGINATION = {
   currentPage: 0,
-  pageSize: 30,
+  pageSize: 10,
 }
