@@ -1,5 +1,6 @@
 'use client'
 
+import { useEffect } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { api } from '@/src/lib/api'
 import { ProductSearchForm, ProductListItem } from '@/src/types/product'
@@ -50,10 +51,42 @@ export const useProductsQuery = (params: ProductQueryParams, enabled = true) => 
   const queryParams = buildProductQueryParams(params)
   const endpoint = `/products${queryParams}`
 
-  return useQuery({
+  const query = useQuery({
     queryKey: ['products', params],
     queryFn: () => api.get<DataTablesResponse<ProductListItem>>(endpoint),
     enabled,
     staleTime: 1000 * 60 * 1, // 1분
   })
+
+  const getProductsData = (): ProductListItem[] => {
+    if (!query.data) {
+      console.log('productResponse is undefined')
+      return []
+    }
+    if (!query.data.data) {
+      console.log('productResponse.data is undefined')
+      return []
+    }
+    return query.data.data
+  }
+
+  const getTotalCount = (): number => {
+    if (!query.data?.pagination) {
+      console.log('productResponse.pagination is undefined')
+      return 0
+    }
+    return query.data.pagination.total ?? 0
+  }
+
+  useEffect(() => {
+    if (query.error) {
+      console.error('Failed to fetch products:', query.error)
+    }
+  }, [query.error])
+
+  return {
+    ...query,
+    products: getProductsData(),
+    totalCount: getTotalCount(),
+  }
 }

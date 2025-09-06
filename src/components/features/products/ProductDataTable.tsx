@@ -10,7 +10,7 @@ interface ProductDataTableProps {
   currentPage: number
   pageSize: number
   loading: boolean
-  handlePageChange: (page: number, size?: number) => void
+  handlePageChange: (page: number, size: number) => void
 }
 
 export default function ProductDataTable({

@@ -45,6 +45,7 @@ export default function ProductSearchForm({
               value={searchForm.companyId || 'all'}
               onValueChange={(value) => updateSearchForm({ companyId: value })}
               disabled={loading}
+              disabledOptions={['all']}
             />
           </div>
           <div className="grid gap-2">
