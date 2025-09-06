@@ -1,40 +1,37 @@
 'use client'
 
-import { useEffect } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { api } from '@/src/lib/api'
 import { ProductSearchForm, ProductListItem } from '@/src/types/product'
 import { DataTablesResponse } from '@/src/types/api'
+import { isEmptyValue } from '@/src/lib/validations/product'
 
 interface ProductQueryParams {
   searchForm: ProductSearchForm
-  currentPage: number
-  pageSize: number
+  pagination: {
+    page: number
+    size: number
+  }
 }
 
-const buildProductQueryParams = (params: ProductQueryParams) => {
-  const { searchForm, currentPage, pageSize } = params
+interface ProductQueryData {
+  products: ProductListItem[]
+  totalCount: number
+}
+
+const buildProductQueryString = (params: ProductQueryParams): string => {
+  const { searchForm, pagination } = params
 
   const requestData = {
-    companyId:
-      searchForm.companyId && searchForm.companyId !== 'all'
-        ? Number(searchForm.companyId)
-        : undefined,
-    brandId:
-      searchForm.brandId && searchForm.brandId !== 'all' ? Number(searchForm.brandId) : undefined,
-    supplyId:
-      searchForm.supplyId && searchForm.supplyId !== 'all'
-        ? Number(searchForm.supplyId)
-        : undefined,
-    display:
-      searchForm.display && searchForm.display !== 'all'
-        ? searchForm.display === 'true'
-        : undefined,
+    companyId: !isEmptyValue(searchForm.companyId) ? Number(searchForm.companyId) : undefined,
+    brandId: !isEmptyValue(searchForm.brandId) ? Number(searchForm.brandId) : undefined,
+    supplyId: !isEmptyValue(searchForm.supplyId) ? Number(searchForm.supplyId) : undefined,
+    display: !isEmptyValue(searchForm.display) ? searchForm.display === 'true' : undefined,
     productCode: searchForm.productCode || undefined,
     name: searchForm.name || undefined,
-    page: currentPage,
-    size: pageSize,
-    draw: 1,
+    page: pagination.page,
+    size: pagination.size,
+    draw: 1, // DataTables 호환성
   }
 
   const queryParams = new URLSearchParams()
@@ -48,45 +45,19 @@ const buildProductQueryParams = (params: ProductQueryParams) => {
 }
 
 export const useProductsQuery = (params: ProductQueryParams, enabled = true) => {
-  const queryParams = buildProductQueryParams(params)
-  const endpoint = `/products${queryParams}`
-
-  const query = useQuery({
+  return useQuery<DataTablesResponse<ProductListItem>, Error, ProductQueryData>({
     queryKey: ['products', params],
-    queryFn: () => api.get<DataTablesResponse<ProductListItem>>(endpoint),
+    queryFn: async () => {
+      const queryString = buildProductQueryString(params)
+      return api.get<DataTablesResponse<ProductListItem>>(`/products${queryString}`)
+    },
     enabled,
-    staleTime: 1000 * 60 * 1, // 1분
+    staleTime: 1000 * 60 * 5, // 5분으로 증가
+    gcTime: 1000 * 60 * 10, // 10분 가비지 컬렉션
+    select: (data): ProductQueryData => ({
+      products: data.data || [],
+      totalCount: data.pagination?.total || 0,
+    }),
+    throwOnError: false, // 에러를 throw하지 않고 error 상태로 반환
   })
-
-  const getProductsData = (): ProductListItem[] => {
-    if (!query.data) {
-      console.log('productResponse is undefined')
-      return []
-    }
-    if (!query.data.data) {
-      console.log('productResponse.data is undefined')
-      return []
-    }
-    return query.data.data
-  }
-
-  const getTotalCount = (): number => {
-    if (!query.data?.pagination) {
-      console.log('productResponse.pagination is undefined')
-      return 0
-    }
-    return query.data.pagination.total ?? 0
-  }
-
-  useEffect(() => {
-    if (query.error) {
-      console.error('Failed to fetch products:', query.error)
-    }
-  }, [query.error])
-
-  return {
-    ...query,
-    products: getProductsData(),
-    totalCount: getTotalCount(),
-  }
 }

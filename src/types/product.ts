@@ -12,11 +12,11 @@ export type ProductListItem = {
   sort: number
 }
 
-export interface ProductSearchForm {
-  companyId?: string
-  productCode?: string
-  name?: string
-  brandId?: string
-  supplyId?: string
-  display?: string
+export interface ProductSearchForm extends Record<string, string> {
+  companyId: string
+  productCode: string
+  name: string
+  brandId: string
+  supplyId: string
+  display: string
 }
