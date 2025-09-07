@@ -118,6 +118,30 @@ app/
 - [ ] 세미콜론 제거, 단일 따옴표 사용
 - [ ] JSX에서는 더블 따옴표 사용
 
+### ⚠️ CRITICAL: Claude 코드 작성 시 필수 준수사항
+**모든 파일 작성/편집 시 반드시 다음 사항을 지켜야 함:**
+
+1. **Write/MultiEdit 도구 사용 시 주의사항:**
+   - 모든 파일은 **반드시** 마지막 줄에 개행(\n)으로 끝나야 함
+   - content 파라미터에 파일 내용을 작성할 때 마지막에 개행 문자 포함 필수
+   - 예시: `content: "import React from 'react'\n\nfunction Component() {\n  return <div>Hello</div>\n}\n"`
+
+2. **Edit 도구 사용 시 주의사항:**
+   - old_string과 new_string이 동일하면 오류 발생
+   - 파일 끝 개행이 없는 경우, Bash 도구로 `echo "" >> 파일경로` 실행
+   - trailing spaces 제거 필수
+
+3. **ESLint 오류 방지 패턴:**
+   - TypeScript 인터페이스명은 PascalCase 사용
+   - 사용하지 않는 import는 절대 포함하지 말 것
+   - 문자열은 단일 따옴표, JSX 속성은 더블 따옴표
+   - 세미콜론 사용 금지
+   - 다중행에서 마지막 쉼표 필수
+
+4. **파일 생성/편집 후 검증:**
+   - 생성한 파일에 대해 즉시 ESLint 검사 실행
+   - 오류 발생 시 재작성하지 말고 Bash 도구로 직접 수정
+
 ### 코드 품질 검사:
 ```bash
 npm run lint    # ESLint 검사 (오류 시 반드시 수정 필요)
