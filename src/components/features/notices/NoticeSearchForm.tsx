@@ -1,30 +1,15 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { Card, CardContent, CardFooter } from '@/src/components/ui/Card'
-import { Button } from '@/src/components/ui/Button'
-import { Input } from '@/src/components/ui/Input'
-import { Calendar } from '@/src/components/ui/Calendar'
-import { Popover, PopoverContent, PopoverTrigger } from '@/src/components/ui/Popover'
-import { Combobox } from '@/src/components/ui/Combobox'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/src/components/ui/Select'
-import { LuCalendar } from 'react-icons/lu'
-import { useCompanyBrandSupplyQueries } from '@/src/hooks/queries/useCompanyBrandSupplyQueries'
-import { Loader2Icon } from 'lucide-react'
 import {
   NoticeSearchForm as NoticeSearchFormType,
   getNoticeUseStatusLabel,
 } from '@/src/types/notice'
-import { type DateRange } from 'react-day-picker'
-import { format } from 'date-fns'
-import { ko } from 'date-fns/locale'
-import { cn } from '@/src/lib/class-utils'
+import BaseSearchForm from '@/src/components/forms/BaseSearchForm'
+import CompanySelector from '@/src/components/forms/CompanySelector'
+import TextSearchField from '@/src/components/forms/TextSearchField'
+import DateRangePicker from '@/src/components/forms/DateRangePicker'
+import StatusSelector from '@/src/components/forms/StatusSelector'
+import SearchActions from '@/src/components/forms/SearchActions'
 
 interface NoticeSearchFormProps {
   searchForm: NoticeSearchFormType
@@ -39,139 +24,56 @@ export default function NoticeSearchForm({
   updateSearchForm,
   handleSearch,
 }: NoticeSearchFormProps) {
-  const { companies, loading } = useCompanyBrandSupplyQueries()
-  const [dateRange, setDateRange] = useState<DateRange | undefined>()
-
-  // searchForm의 startDate, endDate를 DateRange로 초기화
-  useEffect(() => {
-    if (searchForm.startDate || searchForm.endDate) {
-      setDateRange({
-        from: searchForm.startDate ? new Date(searchForm.startDate) : undefined,
-        to: searchForm.endDate ? new Date(searchForm.endDate) : undefined,
-      })
-    }
-  }, [searchForm.startDate, searchForm.endDate])
-
-  // DateRange 변경 시 searchForm 업데이트
-  const handleDateRangeChange = (range: DateRange | undefined) => {
-    setDateRange(range)
-
-    const updates: Partial<NoticeSearchFormType> = {}
-
-    if (range?.from) {
-      updates.startDate = format(range.from, 'yyyy-MM-dd')
-    }
-
-    if (range?.to) {
-      updates.endDate = format(range.to, 'yyyy-MM-dd')
-    }
-
-    // 날짜가 선택되지 않았을 때는 기존 값을 제거
-    if (!range?.from) {
-      updates.startDate = undefined
-    }
-
-    if (!range?.to) {
-      updates.endDate = undefined
-    }
-
-    updateSearchForm(updates)
-  }
-
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && !searchLoading) {
-      handleSearch()
-    }
+  const handleDateRangeChange = (startDate?: string, endDate?: string) => {
+    updateSearchForm({ startDate, endDate })
   }
 
   return (
-    <Card className="w-full shadow-none">
-      <CardContent>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          <div className="grid gap-2">
-            <label className="text-sm font-medium">매체사</label>
-            <Combobox
-              options={companies}
-              valueKey="id"
-              labelKey="name"
-              placeholder={loading ? '로딩 중...' : '-'}
-              value={searchForm.companyId || 'all'}
-              onValueChange={(value) => updateSearchForm({ companyId: value })}
-              disabled={loading}
-              disabledOptions={['all']}
-            />
-          </div>
-          <div className="grid gap-2">
-            <label className="text-sm font-medium">제목</label>
-            <Input
-              type="text"
-              value={searchForm.title || ''}
-              onChange={(e) => updateSearchForm({ title: e.target.value })}
-              onKeyDown={handleKeyDown}
-            />
-          </div>
-          <div className="grid gap-2">
-            <label className="text-sm font-medium">등록일자</label>
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  id="date"
-                  variant="outline"
-                  className={cn(
-                    'w-full justify-start text-left font-normal',
-                    !dateRange && 'text-muted-foreground',
-                  )}
-                >
-                  <LuCalendar className="h-4 w-4" />
-                  {dateRange?.from ? (
-                    dateRange.to ? (
-                      <>
-                        {format(dateRange.from, 'yyyy.MM.dd', { locale: ko })} -{' '}
-                        {format(dateRange.to, 'yyyy.MM.dd', { locale: ko })}
-                      </>
-                    ) : (
-                      format(dateRange.from, 'yyyy.MM.dd', { locale: ko })
-                    )
-                  ) : (
-                    <span>-</span>
-                  )}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="start">
-                <Calendar
-                  mode="range"
-                  defaultMonth={dateRange?.from}
-                  selected={dateRange}
-                  onSelect={handleDateRangeChange}
-                  numberOfMonths={2}
-                  locale={ko}
-                />
-              </PopoverContent>
-            </Popover>
-          </div>
-          <div className="grid gap-2">
-            <label className="text-sm font-medium">사용 여부</label>
-            <Select
-              value={searchForm.active || 'all'}
-              onValueChange={(value) => updateSearchForm({ active: value })}
-            >
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="전체" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">전체</SelectItem>
-                <SelectItem value="true">{getNoticeUseStatusLabel(true)}</SelectItem>
-                <SelectItem value="false">{getNoticeUseStatusLabel(false)}</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-        </div>
-      </CardContent>
-      <CardFooter className="flex justify-end gap-3">
-        <Button type="button" onClick={handleSearch} disabled={searchLoading}>
-          {searchLoading ? <Loader2Icon className="animate-spin" /> : '조회'}
-        </Button>
-      </CardFooter>
-    </Card>
+    <BaseSearchForm actions={<SearchActions onSearch={handleSearch} loading={searchLoading} />}>
+      <CompanySelector
+        label="매체사"
+        value={searchForm.companyId}
+        onValueChange={(value) => updateSearchForm({ companyId: value })}
+        disabledOptions={['all']}
+        loading={searchLoading}
+      />
+      <TextSearchField
+        label="제목"
+        value={searchForm.title || ''}
+        onChange={(value) => updateSearchForm({ title: value })}
+        onSearch={handleSearch}
+        loading={searchLoading}
+      />
+      <DateRangePicker
+        label="등록일자"
+        startDate={searchForm.startDate}
+        endDate={searchForm.endDate}
+        onDateRangeChange={handleDateRangeChange}
+        loading={searchLoading}
+      />
+      <StatusSelector
+        label="사용 여부"
+        value={searchForm.active}
+        onValueChange={(value) => updateSearchForm({ active: value })}
+        getLabel={getNoticeUseStatusLabel}
+        loading={searchLoading}
+      />
+    </BaseSearchForm>
   )
 }
+
+/*
+  handleDateRangeChange 함수를 DateRangePicker 안에 넣으면 부적합합니다.
+
+  현재 구조가 올바른 이유:
+
+  1. 재사용성: DateRangePicker는 범용 컴포넌트로 설계되어 특정 폼의 상태 업데이트 로직을
+  포함하면 안 됩니다
+  2. 관심사 분리: 날짜 범위 선택 UI와 상태 관리는 별개 책임입니다
+  3. 유연성: 다른 컴포넌트에서 DateRangePicker를 사용할 때 각각 다른 상태 업데이트 방식이
+  필요할 수 있습니다
+
+  현재처럼 DateRangePicker는 onDateRangeChange props로 콜백을 받고, 각 부모
+  컴포넌트(NoticeSearchForm, ProductSearchForm 등)에서 해당 폼에 맞는 상태 업데이트 로직을
+  구현하는 것이 적절한 설계입니다.
+ */
