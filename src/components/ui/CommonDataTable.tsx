@@ -9,7 +9,6 @@ import {
 import { ColumnDef, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table'
 import * as React from 'react'
 import { useCallback } from 'react'
-import { ProductListItem } from '@/src/types/product'
 
 interface ColumnMeta {
   className?: string
@@ -35,7 +34,7 @@ import {
 import { Tabs, TabsContent } from '@/src/components/ui/Tabs'
 import { TableRowSkeleton } from '@/src/components/ui/Skeleton'
 
-interface DataTableProps<T extends ProductListItem> {
+interface DataTableProps<T> {
   columns: ColumnDef<T>[]
   data: T[]
   totalCount: number
@@ -43,9 +42,10 @@ interface DataTableProps<T extends ProductListItem> {
   pageSize: number
   loading?: boolean
   handlePageChange: (pageIndex: number, pageSize: number) => void
+  additionalTabs?: React.ReactNode
 }
 
-export function DataTable<T extends ProductListItem>({
+export function CommonDataTable<T extends { id: number | string }>({
   columns,
   data,
   totalCount,
@@ -53,6 +53,7 @@ export function DataTable<T extends ProductListItem>({
   pageSize,
   loading = false,
   handlePageChange,
+  additionalTabs,
 }: DataTableProps<T>) {
   const [rowSelection, setRowSelection] = React.useState({})
 
@@ -223,15 +224,7 @@ export function DataTable<T extends ProductListItem>({
           </div>
         </div>
       </TabsContent>
-      <TabsContent value="past-performance" className="flex flex-col px-4 lg:px-6">
-        <div className="aspect-video w-full flex-1 rounded-lg border border-dashed"></div>
-      </TabsContent>
-      <TabsContent value="key-personnel" className="flex flex-col px-4 lg:px-6">
-        <div className="aspect-video w-full flex-1 rounded-lg border border-dashed"></div>
-      </TabsContent>
-      <TabsContent value="focus-documents" className="flex flex-col px-4 lg:px-6">
-        <div className="aspect-video w-full flex-1 rounded-lg border border-dashed"></div>
-      </TabsContent>
+      {additionalTabs}
     </Tabs>
   )
 }

@@ -1,8 +1,8 @@
 'use client'
 
-import { DataTable } from '@/src/components/features/products/DataTable'
-import { createColumns } from '@/src/components/features/products/ProductColumns'
 import { ProductListItem } from '@/src/types/product'
+import { createColumns } from '@/src/components/features/products/ProductColumns'
+import { CommonDataTable } from '../../ui/CommonDataTable'
 
 interface ProductDataTableProps {
   products: ProductListItem[]
@@ -22,7 +22,7 @@ export default function ProductDataTable({
   handlePageChange,
 }: ProductDataTableProps) {
   return (
-    <DataTable
+    <CommonDataTable
       columns={createColumns(currentPage, pageSize)}
       data={products}
       totalCount={totalCount}
