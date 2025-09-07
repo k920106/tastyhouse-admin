@@ -5,10 +5,9 @@ import SearchField from './SearchField'
 import { useSuppliesQuery } from '@/src/hooks/queries/useSupplyQueries'
 
 interface SupplySelectorProps {
-  label?: string
+  label: string
   value: string | undefined
   onValueChange: (value: string) => void
-  disabledOptions?: string[]
   loading: boolean
 }
 
@@ -16,7 +15,6 @@ export default function SupplySelector({
   label = '공급사',
   value,
   onValueChange,
-  disabledOptions,
   loading = false,
 }: SupplySelectorProps) {
   const { data: supplies = [], isLoading } = useSuppliesQuery()
@@ -30,7 +28,6 @@ export default function SupplySelector({
         value={value || 'all'}
         onValueChange={onValueChange}
         disabled={loading || isLoading}
-        disabledOptions={disabledOptions}
       />
     </SearchField>
   )

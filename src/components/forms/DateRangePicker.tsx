@@ -13,8 +13,8 @@ import SearchField from './SearchField'
 
 interface DateRangePickerProps {
   label: string
-  startDate?: string
-  endDate?: string
+  startDate: string
+  endDate: string
   onDateRangeChange: (startDate?: string, endDate?: string) => void
   loading: boolean
 }

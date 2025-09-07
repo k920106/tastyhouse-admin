@@ -11,9 +11,8 @@ interface GenericOption {
 interface GenericSelectorProps {
   label: string
   value: string | undefined
-  onValueChange: (value: string) => void
   options: GenericOption[]
-  disabledOptions?: string[]
+  onValueChange: (value: string) => void
   loading: boolean
 }
 
@@ -23,7 +22,6 @@ export default function GenericSelector({
   loading,
   value,
   onValueChange,
-  disabledOptions,
 }: GenericSelectorProps) {
   return (
     <SearchField label={label}>
@@ -34,7 +32,6 @@ export default function GenericSelector({
         value={value || 'all'}
         onValueChange={onValueChange}
         disabled={loading}
-        disabledOptions={disabledOptions}
       />
     </SearchField>
   )

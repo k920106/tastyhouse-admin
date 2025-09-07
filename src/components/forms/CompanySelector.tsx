@@ -5,10 +5,9 @@ import { useCompaniesQuery } from '@/src/hooks/queries/useCompanyQueries'
 import SearchField from './SearchField'
 
 interface CompanySelectorProps {
-  label?: string
+  label: string
   value: string | undefined
   onValueChange: (value: string) => void
-  disabledOptions?: string[]
   loading: boolean
 }
 
@@ -16,7 +15,6 @@ export default function CompanySelector({
   label = '매체사',
   value,
   onValueChange,
-  disabledOptions,
   loading = false,
 }: CompanySelectorProps) {
   const { data: companies = [], isLoading } = useCompaniesQuery()
@@ -30,7 +28,7 @@ export default function CompanySelector({
         value={value || 'all'}
         onValueChange={onValueChange}
         disabled={loading || isLoading}
-        disabledOptions={disabledOptions}
+        disabledOptions={['all']}
       />
     </SearchField>
   )

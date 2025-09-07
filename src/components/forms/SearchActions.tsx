@@ -4,25 +4,17 @@ import { Button } from '@/src/components/ui/Button'
 import { Loader2Icon } from 'lucide-react'
 
 interface SearchActionsProps {
-  onSearch: () => void
-  loading?: boolean
   children?: React.ReactNode
-  searchText?: string
-  className?: string
+  onSearch: () => void
+  loading: boolean
 }
 
-export default function SearchActions({
-  onSearch,
-  loading = false,
-  children,
-  searchText = '조회',
-  className = '',
-}: SearchActionsProps) {
+export default function SearchActions({ children, onSearch, loading = false }: SearchActionsProps) {
   return (
-    <div className={`flex justify-end gap-3 ${className}`}>
+    <div className="flex justify-end gap-3">
       {children}
       <Button type="button" onClick={onSearch} disabled={loading}>
-        {loading ? <Loader2Icon className="animate-spin" /> : searchText}
+        {loading ? <Loader2Icon className="animate-spin" /> : '조회'}
       </Button>
     </div>
   )

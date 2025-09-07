@@ -12,16 +12,16 @@ import SearchField from './SearchField'
 interface StatusSelectorProps {
   label: string
   value: string | undefined
-  onValueChange: (value: string) => void
   getLabel: (status: boolean) => string
+  onValueChange: (value: string) => void
   loading: boolean
 }
 
 export default function StatusSelector({
   label,
   value,
-  onValueChange,
   getLabel,
+  onValueChange,
   loading,
 }: StatusSelectorProps) {
   return (

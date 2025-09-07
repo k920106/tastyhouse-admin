@@ -51,21 +51,20 @@ export default function ProductSearchForm({
         label="매체사"
         value={searchForm.companyId}
         onValueChange={(value) => updateSearchForm({ companyId: value })}
-        disabledOptions={['all']}
         loading={searchLoading}
       />
       <TextSearchField
         label="상품코드"
         value={searchForm.productCode || ''}
-        onChange={(value) => updateSearchForm({ productCode: value })}
         onSearch={handleSearch}
+        onChange={(value) => updateSearchForm({ productCode: value })}
         loading={searchLoading}
       />
       <TextSearchField
         label="상품명"
         value={searchForm.name || ''}
-        onChange={(value) => updateSearchForm({ name: value })}
         onSearch={handleSearch}
+        onChange={(value) => updateSearchForm({ name: value })}
         loading={searchLoading}
       />
       <BrandSelector
@@ -83,8 +82,8 @@ export default function ProductSearchForm({
       <StatusSelector
         label="전시 여부"
         value={searchForm.display}
-        onValueChange={(value) => updateSearchForm({ display: value })}
         getLabel={getProductDisplayStatusLabel}
+        onValueChange={(value) => updateSearchForm({ display: value })}
         loading={searchLoading}
       />
     </BaseSearchForm>

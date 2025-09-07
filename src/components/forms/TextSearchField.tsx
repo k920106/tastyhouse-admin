@@ -6,21 +6,17 @@ import SearchField from './SearchField'
 interface TextSearchFieldProps {
   label: string
   value: string
+  onSearch: () => void
   onChange: (value: string) => void
-  onSearch?: () => void
   loading: boolean
-  placeholder?: string
-  className?: string
 }
 
 export default function TextSearchField({
   label,
   value,
-  onChange,
   onSearch,
+  onChange,
   loading = false,
-  placeholder,
-  className,
 }: TextSearchFieldProps) {
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !loading && onSearch) {
@@ -29,13 +25,12 @@ export default function TextSearchField({
   }
 
   return (
-    <SearchField label={label} className={className}>
+    <SearchField label={label}>
       <Input
         type="text"
         value={value}
         onChange={(e) => onChange(e.target.value)}
         onKeyDown={handleKeyDown}
-        placeholder={placeholder}
         disabled={loading}
       />
     </SearchField>

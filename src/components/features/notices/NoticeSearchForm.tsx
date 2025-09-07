@@ -34,14 +34,13 @@ export default function NoticeSearchForm({
         label="매체사"
         value={searchForm.companyId}
         onValueChange={(value) => updateSearchForm({ companyId: value })}
-        disabledOptions={['all']}
         loading={searchLoading}
       />
       <TextSearchField
         label="제목"
         value={searchForm.title || ''}
-        onChange={(value) => updateSearchForm({ title: value })}
         onSearch={handleSearch}
+        onChange={(value) => updateSearchForm({ title: value })}
         loading={searchLoading}
       />
       <DateRangePicker
@@ -54,8 +53,8 @@ export default function NoticeSearchForm({
       <StatusSelector
         label="사용 여부"
         value={searchForm.active}
-        onValueChange={(value) => updateSearchForm({ active: value })}
         getLabel={getNoticeUseStatusLabel}
+        onValueChange={(value) => updateSearchForm({ active: value })}
         loading={searchLoading}
       />
     </BaseSearchForm>
