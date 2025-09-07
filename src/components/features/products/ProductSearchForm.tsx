@@ -1,5 +1,3 @@
-'use client'
-
 import BaseSearchForm from '@/src/components/forms/BaseSearchForm'
 import BrandSelector from '@/src/components/forms/BrandSelector'
 import CompanySelector from '@/src/components/forms/CompanySelector'
@@ -23,9 +21,9 @@ interface ProductSearchFormProps {
 
 export default function ProductSearchForm({
   searchForm,
-  loading: searchLoading,
   updateSearchForm,
   handleSearch,
+  loading: searchLoading,
 }: ProductSearchFormProps) {
   return (
     <BaseSearchForm

@@ -1,5 +1,3 @@
-'use client'
-
 import BaseSearchForm from '@/src/components/forms/BaseSearchForm'
 import CompanySelector from '@/src/components/forms/CompanySelector'
 import DateRangePicker from '@/src/components/forms/DateRangePicker'
