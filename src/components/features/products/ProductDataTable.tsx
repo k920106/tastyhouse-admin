@@ -2,7 +2,7 @@
 
 import { ProductListItem } from '@/src/types/product'
 import { createColumns } from '@/src/components/features/products/ProductColumns'
-import { CommonDataTable } from '../../ui/CommonDataTable'
+import { CommonDataTable } from '../../shared/CommonDataTable'
 
 interface ProductDataTableProps {
   products: ProductListItem[]

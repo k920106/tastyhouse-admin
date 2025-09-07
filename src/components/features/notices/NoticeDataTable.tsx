@@ -2,7 +2,7 @@
 
 import { NoticeListItem } from '@/src/types/notice'
 import { createColumns } from '@/src/components/features/notices/NoticeColumns'
-import { CommonDataTable } from '../../ui/CommonDataTable'
+import { CommonDataTable } from '../../shared/CommonDataTable'
 
 interface NoticeDataTableProps {
   notices: NoticeListItem[]
