@@ -1,8 +1,8 @@
 'use client'
 
-import { useQuery } from '@tanstack/react-query'
 import { api } from '@/src/lib/api'
 import { CompanyListItem } from '@/src/types/company'
+import { useQuery } from '@tanstack/react-query'
 
 export const useCompaniesQuery = () => {
   return useQuery({

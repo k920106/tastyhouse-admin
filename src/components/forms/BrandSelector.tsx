@@ -1,10 +1,10 @@
 'use client'
 
 import { Combobox } from '@/src/components/ui/Combobox'
-import { useCompaniesQuery } from '@/src/hooks/queries/useCompanyQueries'
 import SearchField from './SearchField'
+import { useBrandsQuery } from '@/src/hooks/queries/useBrandQueries'
 
-interface CompanySelectorProps {
+interface BrandSelectorProps {
   label?: string
   value: string | undefined
   onValueChange: (value: string) => void
@@ -12,19 +12,19 @@ interface CompanySelectorProps {
   loading: boolean
 }
 
-export default function CompanySelector({
-  label = '매체사',
+export default function BrandSelector({
+  label = '교환처',
   value,
   onValueChange,
   disabledOptions,
   loading = false,
-}: CompanySelectorProps) {
-  const { data: companies = [], isLoading } = useCompaniesQuery()
+}: BrandSelectorProps) {
+  const { data: brands = [], isLoading } = useBrandsQuery()
 
   return (
     <SearchField label={label}>
       <Combobox
-        options={companies}
+        options={brands}
         valueKey="id"
         labelKey="name"
         value={value || 'all'}

@@ -1,18 +1,18 @@
 'use client'
 
+import BaseSearchForm from '@/src/components/forms/BaseSearchForm'
+import BrandSelector from '@/src/components/forms/BrandSelector'
+import CompanySelector from '@/src/components/forms/CompanySelector'
+import SearchActions from '@/src/components/forms/SearchActions'
+import StatusSelector from '@/src/components/forms/StatusSelector'
+import SupplySelector from '@/src/components/forms/SupplySelector'
+import TextSearchField from '@/src/components/forms/TextSearchField'
 import { Button } from '@/src/components/ui/Button'
-import { LuDownload } from 'react-icons/lu'
-import { useBrandsQuery, useSuppliesQuery } from '@/src/hooks/queries/useCompanyBrandSupplyQueries'
 import {
   ProductSearchForm as ProductSearchFormType,
   getProductDisplayStatusLabel,
 } from '@/src/types/product'
-import BaseSearchForm from '@/src/components/forms/BaseSearchForm'
-import CompanySelector from '@/src/components/forms/CompanySelector'
-import TextSearchField from '@/src/components/forms/TextSearchField'
-import GenericSelector from '@/src/components/forms/GenericSelector'
-import StatusSelector from '@/src/components/forms/StatusSelector'
-import SearchActions from '@/src/components/forms/SearchActions'
+import { LuDownload } from 'react-icons/lu'
 
 interface ProductSearchFormProps {
   searchForm: ProductSearchFormType
@@ -27,10 +27,6 @@ export default function ProductSearchForm({
   updateSearchForm,
   handleSearch,
 }: ProductSearchFormProps) {
-  const { data: brands = [], isLoading: brandsLoading } = useBrandsQuery()
-  const { data: supplies = [], isLoading: suppliesLoading } = useSuppliesQuery()
-  const loading = brandsLoading || suppliesLoading
-
   return (
     <BaseSearchForm
       actions={
@@ -72,19 +68,17 @@ export default function ProductSearchForm({
         onSearch={handleSearch}
         loading={searchLoading}
       />
-      <GenericSelector
+      <BrandSelector
         label="교환처"
         value={searchForm.brandId}
         onValueChange={(value) => updateSearchForm({ brandId: value })}
-        options={brands}
-        loading={loading}
+        loading={searchLoading}
       />
-      <GenericSelector
+      <SupplySelector
         label="공급사"
         value={searchForm.supplyId}
         onValueChange={(value) => updateSearchForm({ supplyId: value })}
-        options={supplies}
-        loading={loading}
+        loading={searchLoading}
       />
       <StatusSelector
         label="전시 여부"
