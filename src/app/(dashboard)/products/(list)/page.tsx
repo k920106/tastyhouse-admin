@@ -1,5 +1,5 @@
 import ProductList from './_components/ProductList'
 
-export default async function ProductListPage() {
+export default function ProductListPage() {
   return <ProductList />
 }

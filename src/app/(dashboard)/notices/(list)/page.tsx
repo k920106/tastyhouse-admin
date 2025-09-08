@@ -1,5 +1,5 @@
 import NoticeList from './_components/NoticeList'
 
-export default async function NoticeListPage() {
+export default function NoticeListPage() {
   return <NoticeList />
 }
