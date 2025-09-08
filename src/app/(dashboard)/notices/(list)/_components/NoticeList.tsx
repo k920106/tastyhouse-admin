@@ -1,6 +1,6 @@
 'use client'
 
-import ListPageTemplate from '@/src/components/common/ListPageTemplate'
+import PageTemplate from '@/src/components/layout/PageTemplate'
 import NoticeSearchForm from '@/src/components/features/notices/NoticeSearchForm'
 import { CommonDataTable } from '@/src/components/shared/CommonDataTable'
 import { createColumns } from '@/src/components/features/notices/NoticeColumns'
@@ -28,7 +28,7 @@ export default function NoticeList() {
   useToastError(error, '공지사항 목록 조회 중 오류가 발생했습니다.')
 
   return (
-    <ListPageTemplate breadcrumbs={NOTICE_BREADCRUMBS}>
+    <PageTemplate breadcrumbs={NOTICE_BREADCRUMBS}>
       <NoticeSearchForm
         searchForm={searchFormHook.searchForm}
         updateSearchForm={searchFormHook.updateSearchForm}
@@ -44,7 +44,7 @@ export default function NoticeList() {
         loading={isLoading}
         handlePageChange={paginationHook.handlePageChange}
       />
-    </ListPageTemplate>
+    </PageTemplate>
   )
 }
 

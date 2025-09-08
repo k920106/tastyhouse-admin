@@ -1,6 +1,6 @@
 'use client'
 
-import ListPageTemplate from '@/src/components/common/ListPageTemplate'
+import PageTemplate from '@/src/components/layout/PageTemplate'
 import ProductSearchForm from '@/src/components/features/products/ProductSearchForm'
 import { CommonDataTable } from '@/src/components/shared/CommonDataTable'
 import { createColumns } from '@/src/components/features/products/ProductColumns'
@@ -28,7 +28,7 @@ export default function ProductList() {
   useToastError(error, '상품 목록 조회 중 오류가 발생했습니다.')
 
   return (
-    <ListPageTemplate breadcrumbs={PRODUCT_BREADCRUMBS}>
+    <PageTemplate breadcrumbs={PRODUCT_BREADCRUMBS}>
       <ProductSearchForm
         searchForm={searchFormHook.searchForm}
         updateSearchForm={searchFormHook.updateSearchForm}
@@ -44,6 +44,6 @@ export default function ProductList() {
         loading={isLoading}
         handlePageChange={paginationHook.handlePageChange}
       />
-    </ListPageTemplate>
+    </PageTemplate>
   )
 }
