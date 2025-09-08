@@ -1,4 +1,4 @@
-'use client'
+import { Label } from '@/src/components/ui/Label'
 
 interface SearchFieldProps {
   label: string
@@ -8,7 +8,7 @@ interface SearchFieldProps {
 export default function SearchField({ label, children }: SearchFieldProps) {
   return (
     <div className="grid gap-2">
-      <label className="text-sm font-medium">{label}</label>
+      <Label className="font-semibold">{label}</Label>
       {children}
     </div>
   )
