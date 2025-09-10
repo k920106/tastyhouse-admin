@@ -8,6 +8,8 @@ import {
   NoticeSearchForm as NoticeSearchFormType,
   getNoticeUseStatusLabel,
 } from '@/src/types/notice'
+import { Button } from '../../ui/Button'
+import Link from 'next/link'
 
 interface NoticeSearchFormProps {
   searchForm: NoticeSearchFormType
@@ -27,7 +29,15 @@ export default function NoticeSearchForm({
   }
 
   return (
-    <BaseSearchForm actions={<SearchActions onSearch={handleSearch} loading={searchLoading} />}>
+    <BaseSearchForm
+      actions={
+        <SearchActions onSearch={handleSearch} loading={searchLoading}>
+          <Button type="button" variant="outline" asChild>
+            <Link href="/notices/create">등록</Link>
+          </Button>
+        </SearchActions>
+      }
+    >
       <CompanySelector
         label="매체사"
         value={searchForm.companyId}

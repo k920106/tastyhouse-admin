@@ -8,7 +8,7 @@ import { useNoticeSearchForm } from '@/src/hooks/useNoticeSearchForm'
 import { useNoticePagination } from '@/src/hooks/useNoticePagination'
 import { useNoticesQuery } from '@/src/hooks/queries/useNoticeQueries'
 import { useToastError } from '@/src/hooks/useToastError'
-import { NOTICE_BREADCRUMBS } from '@/src/constants/notice'
+import { NOTICE_LIST_BREADCRUMBS } from '@/src/constants/notice'
 
 export default function NoticeList() {
   const searchFormHook = useNoticeSearchForm()
@@ -28,7 +28,7 @@ export default function NoticeList() {
   useToastError(error, '공지사항 목록 조회 중 오류가 발생했습니다.')
 
   return (
-    <PageTemplate breadcrumbs={NOTICE_BREADCRUMBS}>
+    <PageTemplate breadcrumbs={NOTICE_LIST_BREADCRUMBS}>
       <NoticeSearchForm
         searchForm={searchFormHook.searchForm}
         updateSearchForm={searchFormHook.updateSearchForm}
