@@ -7,9 +7,11 @@ interface SearchFieldProps {
 
 export default function SearchField({ label, children }: SearchFieldProps) {
   return (
-    <div className="grid gap-2">
+    <div className="grid gap-2 w-full">
       <Label className="font-semibold">{label}</Label>
-      {children}
+      <div className="w-full">
+        {children}
+      </div>
     </div>
   )
 }
