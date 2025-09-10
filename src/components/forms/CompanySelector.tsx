@@ -22,6 +22,7 @@ export default function CompanySelector({
   return (
     <SearchField label={label}>
       <Combobox
+        width="w-full"
         options={companies}
         valueKey="id"
         labelKey="name"

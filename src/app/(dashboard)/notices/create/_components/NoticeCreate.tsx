@@ -1,73 +1,190 @@
 'use client'
 
 import { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { toast } from 'sonner'
+import * as z from 'zod'
+import { api } from '@/src/lib/api'
+import { NoticeCreateRequest, NOTICE_USE_STATUS, NOTICE_TOP_STATUS } from '@/src/types/notice'
+import { ApiResponse } from '@/src/types/api'
 import PageTemplate from '@/src/components/layout/PageTemplate'
 import { NOTICE_CREATE_BREADCRUMBS } from '@/src/constants/notice'
 import { Button } from '@/src/components/ui/Button'
-
 import { Card, CardContent, CardFooter } from '@/src/components/ui/Card'
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/src/components/ui/Form'
 import CompanySelector from '@/src/components/forms/CompanySelector'
 import BooleanRadioGroup from '@/src/components/forms/BooleanRadioGroup'
 import TextSearchField from '@/src/components/forms/TextSearchField'
 import TextareaField from '@/src/components/forms/TextareaField'
 
+const noticeFormSchema = z.object({
+  companyId: z.string().min(1, '매체사를 선택해주세요'),
+  isUse: z.boolean(),
+  title: z.string().min(1, '제목을 입력해주세요'),
+  content: z.string().min(1, '내용을 입력해주세요'),
+  isTop: z.boolean(),
+})
+
+type NoticeFormData = z.infer<typeof noticeFormSchema>
+
 export default function NoticeCreate() {
-  const [formData, setFormData] = useState({
-    companyId: '',
-    isActive: false,
-    title: '',
-    content: '',
-    isPinned: false,
+  const [isLoading, setIsLoading] = useState(false)
+
+  const form = useForm<NoticeFormData>({
+    resolver: zodResolver(noticeFormSchema),
+    defaultValues: {
+      companyId: '',
+      isUse: NOTICE_USE_STATUS.NOT_USE.value,
+      title: '',
+      content: '',
+      isTop: NOTICE_TOP_STATUS.NOT_TOP.value,
+    },
   })
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    console.log('Form submitted:', formData)
+  const onSubmit = async (data: NoticeFormData) => {
+    try {
+      setIsLoading(true)
+
+      const requestData: NoticeCreateRequest = {
+        companyId: parseInt(data.companyId),
+        title: data.title,
+        content: data.content,
+        isUse: data.isUse,
+        isTop: data.isTop,
+      }
+
+      const response = await api.post<ApiResponse>('/notices', requestData)
+      if (response.success) {
+        toast.success('등록되었습니다')
+        form.reset()
+      }
+    } catch (error) {
+      console.error('공지사항 등록 실패:', error)
+      toast.error(
+        error instanceof Error ? error.message : '등록에 실패하였습니다. 다시 시도해주세요.',
+      )
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
     <PageTemplate breadcrumbs={NOTICE_CREATE_BREADCRUMBS}>
       <Card className={'w-full shadow-none'}>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <CompanySelector
-              label="매체사"
-              value={formData.companyId}
-              onValueChange={(value) => setFormData((prev) => ({ ...prev, companyId: value }))}
-              loading={false}
-            />
-            <BooleanRadioGroup
-              label="사용 여부"
-              trueLabel="사용"
-              falseLabel="미사용"
-              value={formData.isActive}
-              onChange={(value) => setFormData((prev) => ({ ...prev, isActive: value }))}
-            />
-            <BooleanRadioGroup
-              label="상단 고정"
-              trueLabel="적용"
-              falseLabel="미적용"
-              value={formData.isPinned}
-              onChange={(value) => setFormData((prev) => ({ ...prev, isPinned: value }))}
-            />
-            <TextSearchField
-              label="제목"
-              value={formData.title}
-              onChange={(value) => setFormData((prev) => ({ ...prev, title: value }))}
-              loading={false}
-            />
-            <TextareaField
-              label="내용"
-              value={formData.content}
-              onChange={(value) => setFormData((prev) => ({ ...prev, content: value }))}
-              rows={15}
-              id="content"
-            />
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <CardContent>
+              <div className="space-y-6">
+                <FormField
+                  control={form.control}
+                  name="companyId"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>매체사</FormLabel>
+                      <FormControl>
+                        <CompanySelector
+                          label=""
+                          value={field.value}
+                          onValueChange={field.onChange}
+                          loading={false}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="isUse"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>사용 여부</FormLabel>
+                      <FormControl>
+                        <BooleanRadioGroup
+                          label=""
+                          trueLabel={NOTICE_USE_STATUS.USE.label}
+                          falseLabel={NOTICE_USE_STATUS.NOT_USE.label}
+                          value={field.value}
+                          onChange={field.onChange}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="isTop"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>상단 고정</FormLabel>
+                      <FormControl>
+                        <BooleanRadioGroup
+                          label=""
+                          trueLabel={NOTICE_TOP_STATUS.TOP.label}
+                          falseLabel={NOTICE_TOP_STATUS.NOT_TOP.label}
+                          value={field.value}
+                          onChange={field.onChange}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="title"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>제목</FormLabel>
+                      <FormControl>
+                        <TextSearchField
+                          label=""
+                          value={field.value}
+                          onChange={field.onChange}
+                          loading={false}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="content"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>내용</FormLabel>
+                      <FormControl>
+                        <TextareaField
+                          label=""
+                          value={field.value}
+                          onChange={field.onChange}
+                          rows={15}
+                          id="content"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </CardContent>
+            <CardFooter className="flex justify-end gap-3">
+              <Button type="submit" disabled={isLoading}>
+                {isLoading ? '등록 중...' : '등록'}
+              </Button>
+            </CardFooter>
           </form>
-        </CardContent>
-        <CardFooter className="flex justify-end gap-3">
-          <Button type="submit">등록</Button>
-        </CardFooter>
+        </Form>
       </Card>
     </PageTemplate>
   )
