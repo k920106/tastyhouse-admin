@@ -6,7 +6,7 @@ import SearchField from './SearchField'
 interface TextSearchFieldProps {
   label: string
   value: string
-  onSearch: () => void
+  onSearch?: () => void
   onChange: (value: string) => void
   loading: boolean
 }
