@@ -4,14 +4,7 @@ import CompanySelector from '@/src/components/forms/CompanySelector'
 import PageTemplate from '@/src/components/layout/PageTemplate'
 import { Button } from '@/src/components/ui/Button'
 import { Card, CardContent, CardFooter } from '@/src/components/ui/Card'
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/src/components/ui/Form'
+import { Form, FormControl, FormField, FormItem, FormLabel } from '@/src/components/ui/Form'
 import { Input } from '@/src/components/ui/Input'
 import { Switch } from '@/src/components/ui/Switch'
 import { Textarea } from '@/src/components/ui/Textarea'
@@ -80,7 +73,15 @@ export default function NoticeCreate() {
     <PageTemplate breadcrumbs={NOTICE_CREATE_BREADCRUMBS}>
       <Card className={'w-full shadow-none'}>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <form
+            onSubmit={form.handleSubmit(onSubmit, (errors) => {
+              const firstError = Object.values(errors)[0]
+              if (firstError?.message) {
+                toast.error(firstError.message)
+              }
+            })}
+            className="space-y-6"
+          >
             <CardContent>
               <div className="space-y-6">
                 <FormField
@@ -88,7 +89,7 @@ export default function NoticeCreate() {
                   name="companyId"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="font-semibold">매체사</FormLabel>
+                      <FormLabel className="font-semibold text-foreground">매체사</FormLabel>
                       <FormControl>
                         <CompanySelector
                           label=""
@@ -97,7 +98,6 @@ export default function NoticeCreate() {
                           loading={false}
                         />
                       </FormControl>
-                      <FormMessage />
                     </FormItem>
                   )}
                 />
@@ -202,11 +202,10 @@ export default function NoticeCreate() {
                   name="title"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="font-semibold">제목</FormLabel>
+                      <FormLabel className="font-semibold text-foreground">제목</FormLabel>
                       <FormControl>
                         <Input type="text" value={field.value} onChange={field.onChange} />
                       </FormControl>
-                      <FormMessage />
                     </FormItem>
                   )}
                 />
@@ -215,7 +214,7 @@ export default function NoticeCreate() {
                   name="content"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="font-semibold">내용</FormLabel>
+                      <FormLabel className="font-semibold text-foreground">내용</FormLabel>
                       <FormControl>
                         <Textarea
                           id="content"
@@ -224,7 +223,6 @@ export default function NoticeCreate() {
                           rows={15}
                         />
                       </FormControl>
-                      <FormMessage />
                     </FormItem>
                   )}
                 />

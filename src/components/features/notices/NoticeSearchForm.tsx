@@ -24,6 +24,8 @@ export default function NoticeSearchForm({
   updateSearchForm,
   handleSearch,
 }: NoticeSearchFormProps) {
+  // TODO: React form으로 변경하기
+
   const handleDateRangeChange = (startDate?: string, endDate?: string) => {
     updateSearchForm({ startDate, endDate })
   }
