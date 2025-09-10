@@ -91,7 +91,8 @@ export function Combobox<T = Record<string, unknown>>({
           <ChevronsUpDown className="opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className={cn(width, 'p-0')}>
+      {/* <PopoverContent className={cn(width, 'p-0')}> */}
+      <PopoverContent className="p-0" style={{ width: 'var(--radix-popover-trigger-width)' }}>
         <Command>
           <CommandInput placeholder={searchPlaceholder} className="h-9" />
           <CommandList>
