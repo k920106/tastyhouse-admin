@@ -8,8 +8,8 @@ interface BooleanRadioGroupProps {
   label: string
   trueLabel: string
   falseLabel: string
-  value: boolean
-  onChange: (value: boolean) => void
+  value: string
+  onChange: (value: string) => void
   disabled?: boolean
 }
 
@@ -26,10 +26,7 @@ export default function BooleanRadioGroup({
 
   return (
     <SearchField label={label}>
-      <RadioGroup
-        value={value.toString()}
-        onValueChange={(stringValue) => onChange(stringValue === 'true')}
-      >
+      <RadioGroup value={value} onValueChange={onChange}>
         <div className="flex items-center space-x-2">
           <RadioGroupItem value="true" id={trueId} disabled={disabled} />
           <Label htmlFor={trueId}>{trueLabel}</Label>

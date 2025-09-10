@@ -2,7 +2,6 @@
 
 import { Combobox } from '@/src/components/ui/Combobox'
 import { useCompaniesQuery } from '@/src/hooks/queries/useCompanyQueries'
-import SearchField from './SearchField'
 
 interface CompanySelectorProps {
   label: string
@@ -20,17 +19,17 @@ export default function CompanySelector({
   const { data: companies = [], isLoading } = useCompaniesQuery()
 
   return (
-    <SearchField label={label}>
-      <Combobox
-        width="w-full"
-        options={companies}
-        valueKey="id"
-        labelKey="name"
-        value={value || 'all'}
-        onValueChange={onValueChange}
-        disabled={loading || isLoading}
-        disabledOptions={['all']}
-      />
-    </SearchField>
+    // <SearchField label={label}>
+    <Combobox
+      width="w-full"
+      options={companies}
+      valueKey="id"
+      labelKey="name"
+      value={value || 'all'}
+      onValueChange={onValueChange}
+      disabled={loading || isLoading}
+      disabledOptions={['all']}
+    />
+    // </SearchField>
   )
 }

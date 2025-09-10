@@ -25,16 +25,16 @@ export type NoticeCreateRequest = {
 
 // 사용 여부
 export const NOTICE_USE_STATUS = {
-  USE: { value: true, label: '사용' },
-  NOT_USE: { value: false, label: '미사용' },
+  USE: { value: 'true', label: '사용' },
+  NOT_USE: { value: 'false', label: '미사용' },
 } as const
 
 export type NoticeUseStatus = (typeof NOTICE_USE_STATUS)[keyof typeof NOTICE_USE_STATUS]
 
 // 상단 고정 여부
 export const NOTICE_TOP_STATUS = {
-  TOP: { value: true, label: '적용' },
-  NOT_TOP: { value: false, label: '미적용' },
+  TOP: { value: 'true', label: '적용' },
+  NOT_TOP: { value: 'false', label: '미적용' },
 } as const
 
 export type NoticeTopStatus = (typeof NOTICE_TOP_STATUS)[keyof typeof NOTICE_TOP_STATUS]

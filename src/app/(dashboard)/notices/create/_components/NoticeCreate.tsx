@@ -1,15 +1,7 @@
 'use client'
 
-import { useState } from 'react'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { toast } from 'sonner'
-import * as z from 'zod'
-import { api } from '@/src/lib/api'
-import { NoticeCreateRequest, NOTICE_USE_STATUS, NOTICE_TOP_STATUS } from '@/src/types/notice'
-import { ApiResponse } from '@/src/types/api'
+import CompanySelector from '@/src/components/forms/CompanySelector'
 import PageTemplate from '@/src/components/layout/PageTemplate'
-import { NOTICE_CREATE_BREADCRUMBS } from '@/src/constants/notice'
 import { Button } from '@/src/components/ui/Button'
 import { Card, CardContent, CardFooter } from '@/src/components/ui/Card'
 import {
@@ -20,10 +12,18 @@ import {
   FormLabel,
   FormMessage,
 } from '@/src/components/ui/Form'
-import CompanySelector from '@/src/components/forms/CompanySelector'
-import BooleanRadioGroup from '@/src/components/forms/BooleanRadioGroup'
-import TextSearchField from '@/src/components/forms/TextSearchField'
-import TextareaField from '@/src/components/forms/TextareaField'
+import { Input } from '@/src/components/ui/Input'
+import { Switch } from '@/src/components/ui/Switch'
+import { Textarea } from '@/src/components/ui/Textarea'
+import { NOTICE_CREATE_BREADCRUMBS } from '@/src/constants/notice'
+import { api } from '@/src/lib/api'
+import { ApiResponse } from '@/src/types/api'
+import { NoticeCreateRequest } from '@/src/types/notice'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { toast } from 'sonner'
+import * as z from 'zod'
 
 const noticeFormSchema = z.object({
   companyId: z.string().min(1, '매체사를 선택해주세요'),
@@ -42,10 +42,10 @@ export default function NoticeCreate() {
     resolver: zodResolver(noticeFormSchema),
     defaultValues: {
       companyId: '',
-      isUse: NOTICE_USE_STATUS.NOT_USE.value,
+      isUse: false,
       title: '',
       content: '',
-      isTop: NOTICE_TOP_STATUS.NOT_TOP.value,
+      isTop: false,
     },
   })
 
@@ -88,7 +88,7 @@ export default function NoticeCreate() {
                   name="companyId"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>매체사</FormLabel>
+                      <FormLabel className="font-semibold">매체사</FormLabel>
                       <FormControl>
                         <CompanySelector
                           label=""
@@ -101,41 +101,99 @@ export default function NoticeCreate() {
                     </FormItem>
                   )}
                 />
+                {/* 기존 RadioGroup 코드 주석 처리
                 <FormField
                   control={form.control}
                   name="isUse"
                   render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>사용 여부</FormLabel>
+                    <FormItem className="space-y-3">
+                      <FormLabel className="font-semibold">사용 여부</FormLabel>
                       <FormControl>
-                        <BooleanRadioGroup
-                          label=""
-                          trueLabel={NOTICE_USE_STATUS.USE.label}
-                          falseLabel={NOTICE_USE_STATUS.NOT_USE.label}
-                          value={field.value}
-                          onChange={field.onChange}
-                        />
+                        <RadioGroup
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                          className="flex flex-col"
+                        >
+                          <FormItem className="flex items-center gap-3 space-y-0">
+                            <FormControl>
+                              <RadioGroupItem id="use" value="true" />
+                            </FormControl>
+                            <FormLabel className="font-normal" htmlFor="use">
+                              {NOTICE_USE_STATUS.USE.label}
+                            </FormLabel>
+                          </FormItem>
+                          <FormItem className="flex items-center gap-3 space-y-0">
+                            <FormControl>
+                              <RadioGroupItem id="not-use" value="false" />
+                            </FormControl>
+                            <FormLabel className="font-normal" htmlFor="not-use">
+                              {NOTICE_TOP_STATUS.NOT_USE.label}
+                            </FormLabel>
+                          </FormItem>
+                        </RadioGroup>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
+                */}
+                <FormField
+                  control={form.control}
+                  name="isUse"
+                  render={({ field }) => (
+                    <FormItem className="space-y-2">
+                      <FormLabel className="font-semibold">사용 여부</FormLabel>
+                      <FormControl>
+                        <Switch checked={field.value} onCheckedChange={field.onChange} />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+                {/* 기존 상단 고정 RadioGroup 코드 주석 처리
                 <FormField
                   control={form.control}
                   name="isTop"
                   render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>상단 고정</FormLabel>
+                    <FormItem className="space-y-3">
+                      <FormLabel className="font-semibold">상단 고정</FormLabel>
                       <FormControl>
-                        <BooleanRadioGroup
-                          label=""
-                          trueLabel={NOTICE_TOP_STATUS.TOP.label}
-                          falseLabel={NOTICE_TOP_STATUS.NOT_TOP.label}
-                          value={field.value}
-                          onChange={field.onChange}
-                        />
+                        <RadioGroup
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                          className="flex flex-col"
+                        >
+                          <FormItem className="flex items-center gap-3 space-y-0">
+                            <FormControl>
+                              <RadioGroupItem id="top" value="true" />
+                            </FormControl>
+                            <FormLabel className="font-normal" htmlFor="top">
+                              {NOTICE_TOP_STATUS.TOP.label}
+                            </FormLabel>
+                          </FormItem>
+                          <FormItem className="flex items-center gap-3 space-y-0">
+                            <FormControl>
+                              <RadioGroupItem id="not-top" value="false" />
+                            </FormControl>
+                            <FormLabel className="font-normal" htmlFor="not-top">
+                              {NOTICE_TOP_STATUS.NOT_TOP.label}
+                            </FormLabel>
+                          </FormItem>
+                        </RadioGroup>
                       </FormControl>
                       <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                */}
+                <FormField
+                  control={form.control}
+                  name="isTop"
+                  render={({ field }) => (
+                    <FormItem className="space-y-2">
+                      <FormLabel className="font-semibold">상단 고정</FormLabel>
+                      <FormControl>
+                        <Switch checked={field.value} onCheckedChange={field.onChange} />
+                      </FormControl>
                     </FormItem>
                   )}
                 />
@@ -144,14 +202,9 @@ export default function NoticeCreate() {
                   name="title"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>제목</FormLabel>
+                      <FormLabel className="font-semibold">제목</FormLabel>
                       <FormControl>
-                        <TextSearchField
-                          label=""
-                          value={field.value}
-                          onChange={field.onChange}
-                          loading={false}
-                        />
+                        <Input type="text" value={field.value} onChange={field.onChange} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -162,14 +215,13 @@ export default function NoticeCreate() {
                   name="content"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>내용</FormLabel>
+                      <FormLabel className="font-semibold">내용</FormLabel>
                       <FormControl>
-                        <TextareaField
-                          label=""
+                        <Textarea
+                          id="content"
                           value={field.value}
                           onChange={field.onChange}
                           rows={15}
-                          id="content"
                         />
                       </FormControl>
                       <FormMessage />
