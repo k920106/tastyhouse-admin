@@ -21,9 +21,9 @@ import * as z from 'zod'
 const noticeFormSchema = z.object({
   companyId: z.string().min(1, '매체사를 선택해주세요'),
   isUse: z.boolean(),
+  isTop: z.boolean(),
   title: z.string().min(1, '제목을 입력해주세요'),
   content: z.string().min(1, '내용을 입력해주세요'),
-  isTop: z.boolean(),
 })
 
 type NoticeFormData = z.infer<typeof noticeFormSchema>
@@ -36,9 +36,9 @@ export default function NoticeCreate() {
     defaultValues: {
       companyId: '',
       isUse: false,
+      isTop: false,
       title: '',
       content: '',
-      isTop: false,
     },
   })
 
@@ -48,10 +48,10 @@ export default function NoticeCreate() {
 
       const requestData: NoticeCreateRequest = {
         companyId: parseInt(data.companyId),
-        title: data.title,
-        content: data.content,
         isUse: data.isUse,
         isTop: data.isTop,
+        title: data.title,
+        content: data.content,
       }
 
       const response = await api.post<ApiResponse>('/notices', requestData)

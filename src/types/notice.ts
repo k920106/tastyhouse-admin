@@ -17,10 +17,10 @@ export interface NoticeSearchForm extends Record<string, string> {
 
 export type NoticeCreateRequest = {
   companyId: number
-  title: string
-  content: string
   isUse: boolean
   isTop: boolean
+  title: string
+  content: string
 }
 
 // 사용 여부
