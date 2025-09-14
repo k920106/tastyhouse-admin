@@ -25,6 +25,7 @@ const DEFAULT_VALUES = {
   endDate: '',
   active: '',
 } as const
+
 import { cn } from '@/src/lib/class-utils'
 import { Input } from '../../ui/Input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../ui/Select'
@@ -53,7 +54,6 @@ export default function NoticeSearchForm({
   loading: searchLoading,
 }: NoticeSearchFormProps) {
   const [dateRange, setDateRange] = useState<DateRange | undefined>()
-  console.log(dateRange)
 
   // 기본값을 일관성 있게 처리하는 헬퍼 함수
   const getFormValues = useCallback(
@@ -80,8 +80,18 @@ export default function NoticeSearchForm({
     const newDateRange: DateRange | undefined =
       formValues.startDate || formValues.endDate
         ? {
-            from: formValues.startDate ? new Date(formValues.startDate) : undefined,
-            to: formValues.endDate ? new Date(formValues.endDate) : undefined,
+            from: formValues.startDate
+              ? (() => {
+                  const date = new Date(formValues.startDate)
+                  return isNaN(date.getTime()) ? undefined : date
+                })()
+              : undefined,
+            to: formValues.endDate
+              ? (() => {
+                  const date = new Date(formValues.endDate)
+                  return isNaN(date.getTime()) ? undefined : date
+                })()
+              : undefined,
           }
         : undefined
 
@@ -124,7 +134,7 @@ export default function NoticeSearchForm({
       <form onSubmit={form.handleSubmit(handleSubmit)}>
         <BaseSearchForm
           actions={
-            <SearchActions onSearch={form.handleSubmit(handleSubmit)} loading={searchLoading}>
+            <SearchActions onSearch={handleSubmit} loading={searchLoading}>
               <Button type="button" variant="outline" asChild>
                 <Link href="/notices/create">등록</Link>
               </Button>
@@ -181,6 +191,8 @@ export default function NoticeSearchForm({
                     id="date"
                     variant="outline"
                     disabled={searchLoading}
+                    aria-label="날짜 범위 선택"
+                    aria-haspopup="dialog"
                     className={cn(
                       'w-full justify-start text-left font-normal',
                       !dateRange && 'text-muted-foreground',
@@ -208,6 +220,7 @@ export default function NoticeSearchForm({
                     selected={dateRange}
                     onSelect={handleDateRangeSelect}
                     numberOfMonths={2}
+                    aria-label="날짜 범위 달력"
                   />
                 </PopoverContent>
               </Popover>
@@ -222,7 +235,6 @@ export default function NoticeSearchForm({
                 <FormControl>
                   <Select
                     value={field.value ?? ''}
-                    defaultValue="all"
                     onValueChange={(value) => {
                       field.onChange(value)
                       updateSearchForm({ active: value })
