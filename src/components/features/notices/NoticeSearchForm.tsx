@@ -44,6 +44,10 @@ export default function NoticeSearchForm({
   handleSearch,
   loading: searchLoading,
 }: NoticeSearchFormProps) {
+  // 페이징 API Response 응답 스펙 바뀜
+  // 그래서 지금 페이징처리 안됨
+  // Notice ReactHook Form 적용한 것 처럼 Products도 수정해야 함
+
   const [dateRange, setDateRange] = useState<DateRange | undefined>()
 
   const form = useForm<SearchFormData>({
