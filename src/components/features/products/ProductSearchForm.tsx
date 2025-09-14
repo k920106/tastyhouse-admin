@@ -15,7 +15,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/src/components/ui/Select'
-import { ProductSearchForm, getProductDisplayStatusLabel } from '@/src/types/product'
+import { type ProductSearchForm, getProductDisplayStatusLabel } from '@/src/types/product'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { LuDownload } from 'react-icons/lu'
 import { useForm } from 'react-hook-form'

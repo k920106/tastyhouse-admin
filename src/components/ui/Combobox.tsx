@@ -44,7 +44,7 @@ export function Combobox<T = Record<string, unknown>>({
   searchPlaceholder = '검색...',
   // emptyMessage = '항목을 찾을 수 없습니다.',
   emptyMessage = '-',
-  width = 'w-[200px]',
+  // width = 'w-[200px]',
   className,
   disabled = false,
   valueKey,
