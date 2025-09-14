@@ -152,7 +152,7 @@ export const useNoticeSearchWithQuery = (): NoticeSearchHookResult => {
     notices: data?.notices || [],
 
     // 페이지네이션
-    totalCount: data?.totalCount || 0,
+    totalCount: data?.totalElements || 0,
     currentPage,
     pageSize,
     handlePageChange,

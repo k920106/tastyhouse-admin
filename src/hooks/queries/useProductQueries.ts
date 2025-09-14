@@ -1,10 +1,10 @@
 'use client'
 
-import { useQuery } from '@tanstack/react-query'
 import { api } from '@/src/lib/api'
-import { ProductSearchForm, ProductListItem } from '@/src/types/product'
-import { DataTablesResponse } from '@/src/types/api'
 import { isEmptyValue } from '@/src/lib/validations/product'
+import { PagedApiResponse } from '@/src/types/api'
+import { ProductListItem, ProductSearchForm } from '@/src/types/product'
+import { useQuery } from '@tanstack/react-query'
 
 interface ProductQueryParams {
   searchForm: ProductSearchForm
@@ -16,7 +16,7 @@ interface ProductQueryParams {
 
 interface ProductQueryData {
   products: ProductListItem[]
-  totalCount: number
+  totalElements: number
 }
 
 const buildProductQueryString = (params: ProductQueryParams): string => {
@@ -31,7 +31,6 @@ const buildProductQueryString = (params: ProductQueryParams): string => {
     name: searchForm.name || undefined,
     page: pagination.page,
     size: pagination.size,
-    draw: 1, // DataTables 호환성
   }
 
   const queryParams = new URLSearchParams()
@@ -45,18 +44,18 @@ const buildProductQueryString = (params: ProductQueryParams): string => {
 }
 
 export const useProductsQuery = (params: ProductQueryParams, enabled = true) => {
-  return useQuery<DataTablesResponse<ProductListItem>, Error, ProductQueryData>({
+  return useQuery<PagedApiResponse<ProductListItem>, Error, ProductQueryData>({
     queryKey: ['products', params],
     queryFn: async () => {
       const queryString = buildProductQueryString(params)
-      return api.get<DataTablesResponse<ProductListItem>>(`/products${queryString}`)
+      return api.get<PagedApiResponse<ProductListItem>>(`/products${queryString}`)
     },
     enabled,
     staleTime: 1000 * 60 * 5, // 5분으로 증가
     gcTime: 1000 * 60 * 10, // 10분 가비지 컬렉션
     select: (data): ProductQueryData => ({
       products: data.data || [],
-      totalCount: data.pagination?.total || 0,
+      totalElements: data.pagination?.totalElements || 0,
     }),
     throwOnError: false, // 에러를 throw하지 않고 error 상태로 반환
   })

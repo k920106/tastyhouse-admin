@@ -1,10 +1,10 @@
 'use client'
 
-import { useQuery } from '@tanstack/react-query'
 import { api } from '@/src/lib/api'
-import { NoticeSearchForm, NoticeListItem } from '@/src/types/notice'
-import { DataTablesResponse } from '@/src/types/api'
 import { isEmptyValue } from '@/src/lib/validations/notice'
+import { PagedApiResponse } from '@/src/types/api'
+import { NoticeListItem, NoticeSearchForm } from '@/src/types/notice'
+import { useQuery } from '@tanstack/react-query'
 
 interface NoticeQueryParams {
   searchForm: NoticeSearchForm
@@ -16,7 +16,7 @@ interface NoticeQueryParams {
 
 interface NoticeQueryData {
   notices: NoticeListItem[]
-  totalCount: number
+  totalElements: number
 }
 
 const buildNoticeQueryString = (params: NoticeQueryParams): string => {
@@ -30,7 +30,6 @@ const buildNoticeQueryString = (params: NoticeQueryParams): string => {
     endDate: searchForm.endDate || undefined,
     page: pagination.page,
     size: pagination.size,
-    draw: 1, // DataTables 호환성
   }
 
   const queryParams = new URLSearchParams()
@@ -44,18 +43,18 @@ const buildNoticeQueryString = (params: NoticeQueryParams): string => {
 }
 
 export const useNoticesQuery = (params: NoticeQueryParams, enabled = true) => {
-  return useQuery<DataTablesResponse<NoticeListItem>, Error, NoticeQueryData>({
+  return useQuery<PagedApiResponse<NoticeListItem>, Error, NoticeQueryData>({
     queryKey: ['notices', params],
     queryFn: async () => {
       const queryString = buildNoticeQueryString(params)
-      return api.get<DataTablesResponse<NoticeListItem>>(`/notices${queryString}`)
+      return api.get<PagedApiResponse<NoticeListItem>>(`/notices${queryString}`)
     },
     enabled,
     staleTime: 1000 * 60 * 5, // 5분으로 증가
     gcTime: 1000 * 60 * 10, // 10분 가비지 컬렉션
     select: (data): NoticeQueryData => ({
       notices: data.data || [],
-      totalCount: data.pagination?.total || 0,
+      totalElements: data.pagination?.totalElements || 0,
     }),
     throwOnError: false, // 에러를 throw하지 않고 error 상태로 반환
   })

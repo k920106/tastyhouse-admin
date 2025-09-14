@@ -38,7 +38,7 @@ export default function NoticeList() {
       <CommonDataTable
         columns={createColumns(paginationHook.currentPage, paginationHook.pageSize)}
         data={data?.notices || []}
-        totalCount={data?.totalCount || 0}
+        totalCount={data?.totalElements || 0}
         currentPage={paginationHook.currentPage}
         pageSize={paginationHook.pageSize}
         loading={isLoading}
