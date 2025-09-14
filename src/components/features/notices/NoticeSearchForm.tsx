@@ -57,7 +57,6 @@ export default function NoticeSearchForm({
     },
   })
 
-  // 상위 컴포넌트의 searchForm 상태와 동기화
   useEffect(() => {
     form.reset({
       companyId: searchForm.companyId || '',

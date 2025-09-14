@@ -58,7 +58,6 @@ export default function ProductSearchForm({
     },
   })
 
-  // 상위 컴포넌트의 searchForm 상태와 동기화
   useEffect(() => {
     form.reset({
       companyId: searchForm.companyId || '',
@@ -172,7 +171,6 @@ export default function ProductSearchForm({
                 <FormLabel className="font-semibold">교환처</FormLabel>
                 <FormControl>
                   <BrandSelector
-                    label=""
                     value={field.value || ''}
                     onValueChange={(value) => {
                       field.onChange(value)
@@ -192,7 +190,6 @@ export default function ProductSearchForm({
                 <FormLabel className="font-semibold">공급사</FormLabel>
                 <FormControl>
                   <SupplySelector
-                    label=""
                     value={field.value || ''}
                     onValueChange={(value) => {
                       field.onChange(value)

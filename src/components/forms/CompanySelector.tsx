@@ -11,7 +11,6 @@ interface CompanySelectorProps {
 }
 
 export default function CompanySelector({
-  label = '매체사',
   value,
   onValueChange,
   loading = false,
@@ -19,7 +18,6 @@ export default function CompanySelector({
   const { data: companies = [], isLoading } = useCompaniesQuery()
 
   return (
-    // <SearchField label={label}>
     <Combobox
       width="w-full"
       options={companies}
@@ -30,6 +28,5 @@ export default function CompanySelector({
       disabled={loading || isLoading}
       disabledOptions={['all']}
     />
-    // </SearchField>
   )
 }
