@@ -9,24 +9,32 @@ import { Form, FormControl, FormField, FormItem, FormLabel } from '@/src/compone
 import { Popover, PopoverContent, PopoverTrigger } from '@/src/components/ui/Popover'
 import { type NoticeSearchForm, getNoticeUseStatusLabel } from '@/src/types/notice'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { format } from 'date-fns'
-import { ko } from 'date-fns/locale'
+import { formatToAPIDate, formatToDisplayDate } from '@/src/lib/date-utils'
 import Link from 'next/link'
 import { useForm } from 'react-hook-form'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { LuCalendar } from 'react-icons/lu'
 import { type DateRange } from 'react-day-picker'
 import * as z from 'zod'
+
+// 기본값 상수
+const DEFAULT_VALUES = {
+  companyId: '',
+  title: '',
+  startDate: '',
+  endDate: '',
+  active: '',
+} as const
 import { cn } from '@/src/lib/class-utils'
 import { Input } from '../../ui/Input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../ui/Select'
 
 const searchFormSchema = z.object({
-  companyId: z.string().optional(),
-  title: z.string().optional(),
-  startDate: z.string().optional(),
-  endDate: z.string().optional(),
-  active: z.string().optional(),
+  companyId: z.string(),
+  title: z.string(),
+  startDate: z.string(),
+  endDate: z.string(),
+  active: z.string(),
 })
 
 type SearchFormData = z.infer<typeof searchFormSchema>
@@ -45,59 +53,71 @@ export default function NoticeSearchForm({
   loading: searchLoading,
 }: NoticeSearchFormProps) {
   const [dateRange, setDateRange] = useState<DateRange | undefined>()
+  console.log(dateRange)
+
+  // 기본값을 일관성 있게 처리하는 헬퍼 함수
+  const getFormValues = useCallback(
+    (searchForm: NoticeSearchForm): SearchFormData => ({
+      companyId: searchForm.companyId ?? DEFAULT_VALUES.companyId,
+      title: searchForm.title ?? DEFAULT_VALUES.title,
+      startDate: searchForm.startDate ?? DEFAULT_VALUES.startDate,
+      endDate: searchForm.endDate ?? DEFAULT_VALUES.endDate,
+      active: searchForm.active ?? DEFAULT_VALUES.active,
+    }),
+    [],
+  )
 
   const form = useForm<SearchFormData>({
     resolver: zodResolver(searchFormSchema),
-    defaultValues: {
-      companyId: searchForm.companyId || '',
-      title: searchForm.title || '',
-      startDate: searchForm.startDate || '',
-      endDate: searchForm.endDate || '',
-      active: searchForm.active || '',
-    },
+    defaultValues: getFormValues(searchForm),
   })
 
   useEffect(() => {
-    form.reset({
-      companyId: searchForm.companyId || '',
-      title: searchForm.title || '',
-      startDate: searchForm.startDate || '',
-      endDate: searchForm.endDate || '',
-      active: searchForm.active || '',
-    })
+    const formValues = getFormValues(searchForm)
+    form.reset(formValues)
 
-    // 날짜 범위 상태도 동기화
-    if (searchForm.startDate || searchForm.endDate) {
-      setDateRange({
-        from: searchForm.startDate ? new Date(searchForm.startDate) : undefined,
-        to: searchForm.endDate ? new Date(searchForm.endDate) : undefined,
+    // 날짜 범위 상태 동기화
+    const newDateRange: DateRange | undefined =
+      formValues.startDate || formValues.endDate
+        ? {
+            from: formValues.startDate ? new Date(formValues.startDate) : undefined,
+            to: formValues.endDate ? new Date(formValues.endDate) : undefined,
+          }
+        : undefined
+
+    setDateRange(newDateRange)
+  }, [searchForm, form, getFormValues])
+
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (e.key === 'Enter' && !searchLoading) {
+        handleSearch()
+      }
+    },
+    [handleSearch, searchLoading],
+  )
+
+  const handleDateRangeSelect = useCallback(
+    (range: DateRange | undefined) => {
+      setDateRange(range)
+
+      const newStartDate = range?.from ? formatToAPIDate(range.from) : DEFAULT_VALUES.startDate
+      const newEndDate = range?.to ? formatToAPIDate(range.to) : DEFAULT_VALUES.endDate
+
+      form.setValue('startDate', newStartDate)
+      form.setValue('endDate', newEndDate)
+
+      updateSearchForm({
+        startDate: newStartDate,
+        endDate: newEndDate,
       })
-    }
-  }, [searchForm, form])
+    },
+    [form, updateSearchForm],
+  )
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && !searchLoading) {
-      handleSearch()
-    }
-  }
-
-  const handleDateRangeSelect = (range: DateRange | undefined) => {
-    setDateRange(range)
-
-    const newStartDate = range?.from ? format(range.from, 'yyyy-MM-dd') : ''
-    const newEndDate = range?.to ? format(range.to, 'yyyy-MM-dd') : ''
-
-    form.setValue('startDate', newStartDate)
-    form.setValue('endDate', newEndDate)
-    updateSearchForm({
-      startDate: newStartDate,
-      endDate: newEndDate,
-    })
-  }
-
-  const handleSubmit = () => {
+  const handleSubmit = useCallback(() => {
     handleSearch()
-  }
+  }, [handleSearch])
 
   return (
     <Form {...form}>
@@ -120,7 +140,7 @@ export default function NoticeSearchForm({
                 <FormControl>
                   <CompanySelector
                     label=""
-                    value={field.value || ''}
+                    value={field.value ?? ''}
                     onValueChange={(value) => {
                       field.onChange(value)
                       updateSearchForm({ companyId: value })
@@ -140,7 +160,7 @@ export default function NoticeSearchForm({
                 <FormControl>
                   <Input
                     type="text"
-                    value={field.value || ''}
+                    value={field.value ?? ''}
                     onChange={(e) => {
                       field.onChange(e)
                       updateSearchForm({ title: e.target.value })
@@ -170,14 +190,14 @@ export default function NoticeSearchForm({
                     {dateRange?.from ? (
                       dateRange.to ? (
                         <>
-                          {format(dateRange.from, 'yyyy.MM.dd', { locale: ko })} -{' '}
-                          {format(dateRange.to, 'yyyy.MM.dd', { locale: ko })}
+                          {formatToDisplayDate(dateRange.from)} -{' '}
+                          {formatToDisplayDate(dateRange.to)}
                         </>
                       ) : (
-                        format(dateRange.from, 'yyyy.MM.dd', { locale: ko })
+                        formatToDisplayDate(dateRange.from)
                       )
                     ) : (
-                      <span></span>
+                      <span>날짜를 선택해주세요</span>
                     )}
                   </Button>
                 </PopoverTrigger>
@@ -188,7 +208,6 @@ export default function NoticeSearchForm({
                     selected={dateRange}
                     onSelect={handleDateRangeSelect}
                     numberOfMonths={2}
-                    locale={ko}
                   />
                 </PopoverContent>
               </Popover>
@@ -202,7 +221,7 @@ export default function NoticeSearchForm({
                 <FormLabel className="font-semibold">사용 여부</FormLabel>
                 <FormControl>
                   <Select
-                    value={field.value || ''}
+                    value={field.value ?? ''}
                     defaultValue="all"
                     onValueChange={(value) => {
                       field.onChange(value)
@@ -228,19 +247,3 @@ export default function NoticeSearchForm({
     </Form>
   )
 }
-
-/*
-  React Hook Form을 사용한 NoticeSearchForm 구현:
-
-  주요 변경사항:
-  1. useForm 훅을 사용하여 폼 상태 관리
-  2. zod를 통한 스키마 검증
-  3. Form, FormField, FormItem, FormLabel, FormControl 컴포넌트 활용
-  4. handleDateRangeChange에서 form.setValue를 통한 날짜 값 업데이트
-  5. props 인터페이스 변경: onSearch 콜백으로 데이터 전달
-
-  기존 설계 원칙은 유지:
-  - DateRangePicker는 범용 컴포넌트로 재사용성 보장
-  - 관심사 분리: UI 컴포넌트와 상태 관리 로직 분리
-  - 각 폼 컴포넌트에서 고유한 상태 업데이트 로직 구현
- */
