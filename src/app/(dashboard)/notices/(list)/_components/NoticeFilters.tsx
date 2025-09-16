@@ -33,15 +33,14 @@ import {
 } from '@/src/components/ui/Select'
 import { Loader2Icon } from 'lucide-react'
 
+// Zod 스키마와 타입 통합 - 타입 안정성 향상
 const searchFormSchema = z.object({
   companyId: z.string(),
   title: z.string(),
   startDate: z.string(),
   endDate: z.string(),
   active: z.string(),
-})
-
-type SearchFormData = z.infer<typeof searchFormSchema>
+}) satisfies z.ZodType<NoticeSearchForm>
 
 export default function NoticeFilters() {
   const { updateUrl, isLoading } = useNoticeSearchWithQuery()
@@ -58,9 +57,9 @@ export default function NoticeFilters() {
   // 로컬 검색 폼 상태 (검색 버튼 클릭 전까지 URL에 반영되지 않음)
   const [localSearchForm, setLocalSearchForm] = useState<NoticeSearchForm>(initialSearchForm)
 
-  // 기본값을 일관성 있게 처리하는 헬퍼 함수 - 메모이제이션
+  // 기본값을 일관성 있게 처리하는 헬퍼 함수 - 타입 안정성 향상
   const getFormValues = useCallback(
-    (searchForm: NoticeSearchForm): SearchFormData => ({
+    (searchForm: NoticeSearchForm): NoticeSearchForm => ({
       companyId: searchForm.companyId ?? '',
       title: searchForm.title ?? '',
       startDate: searchForm.startDate ?? '',
@@ -103,7 +102,7 @@ export default function NoticeFilters() {
     [formValues.startDate, formValues.endDate, createDateRange],
   )
 
-  const form = useForm<SearchFormData>({
+  const form = useForm<NoticeSearchForm>({
     resolver: zodResolver(searchFormSchema),
     defaultValues: formValues,
   })
