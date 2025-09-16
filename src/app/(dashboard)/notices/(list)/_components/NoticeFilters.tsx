@@ -44,8 +44,7 @@ const searchFormSchema = z.object({
 type SearchFormData = z.infer<typeof searchFormSchema>
 
 export default function NoticeFilters() {
-  // const { updateUrl, isLoading } = useNoticeSearchWithQuery()
-  const { urlSearchForm, updateUrl, isLoading } = useNoticeSearchWithQuery()
+  const { updateUrl, isLoading } = useNoticeSearchWithQuery()
 
   const searchParams = useSearchParams()
 
@@ -58,13 +57,6 @@ export default function NoticeFilters() {
 
   // 로컬 검색 폼 상태 (검색 버튼 클릭 전까지 URL에 반영되지 않음)
   const [localSearchForm, setLocalSearchForm] = useState<NoticeSearchForm>(initialSearchForm)
-
-  // 날짜 변환 로직 분리 - 성능 최적화
-  const parseDateSafely = useCallback((dateString: string) => {
-    if (!dateString) return undefined
-    const date = new Date(dateString)
-    return isNaN(date.getTime()) ? undefined : date
-  }, [])
 
   // 기본값을 일관성 있게 처리하는 헬퍼 함수 - 메모이제이션
   const getFormValues = useCallback(
@@ -80,16 +72,36 @@ export default function NoticeFilters() {
 
   // 폼 값 메모이제이션으로 성능 최적화
   const formValues = useMemo(() => getFormValues(localSearchForm), [localSearchForm, getFormValues])
-  console.log('urlSearchForm', urlSearchForm)
-  console.log('formValues', formValues)
-  console.log('=====')
 
-  // 날짜 범위 생성 로직 분리 및 메모이제이션
-  const dateRange = useMemo((): DateRange | undefined => {
-    const from = parseDateSafely(formValues.startDate)
-    const to = parseDateSafely(formValues.endDate)
-    return from || to ? { from, to } : undefined
-  }, [formValues.startDate, formValues.endDate, parseDateSafely])
+  // 날짜 변환 로직 분리 - 성능 최적화
+  const parseDateSafely = useCallback((dateString: string) => {
+    if (!dateString) return undefined
+    const date = new Date(dateString)
+    return isNaN(date.getTime()) ? undefined : date
+  }, [])
+
+  // 날짜 범위 생성 유틸 함수 - 복잡도 감소
+  const createDateRange = useCallback(
+    (startDate: string, endDate: string): DateRange | undefined => {
+      const to = parseDateSafely(endDate)
+      const from = parseDateSafely(startDate)
+      return from || to ? { from, to } : undefined
+    },
+    [parseDateSafely],
+  )
+
+  // 날짜 범위 표시 텍스트 생성 유틸 함수 - 가독성 향상
+  const formatDateRangeDisplay = useCallback((range: DateRange | undefined): string => {
+    if (!range?.from) return '날짜를 선택해주세요'
+    if (!range.to) return formatToDisplayDate(range.from)
+    return `${formatToDisplayDate(range.from)} - ${formatToDisplayDate(range.to)}`
+  }, [])
+
+  // 날짜 범위 메모이제이션 - 단순화된 로직
+  const dateRange = useMemo(
+    () => createDateRange(formValues.startDate, formValues.endDate),
+    [formValues.startDate, formValues.endDate, createDateRange],
+  )
 
   const form = useForm<SearchFormData>({
     resolver: zodResolver(searchFormSchema),
@@ -227,18 +239,7 @@ export default function NoticeFilters() {
                     )}
                   >
                     <LuCalendar className="h-4 w-4" />
-                    {dateRange?.from ? (
-                      dateRange.to ? (
-                        <>
-                          {formatToDisplayDate(dateRange.from)} -{' '}
-                          {formatToDisplayDate(dateRange.to)}
-                        </>
-                      ) : (
-                        formatToDisplayDate(dateRange.from)
-                      )
-                    ) : (
-                      <span>날짜를 선택해주세요</span>
-                    )}
+                    {formatDateRangeDisplay(dateRange)}
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-auto p-0" align="start">
