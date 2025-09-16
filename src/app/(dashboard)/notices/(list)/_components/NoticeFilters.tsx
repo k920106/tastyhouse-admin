@@ -175,7 +175,14 @@ export default function NoticeFilters() {
                 <Link href="/notices/create">등록</Link>
               </Button>
               <Button type="button" onClick={handleSubmit} disabled={isLoading}>
-                {isLoading ? <Loader2Icon className="animate-spin" /> : '조회'}
+                {isLoading ? (
+                  <>
+                    <Loader2Icon className="animate-spin" />
+                    조회 중...
+                  </>
+                ) : (
+                  '조회'
+                )}
               </Button>
             </>
           }
