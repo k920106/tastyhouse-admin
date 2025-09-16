@@ -19,7 +19,7 @@ import { LuCalendar } from 'react-icons/lu'
 import Link from 'next/link'
 
 import { getNoticeUseStatusLabel } from '@/src/types/notice'
-import { useNoticeFilters } from '@/src/hooks/useNoticeFilters'
+import { useNoticeFilters } from '@/src/hooks/notice/useNoticeFilters'
 import { formatDateRangeDisplay } from '@/src/lib/date-range-utils'
 import { cn } from '@/src/lib/class-utils'
 

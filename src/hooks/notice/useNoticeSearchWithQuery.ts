@@ -7,8 +7,8 @@ import { validateNoticeSearchForm } from '@/src/lib/validations/notice'
 import { NoticeSearchForm } from '@/src/types/notice'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useCallback, useMemo } from 'react'
-import { useToastError } from './useToastError'
-import { useNoticesQuery, type NoticeQueryData } from './queries/useNoticeQueries'
+import { useToastError } from '../useToastError'
+import { useNoticesQuery, type NoticeQueryData } from '../queries/useNoticeQueries'
 
 const parseIntSafely = (value: string | null, fallback: number): number => {
   if (!value) return fallback
