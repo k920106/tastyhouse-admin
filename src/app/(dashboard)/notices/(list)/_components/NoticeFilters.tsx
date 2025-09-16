@@ -44,10 +44,10 @@ const searchFormSchema = z.object({
 type SearchFormData = z.infer<typeof searchFormSchema>
 
 export default function NoticeFilters() {
-  const { updateUrl, isLoading } = useNoticeSearchWithQuery()
+  // const { updateUrl, isLoading } = useNoticeSearchWithQuery()
+  const { urlSearchForm, updateUrl, isLoading } = useNoticeSearchWithQuery()
 
   const searchParams = useSearchParams()
-  const [dateRange, setDateRange] = useState<DateRange | undefined>()
 
   // URL에서 초기 검색 조건 파싱 (페이지 로드 시 한 번만)
   const initialSearchForm = useMemo(
@@ -59,7 +59,14 @@ export default function NoticeFilters() {
   // 로컬 검색 폼 상태 (검색 버튼 클릭 전까지 URL에 반영되지 않음)
   const [localSearchForm, setLocalSearchForm] = useState<NoticeSearchForm>(initialSearchForm)
 
-  // 기본값을 일관성 있게 처리하는 헬퍼 함수
+  // 날짜 변환 로직 분리 - 성능 최적화
+  const parseDateSafely = useCallback((dateString: string) => {
+    if (!dateString) return undefined
+    const date = new Date(dateString)
+    return isNaN(date.getTime()) ? undefined : date
+  }, [])
+
+  // 기본값을 일관성 있게 처리하는 헬퍼 함수 - 메모이제이션
   const getFormValues = useCallback(
     (searchForm: NoticeSearchForm): SearchFormData => ({
       companyId: searchForm.companyId ?? '',
@@ -71,36 +78,28 @@ export default function NoticeFilters() {
     [],
   )
 
+  // 폼 값 메모이제이션으로 성능 최적화
+  const formValues = useMemo(() => getFormValues(localSearchForm), [localSearchForm, getFormValues])
+  console.log('urlSearchForm', urlSearchForm)
+  console.log('formValues', formValues)
+  console.log('=====')
+
+  // 날짜 범위 생성 로직 분리 및 메모이제이션
+  const dateRange = useMemo((): DateRange | undefined => {
+    const from = parseDateSafely(formValues.startDate)
+    const to = parseDateSafely(formValues.endDate)
+    return from || to ? { from, to } : undefined
+  }, [formValues.startDate, formValues.endDate, parseDateSafely])
+
   const form = useForm<SearchFormData>({
     resolver: zodResolver(searchFormSchema),
-    defaultValues: getFormValues(localSearchForm),
+    defaultValues: formValues,
   })
 
+  // 폼 리셋 로직 최적화
   useEffect(() => {
-    const formValues = getFormValues(localSearchForm)
     form.reset(formValues)
-
-    // 날짜 범위 상태 동기화
-    const newDateRange: DateRange | undefined =
-      formValues.startDate || formValues.endDate
-        ? {
-            from: formValues.startDate
-              ? (() => {
-                  const date = new Date(formValues.startDate)
-                  return isNaN(date.getTime()) ? undefined : date
-                })()
-              : undefined,
-            to: formValues.endDate
-              ? (() => {
-                  const date = new Date(formValues.endDate)
-                  return isNaN(date.getTime()) ? undefined : date
-                })()
-              : undefined,
-          }
-        : undefined
-
-    setDateRange(newDateRange)
-  }, [localSearchForm, form, getFormValues])
+  }, [form, formValues])
 
   // 검색 폼 업데이트
   const updateSearchForm = useCallback((updates: Partial<NoticeSearchForm>) => {
@@ -115,8 +114,6 @@ export default function NoticeFilters() {
 
   const handleDateRangeSelect = useCallback(
     (range: DateRange | undefined) => {
-      setDateRange(range)
-
       const newStartDate = range?.from ? formatToAPIDate(range.from) : ''
       const newEndDate = range?.to ? formatToAPIDate(range.to) : ''
 
