@@ -11,11 +11,11 @@ interface SearchActionsProps {
 
 export default function SearchActions({ children, onSearch, loading = false }: SearchActionsProps) {
   return (
-    <div className="flex justify-end gap-3">
+    <>
       {children}
       <Button type="button" onClick={onSearch} disabled={loading}>
         {loading ? <Loader2Icon className="animate-spin" /> : '조회'}
       </Button>
-    </div>
+    </>
   )
 }

@@ -8,7 +8,18 @@ export interface ValidationResult {
 /**
  * 공지사항 검색 폼 검증
  */
-export const validateNoticeSearchForm = (form: NoticeSearchForm): ValidationResult => {
+export const validateNoticeSearchForm = (
+  form: NoticeSearchForm,
+  hasSearchParams?: boolean,
+): ValidationResult => {
+  // 검색 파라미터 여부가 제공되었고 없으면 쿼리 실행하지 않음
+  if (hasSearchParams !== undefined && !hasSearchParams) {
+    return {
+      isValid: false,
+      errors: [],
+    }
+  }
+
   const errors: string[] = []
 
   // 매체사 필수 검증

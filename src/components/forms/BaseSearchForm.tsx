@@ -10,7 +10,7 @@ interface BaseSearchFormProps {
 
 export default function BaseSearchForm({
   children,
-  actions,
+  actions: actions,
   className = '',
 }: BaseSearchFormProps) {
   return (
@@ -20,11 +20,7 @@ export default function BaseSearchForm({
           {children}
         </div>
       </CardContent>
-      {actions && (
-        <CardFooter className="flex justify-end gap-3">
-          {actions}
-        </CardFooter>
-      )}
+      {actions && <CardFooter className="flex justify-end gap-3">{actions}</CardFooter>}
     </Card>
   )
 }

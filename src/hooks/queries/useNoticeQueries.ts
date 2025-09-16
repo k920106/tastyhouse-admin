@@ -1,9 +1,7 @@
-'use client'
-
 import { api } from '@/src/lib/api'
-import { isEmptyValue } from '@/src/lib/validations/notice'
 import { PagedApiResponse } from '@/src/types/api'
 import { NoticeListItem, NoticeSearchForm } from '@/src/types/notice'
+import { isEmptyValue } from '@/src/lib/validations/notice'
 import { useQuery } from '@tanstack/react-query'
 
 interface NoticeQueryParams {
@@ -59,3 +57,5 @@ export const useNoticesQuery = (params: NoticeQueryParams, enabled = true) => {
     throwOnError: false, // 에러를 throw하지 않고 error 상태로 반환
   })
 }
+
+export type { NoticeQueryParams, NoticeQueryData }
