@@ -25,7 +25,7 @@ const searchFormSchema = z.object({
 }) satisfies z.ZodType<NoticeSearchForm>
 
 export const useNoticeFilters = () => {
-  const { updateUrl, isLoading } = useNoticeSearchWithQuery()
+  const { isLoading, updateUrl } = useNoticeSearchWithQuery()
   const searchParams = useSearchParams()
 
   // URL에서 초기 검색 조건 파싱 (페이지 로드 시 한 번만)

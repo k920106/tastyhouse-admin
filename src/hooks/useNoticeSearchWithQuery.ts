@@ -85,11 +85,18 @@ export const useNoticeSearchWithQuery = (): NoticeSearchWithQueryHookResult => {
   useToastError(error, '공지사항 목록 조회 중 오류가 발생했습니다.')
 
   return {
+    // URL 기반 검색 폼 (실제 쿼리용)
     urlSearchForm,
+
+    // 페이지네이션
     currentPage,
     pageSize,
+
+    // 데이터 쿼리 관련
     data,
     isLoading,
+
+    // URL 관련
     updateUrl,
   }
 }
