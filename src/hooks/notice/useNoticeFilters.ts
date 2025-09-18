@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useMemo, useState, useEffect } from 'react'
+import { useCallback, useMemo, useState, useEffect, useRef } from 'react'
 import { useForm } from 'react-hook-form'
 import { useSearchParams } from 'next/navigation'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -87,8 +87,31 @@ export const useNoticeFilters = () => {
     form.reset(formValues)
   }, [form, formValues])
 
-  // 검색 폼 업데이트
+  // 디바운싱을 위한 타이머 ref
+  const debounceTimerRef = useRef<NodeJS.Timeout | null>(null)
+
+  // 디바운싱된 검색 폼 업데이트 (title 필드용)
+  const updateSearchFormDebounced = useCallback((updates: Partial<NoticeSearchForm>) => {
+    if (debounceTimerRef.current) {
+      clearTimeout(debounceTimerRef.current)
+    }
+
+    debounceTimerRef.current = setTimeout(() => {
+      setLocalSearchForm(
+        (prev) =>
+          ({
+            ...prev,
+            ...Object.fromEntries(
+              Object.entries(updates).filter(([, value]) => value !== undefined),
+            ),
+          }) as NoticeSearchForm,
+      )
+    }, 300)
+  }, [])
+
+  // 즉시 검색 폼 업데이트 (select, date 필드용)
   const updateSearchForm = useCallback((updates: Partial<NoticeSearchForm>) => {
+    console.log('updateSearchForm')
     setLocalSearchForm(
       (prev) =>
         ({
@@ -157,6 +180,7 @@ export const useNoticeFilters = () => {
     handleSubmit,
     handleKeyDown,
     updateSearchForm,
+    updateSearchFormDebounced,
 
     // 상태
     isLoading,
