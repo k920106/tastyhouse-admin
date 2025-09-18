@@ -151,16 +151,6 @@ export const useNoticeFilters = () => {
     updateUrl(localSearchForm, 0)
   }, [localSearchForm, updateUrl])
 
-  // 키보드 이벤트 핸들러
-  const handleKeyDown = useCallback(
-    (e: React.KeyboardEvent) => {
-      if (e.key === 'Enter') {
-        handleSearch()
-      }
-    },
-    [handleSearch],
-  )
-
   // 폼 제출 핸들러
   const handleSubmit = useCallback(() => {
     handleSearch()
@@ -178,7 +168,6 @@ export const useNoticeFilters = () => {
     // 검색 관련
     handleSearch,
     handleSubmit,
-    handleKeyDown,
     updateSearchForm,
     updateSearchFormDebounced,
 

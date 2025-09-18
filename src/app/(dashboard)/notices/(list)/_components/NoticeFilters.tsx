@@ -29,7 +29,6 @@ export default function NoticeFilters() {
     dateRange,
     handleDateRangeSelect,
     handleSubmit,
-    handleKeyDown,
     updateSearchForm,
     updateSearchFormDebounced,
     isLoading,
@@ -44,7 +43,7 @@ export default function NoticeFilters() {
               <Button type="button" variant="outline" asChild>
                 <Link href="/notices/create">등록</Link>
               </Button>
-              <Button type="button" onClick={handleSubmit} disabled={isLoading}>
+              <Button type="submit" disabled={isLoading}>
                 {isLoading ? (
                   <>
                     <Loader2Icon className="animate-spin" />
@@ -91,7 +90,6 @@ export default function NoticeFilters() {
                       field.onChange(e)
                       updateSearchFormDebounced({ title: e.target.value })
                     }}
-                    onKeyDown={handleKeyDown}
                     disabled={isLoading}
                   />
                 </FormControl>
