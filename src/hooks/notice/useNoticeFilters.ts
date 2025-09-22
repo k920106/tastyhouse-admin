@@ -27,6 +27,7 @@ const searchFormSchema = z.object({
 export const useNoticeFilters = () => {
   const { isLoading, updateUrl } = useNoticeSearchWithQuery()
   const searchParams = useSearchParams()
+  const [isDatePopoverOpen, setIsDatePopoverOpen] = useState(false)
 
   // URL에서 초기 검색 조건 파싱 (페이지 로드 시 한 번만)
   const initialSearchForm = useMemo(
@@ -164,6 +165,8 @@ export const useNoticeFilters = () => {
     // 날짜 관련
     dateRange,
     handleDateRangeSelect,
+    isDatePopoverOpen,
+    setIsDatePopoverOpen,
 
     // 검색 관련
     handleSearch,

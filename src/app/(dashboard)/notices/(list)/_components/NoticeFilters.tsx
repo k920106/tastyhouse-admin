@@ -32,6 +32,8 @@ export default function NoticeFilters() {
     updateSearchForm,
     updateSearchFormDebounced,
     isLoading,
+    isDatePopoverOpen,
+    setIsDatePopoverOpen,
   } = useNoticeFilters()
 
   return (
@@ -106,7 +108,7 @@ export default function NoticeFilters() {
           <FormItem>
             <FormLabel className="font-semibold">등록일자</FormLabel>
             <FormControl>
-              <Popover>
+              <Popover open={isDatePopoverOpen} onOpenChange={setIsDatePopoverOpen}>
                 <PopoverTrigger asChild>
                   <Button
                     id="date"
@@ -115,6 +117,7 @@ export default function NoticeFilters() {
                     aria-label={dateRange?.from ? '선택된 날짜 범위 수정' : '날짜 범위 선택'}
                     aria-describedby="date-range-description"
                     aria-haspopup="dialog"
+                    aria-expanded={isDatePopoverOpen}
                     className={cn(
                       'w-full justify-start text-left font-normal',
                       !dateRange && 'text-muted-foreground',
