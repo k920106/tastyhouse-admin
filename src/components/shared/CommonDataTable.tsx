@@ -23,6 +23,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/src/components/ui/Select'
+import { TableRowSkeleton } from '@/src/components/ui/Skeleton'
 import {
   Table,
   TableBody,
@@ -32,7 +33,6 @@ import {
   TableRow,
 } from '@/src/components/ui/Table'
 import { Tabs, TabsContent } from '@/src/components/ui/Tabs'
-import { TableRowSkeleton } from '@/src/components/ui/Skeleton'
 
 interface DataTableProps<T> {
   columns: ColumnDef<T>[]
@@ -71,7 +71,7 @@ export function CommonDataTable<T extends { id: number | string }>({
     },
     getCoreRowModel: getCoreRowModel(),
     getRowId: (row: T) => row.id.toString(),
-    enableRowSelection: true,
+    enableRowSelection: !loading,
     onRowSelectionChange: setRowSelection,
     manualPagination: true,
     pageCount,
@@ -161,6 +161,7 @@ export function CommonDataTable<T extends { id: number | string }>({
               </Label>
               <Select
                 value={`${pageSize}`}
+                disabled={loading}
                 onValueChange={(value) => {
                   handlePageSizeChange(Number(value))
                 }}
@@ -185,7 +186,7 @@ export function CommonDataTable<T extends { id: number | string }>({
                 variant="outline"
                 className="hidden h-8 w-8 p-0 lg:flex"
                 onClick={() => handlePageIndexChange(0)}
-                disabled={!canPreviousPage}
+                disabled={!canPreviousPage || loading}
               >
                 <span className="sr-only">Go to first page</span>
                 <IconChevronsLeft />
@@ -195,7 +196,7 @@ export function CommonDataTable<T extends { id: number | string }>({
                 className="size-8"
                 size="icon"
                 onClick={() => handlePageIndexChange(currentPage - 1)}
-                disabled={!canPreviousPage}
+                disabled={!canPreviousPage || loading}
               >
                 <span className="sr-only">Go to previous page</span>
                 <IconChevronLeft />
@@ -205,7 +206,7 @@ export function CommonDataTable<T extends { id: number | string }>({
                 className="size-8"
                 size="icon"
                 onClick={() => handlePageIndexChange(currentPage + 1)}
-                disabled={!canNextPage}
+                disabled={!canNextPage || loading}
               >
                 <span className="sr-only">Go to next page</span>
                 <IconChevronRight />
@@ -215,7 +216,7 @@ export function CommonDataTable<T extends { id: number | string }>({
                 className="hidden size-8 lg:flex"
                 size="icon"
                 onClick={() => handlePageIndexChange(pageCount - 1)}
-                disabled={!canNextPage}
+                disabled={!canNextPage || loading}
               >
                 <span className="sr-only">Go to last page</span>
                 <IconChevronsRight />

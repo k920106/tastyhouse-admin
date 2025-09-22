@@ -2,11 +2,11 @@
 
 import BaseSearchForm from '@/src/components/forms/BaseSearchForm'
 import CompanySelector from '@/src/components/forms/CompanySelector'
-import { Button } from '@/src/components/ui/Button'
+import { Button, buttonVariants } from '@/src/components/ui/Button'
 import { Calendar } from '@/src/components/ui/Calendar'
 import { Form, FormControl, FormField, FormItem, FormLabel } from '@/src/components/ui/Form'
-import { Popover, PopoverContent, PopoverTrigger } from '@/src/components/ui/Popover'
 import { Input } from '@/src/components/ui/Input'
+import { Popover, PopoverContent, PopoverTrigger } from '@/src/components/ui/Popover'
 import {
   Select,
   SelectContent,
@@ -15,13 +15,13 @@ import {
   SelectValue,
 } from '@/src/components/ui/Select'
 import { Loader2Icon } from 'lucide-react'
-import { LuCalendar } from 'react-icons/lu'
 import Link from 'next/link'
+import { LuCalendar } from 'react-icons/lu'
 
-import { getNoticeUseStatusLabel } from '@/src/types/notice'
 import { useNoticeFilters } from '@/src/hooks/notice/useNoticeFilters'
-import { formatDateRangeDisplay } from '@/src/lib/date-range-utils'
 import { cn } from '@/src/lib/class-utils'
+import { formatDateRangeDisplay } from '@/src/lib/date-range-utils'
+import { getNoticeUseStatusLabel } from '@/src/types/notice'
 
 export default function NoticeFilters() {
   const {
@@ -40,9 +40,16 @@ export default function NoticeFilters() {
         <BaseSearchForm
           actions={
             <>
-              <Button type="button" variant="outline" asChild>
-                <Link href="/notices/create">등록</Link>
-              </Button>
+              <Link
+                href={isLoading ? '#' : '/notices/create'}
+                className={cn(
+                  buttonVariants({ variant: 'outline' }),
+                  isLoading && 'pointer-events-none opacity-50',
+                )}
+                aria-disabled={isLoading}
+              >
+                등록
+              </Link>
               <Button type="submit" disabled={isLoading}>
                 {isLoading ? (
                   <>

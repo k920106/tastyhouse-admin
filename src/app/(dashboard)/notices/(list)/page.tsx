@@ -1,9 +1,9 @@
-import { Suspense } from 'react'
 import NoticeFilters from '@/src/app/(dashboard)/notices/(list)/_components/NoticeFilters'
-import NoticeList from './_components/NoticeList'
+import PageListSkeleton from '@/src/components/layout/PageListSkeleton'
 import PageTemplate from '@/src/components/layout/PageTemplate'
 import { NOTICE_LIST_BREADCRUMBS } from '@/src/constants/notice'
-import PageListSkeleton from '@/src/components/layout/PageListSkeleton'
+import { Suspense } from 'react'
+import NoticeList from './_components/NoticeList'
 
 export default function NoticeListPage() {
   return (

@@ -9,7 +9,6 @@ export default function NoticeList() {
   const { currentPage, pageSize, urlSearchForm, updateUrl, data, isLoading } =
     useNoticeSearchWithQuery()
 
-  // 페이지네이션 핸들러
   const handlePageChange = useCallback(
     (newPage: number, newPageSize?: number) => {
       const targetPageSize = newPageSize ?? pageSize
