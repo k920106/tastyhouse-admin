@@ -91,36 +91,45 @@ export const useNoticeFilters = () => {
   // 디바운싱을 위한 타이머 ref
   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null)
 
-  // 디바운싱된 검색 폼 업데이트 (title 필드용)
-  const updateSearchFormDebounced = useCallback((updates: Partial<NoticeSearchForm>) => {
-    if (debounceTimerRef.current) {
-      clearTimeout(debounceTimerRef.current)
-    }
-
-    debounceTimerRef.current = setTimeout(() => {
-      setLocalSearchForm(
-        (prev) =>
-          ({
-            ...prev,
-            ...Object.fromEntries(
-              Object.entries(updates).filter(([, value]) => value !== undefined),
-            ),
-          }) as NoticeSearchForm,
+  // 안전한 폼 업데이트 헬퍼 함수
+  const safeUpdateForm = useCallback(
+    (prev: NoticeSearchForm, updates: Partial<NoticeSearchForm>): NoticeSearchForm => {
+      const filteredUpdates = Object.fromEntries(
+        Object.entries(updates).filter(([, value]) => value !== undefined),
       )
-    }, 300)
-  }, [])
+
+      return {
+        companyId: filteredUpdates.companyId ?? prev.companyId,
+        title: filteredUpdates.title ?? prev.title,
+        startDate: filteredUpdates.startDate ?? prev.startDate,
+        endDate: filteredUpdates.endDate ?? prev.endDate,
+        active: filteredUpdates.active ?? prev.active,
+      }
+    },
+    [],
+  )
+
+  // 디바운싱된 검색 폼 업데이트 (title 필드용)
+  const updateSearchFormDebounced = useCallback(
+    (updates: Partial<NoticeSearchForm>) => {
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current)
+      }
+
+      debounceTimerRef.current = setTimeout(() => {
+        setLocalSearchForm((prev) => safeUpdateForm(prev, updates))
+      }, 300)
+    },
+    [safeUpdateForm],
+  )
 
   // 즉시 검색 폼 업데이트 (select, date 필드용)
-  const updateSearchForm = useCallback((updates: Partial<NoticeSearchForm>) => {
-    console.log('updateSearchForm')
-    setLocalSearchForm(
-      (prev) =>
-        ({
-          ...prev,
-          ...Object.fromEntries(Object.entries(updates).filter(([, value]) => value !== undefined)),
-        }) as NoticeSearchForm,
-    )
-  }, [])
+  const updateSearchForm = useCallback(
+    (updates: Partial<NoticeSearchForm>) => {
+      setLocalSearchForm((prev) => safeUpdateForm(prev, updates))
+    },
+    [safeUpdateForm],
+  )
 
   // 날짜 범위 선택 핸들러
   const handleDateRangeSelect = useCallback(

@@ -56,16 +56,28 @@ export const useNoticeSearchForm = (): NoticeSearchFormHookResult => {
     [router],
   )
 
+  // 안전한 폼 업데이트 헬퍼 함수
+  const safeUpdateForm = useCallback(
+    (prev: NoticeSearchForm, updates: Partial<NoticeSearchForm>): NoticeSearchForm => {
+      const filteredUpdates = Object.fromEntries(
+        Object.entries(updates).filter(([, value]) => value !== undefined),
+      )
+
+      return {
+        companyId: filteredUpdates.companyId ?? prev.companyId,
+        title: filteredUpdates.title ?? prev.title,
+        startDate: filteredUpdates.startDate ?? prev.startDate,
+        endDate: filteredUpdates.endDate ?? prev.endDate,
+        active: filteredUpdates.active ?? prev.active,
+      }
+    },
+    [],
+  )
+
   // 검색 폼 업데이트
   const updateSearchForm = useCallback((updates: Partial<NoticeSearchForm>) => {
-    setSearchForm(
-      (prev) =>
-        ({
-          ...prev,
-          ...Object.fromEntries(Object.entries(updates).filter(([, value]) => value !== undefined)),
-        }) as NoticeSearchForm,
-    )
-  }, [])
+    setSearchForm((prev) => safeUpdateForm(prev, updates))
+  }, [safeUpdateForm])
 
   // 검색 실행
   const handleSearch = useCallback(() => {
