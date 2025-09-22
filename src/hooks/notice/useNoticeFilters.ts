@@ -1,21 +1,20 @@
 'use client'
 
-import { useCallback, useMemo, useState, useEffect, useRef } from 'react'
-import { useForm } from 'react-hook-form'
-import { useSearchParams } from 'next/navigation'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useSearchParams } from 'next/navigation'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { type DateRange } from 'react-day-picker'
+import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import * as z from 'zod'
-import { type DateRange } from 'react-day-picker'
 
-import { type NoticeSearchForm } from '@/src/types/notice'
-import { formatToAPIDate } from '@/src/lib/date-utils'
-import { validateNoticeSearchForm } from '@/src/lib/validations/notice'
-import { parseSearchParamsToForm } from '@/src/lib/url-utils'
 import { INITIAL_NOTICE_SEARCH_FORM } from '@/src/constants/notice'
+import { formatToAPIDate } from '@/src/lib/date-utils'
+import { parseSearchParamsToForm } from '@/src/lib/url-utils'
+import { validateNoticeSearchForm } from '@/src/lib/validations/notice'
+import { type NoticeSearchForm } from '@/src/types/notice'
 import { useNoticeSearchWithQuery } from './useNoticeSearchWithQuery'
 
-// Zod 스키마와 타입 통합 - 타입 안정성 향상
 const searchFormSchema = z.object({
   companyId: z.string(),
   title: z.string(),
@@ -25,15 +24,14 @@ const searchFormSchema = z.object({
 }) satisfies z.ZodType<NoticeSearchForm>
 
 export const useNoticeFilters = () => {
-  const { isLoading, updateUrl } = useNoticeSearchWithQuery()
   const searchParams = useSearchParams()
+  const { isLoading, updateUrl } = useNoticeSearchWithQuery()
   const [isDatePopoverOpen, setIsDatePopoverOpen] = useState(false)
 
-  // URL에서 초기 검색 조건 파싱 (페이지 로드 시 한 번만)
+  // URL에서 초기 검색 조건 파싱 (searchParams 변경 시에만 실행)
   const initialSearchForm = useMemo(
     () => parseSearchParamsToForm(searchParams, INITIAL_NOTICE_SEARCH_FORM),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [],
+    [searchParams],
   )
 
   // 로컬 검색 폼 상태 (검색 버튼 클릭 전까지 URL에 반영되지 않음)

@@ -1,12 +1,12 @@
 'use client'
 
-import { useCallback, useMemo, useState } from 'react'
-import { useSearchParams, useRouter } from 'next/navigation'
-import { ProductSearchForm } from '@/src/types/product'
-import { toast } from 'sonner'
-import { parseSearchParamsToForm, buildSearchParams } from '@/src/lib/url-utils'
 import { INITIAL_PRODUCT_SEARCH_FORM } from '@/src/constants/product'
+import { buildSearchParams, parseSearchParamsToForm } from '@/src/lib/url-utils'
 import { validateProductSearchForm } from '@/src/lib/validations/product'
+import { ProductSearchForm } from '@/src/types/product'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { useCallback, useMemo, useState } from 'react'
+import { toast } from 'sonner'
 
 export interface ProductSearchFormHookResult {
   // 검색 폼 상태 (로컬)
@@ -25,11 +25,10 @@ export const useProductSearchForm = (): ProductSearchFormHookResult => {
   const searchParams = useSearchParams()
   const router = useRouter()
 
-  // URL에서 초기 검색 조건 파싱 (페이지 로드 시 한 번만)
+  // URL에서 초기 검색 조건 파싱 (searchParams 변경 시에만 실행)
   const initialSearchForm = useMemo(
     () => parseSearchParamsToForm(searchParams, INITIAL_PRODUCT_SEARCH_FORM),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [],
+    [searchParams],
   )
 
   // 로컬 검색 폼 상태 (검색 버튼 클릭 전까지 URL에 반영되지 않음)

@@ -1,12 +1,12 @@
 'use client'
 
-import { useCallback, useMemo, useState } from 'react'
-import { useSearchParams, useRouter } from 'next/navigation'
-import { NoticeSearchForm } from '@/src/types/notice'
-import { toast } from 'sonner'
-import { parseSearchParamsToForm, buildSearchParams } from '@/src/lib/url-utils'
 import { INITIAL_NOTICE_SEARCH_FORM } from '@/src/constants/notice'
+import { buildSearchParams, parseSearchParamsToForm } from '@/src/lib/url-utils'
 import { validateNoticeSearchForm } from '@/src/lib/validations/notice'
+import { NoticeSearchForm } from '@/src/types/notice'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { useCallback, useMemo, useState } from 'react'
+import { toast } from 'sonner'
 
 export interface NoticeSearchFormHookResult {
   // 검색 폼 상태 (로컬)
@@ -25,11 +25,10 @@ export const useNoticeSearchForm = (): NoticeSearchFormHookResult => {
   const searchParams = useSearchParams()
   const router = useRouter()
 
-  // URL에서 초기 검색 조건 파싱 (페이지 로드 시 한 번만)
+  // URL에서 초기 검색 조건 파싱 (searchParams 변경 시에만 실행)
   const initialSearchForm = useMemo(
     () => parseSearchParamsToForm(searchParams, INITIAL_NOTICE_SEARCH_FORM),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [],
+    [searchParams],
   )
 
   // 로컬 검색 폼 상태 (검색 버튼 클릭 전까지 URL에 반영되지 않음)
@@ -75,9 +74,12 @@ export const useNoticeSearchForm = (): NoticeSearchFormHookResult => {
   )
 
   // 검색 폼 업데이트
-  const updateSearchForm = useCallback((updates: Partial<NoticeSearchForm>) => {
-    setSearchForm((prev) => safeUpdateForm(prev, updates))
-  }, [safeUpdateForm])
+  const updateSearchForm = useCallback(
+    (updates: Partial<NoticeSearchForm>) => {
+      setSearchForm((prev) => safeUpdateForm(prev, updates))
+    },
+    [safeUpdateForm],
+  )
 
   // 검색 실행
   const handleSearch = useCallback(() => {

@@ -14,7 +14,7 @@ export default function NoticeList() {
       const targetPageSize = newPageSize ?? pageSize
       updateUrl(urlSearchForm, newPage, targetPageSize)
     },
-    [urlSearchForm, pageSize, updateUrl],
+    [pageSize, updateUrl, urlSearchForm],
   )
 
   return (
