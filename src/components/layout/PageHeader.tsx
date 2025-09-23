@@ -9,7 +9,7 @@ import {
 import { Separator } from '@/src/components/ui/Separator'
 import { SidebarTrigger } from '@/src/components/ui/Sidebar'
 
-export interface BreadcrumbItem {
+interface BreadcrumbItem {
   label: string
   href?: string
 }
