@@ -1,14 +1,14 @@
 'use client'
 
-import PageTemplate from '@/src/components/layout/PageTemplate'
 import ProductSearchForm from '@/src/app/(dashboard)/products/(list)/_components/ProductSearchForm'
+import PageTemplate from '@/src/components/layout/PageTemplate'
 import { CommonDataTable } from '@/src/components/shared/CommonDataTable'
-import { createColumns } from '@/src/app/(dashboard)/products/(list)/_components/ProductColumns'
-import { useProductSearchForm } from '@/src/hooks/useProductSearchForm'
-import { useProductPagination } from '@/src/hooks/useProductPagination'
-import { useProductsQuery } from '@/src/hooks/queries/useProductQueries'
-import { useToastError } from '@/src/hooks/useToastError'
 import { PRODUCT_BREADCRUMBS } from '@/src/constants/product'
+import { useProductsQuery } from '@/src/hooks/queries/useProductQueries'
+import { useProductPagination } from '@/src/hooks/useProductPagination'
+import { useProductSearchForm } from '@/src/hooks/useProductSearchForm'
+import { useToastError } from '@/src/hooks/useToastError'
+import { createColumns } from './ProductColumns'
 
 export default function ProductList() {
   const searchFormHook = useProductSearchForm()
