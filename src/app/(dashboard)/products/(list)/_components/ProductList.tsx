@@ -1,9 +1,9 @@
 'use client'
 
 import PageTemplate from '@/src/components/layout/PageTemplate'
-import ProductSearchForm from '@/src/components/features/product/ProductSearchForm'
+import ProductSearchForm from '@/src/app/(dashboard)/products/(list)/_components/ProductSearchForm'
 import { CommonDataTable } from '@/src/components/shared/CommonDataTable'
-import { createColumns } from '@/src/components/features/product/ProductColumns'
+import { createColumns } from '@/src/app/(dashboard)/products/(list)/_components/ProductColumns'
 import { useProductSearchForm } from '@/src/hooks/useProductSearchForm'
 import { useProductPagination } from '@/src/hooks/useProductPagination'
 import { useProductsQuery } from '@/src/hooks/queries/useProductQueries'

@@ -1,6 +1,6 @@
 'use client'
 
-import { createColumns } from '@/src/components/features/notice/NoticeColumns'
+import { createColumns } from '@/src/app/(dashboard)/notices/(list)/_components/NoticeColumns'
 import { CommonDataTable } from '@/src/components/shared/CommonDataTable'
 import { useNoticeSearchWithQuery } from '@/src/hooks/notice/useNoticeSearchWithQuery'
 import { useCallback } from 'react'
