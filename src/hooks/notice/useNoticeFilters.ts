@@ -1,16 +1,13 @@
 'use client'
 
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useSearchParams } from 'next/navigation'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { type DateRange } from 'react-day-picker'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import * as z from 'zod'
 
-import { INITIAL_NOTICE_SEARCH_FORM } from '@/src/constants/notice'
 import { formatToAPIDate } from '@/src/lib/date-utils'
-import { parseSearchParamsToForm } from '@/src/lib/url-utils'
 import { validateNoticeSearchForm } from '@/src/lib/validations/notice'
 import { type NoticeSearchForm } from '@/src/types/notice'
 import { useNoticeSearchWithQuery } from './useNoticeSearchWithQuery'
@@ -24,35 +21,16 @@ const searchFormSchema = z.object({
 }) satisfies z.ZodType<NoticeSearchForm>
 
 export const useNoticeFilters = () => {
-  const searchParams = useSearchParams()
-  const { isLoading, updateUrl } = useNoticeSearchWithQuery()
+  const { urlSearchForm, isLoading, updateUrl } = useNoticeSearchWithQuery()
   const [isDatePopoverOpen, setIsDatePopoverOpen] = useState(false)
 
-  // URL에서 초기 검색 조건 파싱 (searchParams 변경 시에만 실행)
-  const initialSearchForm = useMemo(
-    () => parseSearchParamsToForm(searchParams, INITIAL_NOTICE_SEARCH_FORM),
-    [searchParams],
-  )
+  // 임시 입력값 상태 (검색 버튼 클릭 전까지만 유지)
+  const [searchForm, setSearchForm] = useState<NoticeSearchForm>(urlSearchForm)
 
-  // 로컬 검색 폼 상태 (검색 버튼 클릭 전까지 URL에 반영되지 않음)
-  const [localSearchForm, setLocalSearchForm] = useState<NoticeSearchForm>(initialSearchForm)
-
-  // 날짜 변환 로직 분리 - 성능 최적화
-  const parseDateSafely = useCallback((dateString: string) => {
-    if (!dateString) return undefined
-    const date = new Date(dateString)
-    return isNaN(date.getTime()) ? undefined : date
-  }, [])
-
-  // 날짜 범위 생성 유틸 함수 - 복잡도 감소
-  const createDateRange = useCallback(
-    (startDate: string, endDate: string): DateRange | undefined => {
-      const to = parseDateSafely(endDate)
-      const from = parseDateSafely(startDate)
-      return from || to ? { from, to } : undefined
-    },
-    [parseDateSafely],
-  )
+  // URL 상태가 변경되면 임시 폼도 동기화
+  useEffect(() => {
+    setSearchForm(urlSearchForm)
+  }, [urlSearchForm])
 
   // 기본값을 일관성 있게 처리하는 헬퍼 함수 - 타입 안정성 향상
   const getFormValues = useCallback(
@@ -67,13 +45,7 @@ export const useNoticeFilters = () => {
   )
 
   // 폼 값 메모이제이션으로 성능 최적화
-  const formValues = useMemo(() => getFormValues(localSearchForm), [localSearchForm, getFormValues])
-
-  // 날짜 범위 메모이제이션 - 단순화된 로직
-  const dateRange = useMemo(
-    () => createDateRange(formValues.startDate, formValues.endDate),
-    [formValues.startDate, formValues.endDate, createDateRange],
-  )
+  const formValues = useMemo(() => getFormValues(searchForm), [searchForm, getFormValues])
 
   // React Hook Form 설정
   const form = useForm<NoticeSearchForm>({
@@ -115,7 +87,7 @@ export const useNoticeFilters = () => {
       }
 
       debounceTimerRef.current = setTimeout(() => {
-        setLocalSearchForm((prev) => safeUpdateForm(prev, updates))
+        setSearchForm((prev) => safeUpdateForm(prev, updates))
       }, 300)
     },
     [safeUpdateForm],
@@ -124,9 +96,32 @@ export const useNoticeFilters = () => {
   // 즉시 검색 폼 업데이트 (select, date 필드용)
   const updateSearchForm = useCallback(
     (updates: Partial<NoticeSearchForm>) => {
-      setLocalSearchForm((prev) => safeUpdateForm(prev, updates))
+      setSearchForm((prev) => safeUpdateForm(prev, updates))
     },
     [safeUpdateForm],
+  )
+
+  // 날짜 변환 로직 분리 - 성능 최적화
+  const parseDateSafely = useCallback((dateString: string) => {
+    if (!dateString) return undefined
+    const date = new Date(dateString)
+    return isNaN(date.getTime()) ? undefined : date
+  }, [])
+
+  // 날짜 범위 생성 유틸 함수 - 복잡도 감소
+  const createDateRange = useCallback(
+    (startDate: string, endDate: string): DateRange | undefined => {
+      const to = parseDateSafely(endDate)
+      const from = parseDateSafely(startDate)
+      return from || to ? { from, to } : undefined
+    },
+    [parseDateSafely],
+  )
+
+  // 날짜 범위 메모이제이션 - 단순화된 로직
+  const dateRange = useMemo(
+    () => createDateRange(formValues.startDate, formValues.endDate),
+    [formValues.startDate, formValues.endDate, createDateRange],
   )
 
   // 날짜 범위 선택 핸들러
@@ -148,7 +143,7 @@ export const useNoticeFilters = () => {
 
   // 검색 실행
   const handleSearch = useCallback(() => {
-    const validation = validateNoticeSearchForm(localSearchForm)
+    const validation = validateNoticeSearchForm(searchForm)
 
     if (!validation.isValid) {
       validation.errors.forEach((error) => toast.error(error))
@@ -156,8 +151,8 @@ export const useNoticeFilters = () => {
     }
 
     // 검색 조건을 URL에 반영하여 쿼리 실행 (페이지는 0으로 리셋)
-    updateUrl(localSearchForm, 0)
-  }, [localSearchForm, updateUrl])
+    updateUrl(searchForm, 0)
+  }, [searchForm, updateUrl])
 
   // 폼 제출 핸들러
   const handleSubmit = useCallback(() => {
