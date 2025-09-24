@@ -6,7 +6,7 @@ import { NoticeSearchForm } from '@/src/types/notice'
 
 interface CompanyFieldProps {
   control: Control<NoticeSearchForm>
-  isLoading?: boolean
+  isLoading: boolean
 }
 
 export default function CompanyField({ control, isLoading = false }: CompanyFieldProps) {

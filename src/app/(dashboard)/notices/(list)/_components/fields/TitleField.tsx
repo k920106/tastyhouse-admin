@@ -6,7 +6,7 @@ import { NoticeSearchForm } from '@/src/types/notice'
 
 interface TitleFieldProps {
   control: Control<NoticeSearchForm>
-  isLoading?: boolean
+  isLoading: boolean
 }
 
 export default function TitleField({ control, isLoading = false }: TitleFieldProps) {

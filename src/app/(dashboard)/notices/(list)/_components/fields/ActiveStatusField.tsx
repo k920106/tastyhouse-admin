@@ -12,7 +12,7 @@ import { NoticeActiveFilter, NoticeSearchForm, getNoticeUseStatusLabel } from '@
 
 interface ActiveStatusFieldProps {
   control: Control<NoticeSearchForm>
-  isLoading?: boolean
+  isLoading: boolean
 }
 
 export default function ActiveStatusField({ control, isLoading = false }: ActiveStatusFieldProps) {

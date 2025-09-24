@@ -15,7 +15,7 @@ import { NoticeSearchForm } from '@/src/types/notice'
 interface DateRangeFieldProps {
   watch: UseFormWatch<NoticeSearchForm>
   setValue: UseFormSetValue<NoticeSearchForm>
-  isLoading?: boolean
+  isLoading: boolean
 }
 
 export default function DateRangeField({
