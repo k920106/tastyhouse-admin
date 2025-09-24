@@ -1,7 +1,7 @@
 'use client'
 
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect } from 'react'
 import { type DateRange } from 'react-day-picker'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
@@ -42,128 +42,55 @@ const searchFormSchema = z.object({
 
 export default function NoticeFilters() {
   const { urlSearchForm, isLoading, updateUrl } = useNoticeSearchWithQuery()
-  const [isDatePopoverOpen, setIsDatePopoverOpen] = useState(false)
 
-  // 임시 입력값 상태 (검색 버튼 클릭 전까지만 유지)
-  const [searchForm, setSearchForm] = useState<NoticeSearchForm>(urlSearchForm)
-
-  // URL 상태가 변경되면 임시 폼도 동기화
-  useEffect(() => {
-    setSearchForm(urlSearchForm)
-  }, [urlSearchForm])
-
-  // 기본값을 일관성 있게 처리하는 헬퍼 함수 - 타입 안정성 향상
-  const getFormValues = useCallback(
-    (searchForm: NoticeSearchForm): NoticeSearchForm => ({
-      companyId: searchForm.companyId ?? '',
-      title: searchForm.title ?? '',
-      startDate: searchForm.startDate ?? '',
-      endDate: searchForm.endDate ?? '',
-      active: searchForm.active ?? '',
-    }),
-    [],
-  )
-
-  // 폼 값 메모이제이션으로 성능 최적화
-  const formValues = useMemo(() => getFormValues(searchForm), [searchForm, getFormValues])
-
-  // React Hook Form 설정
+  // React Hook Form 설정 - URL 상태를 직접 사용
   const form = useForm<NoticeSearchForm>({
     resolver: zodResolver(searchFormSchema),
-    defaultValues: formValues,
+    defaultValues: {
+      companyId: urlSearchForm.companyId ?? '',
+      title: urlSearchForm.title ?? '',
+      startDate: urlSearchForm.startDate ?? '',
+      endDate: urlSearchForm.endDate ?? '',
+      active: urlSearchForm.active ?? '',
+    },
   })
 
-  // 폼 리셋 로직 최적화
+  // URL 상태가 변경되면 폼 리셋
   useEffect(() => {
-    form.reset(formValues)
-  }, [form, formValues])
+    form.reset({
+      companyId: urlSearchForm.companyId ?? '',
+      title: urlSearchForm.title ?? '',
+      startDate: urlSearchForm.startDate ?? '',
+      endDate: urlSearchForm.endDate ?? '',
+      active: urlSearchForm.active ?? '',
+    })
+  }, [form, urlSearchForm])
 
-  // 디바운싱을 위한 타이머 ref
-  const debounceTimerRef = useRef<NodeJS.Timeout | null>(null)
+  // 날짜 범위 생성 - 단순화된 로직
+  const startDate = form.watch('startDate')
+  const endDate = form.watch('endDate')
 
-  // 안전한 폼 업데이트 헬퍼 함수
-  const safeUpdateForm = useCallback(
-    (prev: NoticeSearchForm, updates: Partial<NoticeSearchForm>): NoticeSearchForm => {
-      const filteredUpdates = Object.fromEntries(
-        Object.entries(updates).filter(([, value]) => value !== undefined),
-      )
-
-      return {
-        companyId: filteredUpdates.companyId ?? prev.companyId,
-        title: filteredUpdates.title ?? prev.title,
-        startDate: filteredUpdates.startDate ?? prev.startDate,
-        endDate: filteredUpdates.endDate ?? prev.endDate,
-        active: filteredUpdates.active ?? prev.active,
-      }
-    },
-    [],
-  )
-
-  // 디바운싱된 검색 폼 업데이트 (title 필드용)
-  const updateSearchFormDebounced = useCallback(
-    (updates: Partial<NoticeSearchForm>) => {
-      if (debounceTimerRef.current) {
-        clearTimeout(debounceTimerRef.current)
-      }
-
-      debounceTimerRef.current = setTimeout(() => {
-        setSearchForm((prev) => safeUpdateForm(prev, updates))
-      }, 300)
-    },
-    [safeUpdateForm],
-  )
-
-  // 즉시 검색 폼 업데이트 (select, date 필드용)
-  const updateSearchForm = useCallback(
-    (updates: Partial<NoticeSearchForm>) => {
-      setSearchForm((prev) => safeUpdateForm(prev, updates))
-    },
-    [safeUpdateForm],
-  )
-
-  // 날짜 변환 로직 분리 - 성능 최적화
-  const parseDateSafely = useCallback((dateString: string) => {
-    if (!dateString) return undefined
-    const date = new Date(dateString)
-    return isNaN(date.getTime()) ? undefined : date
-  }, [])
-
-  // 날짜 범위 생성 유틸 함수 - 복잡도 감소
-  const createDateRange = useCallback(
-    (startDate: string, endDate: string): DateRange | undefined => {
-      const to = parseDateSafely(endDate)
-      const from = parseDateSafely(startDate)
-      return from || to ? { from, to } : undefined
-    },
-    [parseDateSafely],
-  )
-
-  // 날짜 범위 메모이제이션 - 단순화된 로직
-  const dateRange = useMemo(
-    () => createDateRange(formValues.startDate, formValues.endDate),
-    [formValues.startDate, formValues.endDate, createDateRange],
-  )
+  const dateRange: DateRange | undefined = (() => {
+    const fromDate = startDate ? new Date(startDate) : undefined
+    const toDate = endDate ? new Date(endDate) : undefined
+    const validFrom = fromDate && !isNaN(fromDate.getTime()) ? fromDate : undefined
+    const validTo = toDate && !isNaN(toDate.getTime()) ? toDate : undefined
+    return validFrom || validTo ? { from: validFrom, to: validTo } : undefined
+  })()
 
   // 날짜 범위 선택 핸들러
-  const handleDateRangeSelect = useCallback(
-    (range: DateRange | undefined) => {
-      const newStartDate = range?.from ? formatToAPIDate(range.from) : ''
-      const newEndDate = range?.to ? formatToAPIDate(range.to) : ''
+  const handleDateRangeSelect = (range: DateRange | undefined) => {
+    const newStartDate = range?.from ? formatToAPIDate(range.from) : ''
+    const newEndDate = range?.to ? formatToAPIDate(range.to) : ''
 
-      form.setValue('startDate', newStartDate)
-      form.setValue('endDate', newEndDate)
+    form.setValue('startDate', newStartDate)
+    form.setValue('endDate', newEndDate)
+  }
 
-      updateSearchForm({
-        startDate: newStartDate,
-        endDate: newEndDate,
-      })
-    },
-    [form, updateSearchForm],
-  )
-
-  // 검색 실행
-  const handleSearch = useCallback(() => {
-    const validation = validateNoticeSearchForm(searchForm)
+  // 폼 제출 핸들러
+  const handleSubmit = () => {
+    const formValues = form.getValues()
+    const validation = validateNoticeSearchForm(formValues)
 
     if (!validation.isValid) {
       validation.errors.forEach((error) => toast.error(error))
@@ -171,13 +98,8 @@ export default function NoticeFilters() {
     }
 
     // 검색 조건을 URL에 반영하여 쿼리 실행 (페이지는 0으로 리셋)
-    updateUrl(searchForm, 0)
-  }, [searchForm, updateUrl])
-
-  // 폼 제출 핸들러
-  const handleSubmit = useCallback(() => {
-    handleSearch()
-  }, [handleSearch])
+    updateUrl(formValues, 0)
+  }
 
   return (
     <Form {...form}>
@@ -218,10 +140,7 @@ export default function NoticeFilters() {
                   <CompanySelector
                     label=""
                     value={field.value ?? ''}
-                    onValueChange={(value) => {
-                      field.onChange(value)
-                      updateSearchForm({ companyId: value })
-                    }}
+                    onValueChange={field.onChange}
                     loading={isLoading}
                   />
                 </FormControl>
@@ -238,10 +157,7 @@ export default function NoticeFilters() {
                   <Input
                     type="text"
                     value={field.value ?? ''}
-                    onChange={(e) => {
-                      field.onChange(e)
-                      updateSearchFormDebounced({ title: e.target.value })
-                    }}
+                    onChange={field.onChange}
                     disabled={isLoading}
                   />
                 </FormControl>
@@ -251,7 +167,7 @@ export default function NoticeFilters() {
           <FormItem>
             <FormLabel className="font-semibold">등록일자</FormLabel>
             <FormControl>
-              <Popover open={isDatePopoverOpen} onOpenChange={setIsDatePopoverOpen}>
+              <Popover>
                 <PopoverTrigger asChild>
                   <Button
                     id="date"
@@ -260,7 +176,6 @@ export default function NoticeFilters() {
                     aria-label={dateRange?.from ? '선택된 날짜 범위 수정' : '날짜 범위 선택'}
                     aria-describedby="date-range-description"
                     aria-haspopup="dialog"
-                    aria-expanded={isDatePopoverOpen}
                     className={cn(
                       'w-full justify-start text-left font-normal',
                       !dateRange && 'text-muted-foreground',
@@ -292,10 +207,7 @@ export default function NoticeFilters() {
                 <FormControl>
                   <Select
                     value={field.value ?? ''}
-                    onValueChange={(value) => {
-                      field.onChange(value)
-                      updateSearchForm({ active: value })
-                    }}
+                    onValueChange={field.onChange}
                     disabled={isLoading}
                   >
                     <SelectTrigger className="w-full">
