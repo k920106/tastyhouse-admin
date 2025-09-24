@@ -8,7 +8,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/src/components/ui/Select'
-import { getNoticeUseStatusLabel, NoticeSearchForm } from '@/src/types/notice'
+import { NoticeActiveFilter, NoticeSearchForm, getNoticeUseStatusLabel } from '@/src/types/notice'
 
 interface ActiveStatusFieldProps {
   control: Control<NoticeSearchForm>
@@ -25,8 +25,8 @@ export default function ActiveStatusField({ control, isLoading = false }: Active
           <FormLabel className="font-semibold">사용 여부</FormLabel>
           <FormControl>
             <Select
-              value={field.value ?? ''}
-              onValueChange={field.onChange}
+              value={(field.value as NoticeActiveFilter) ?? 'all'}
+              onValueChange={(value: NoticeActiveFilter) => field.onChange(value)}
               disabled={isLoading}
             >
               <SelectTrigger className="w-full">

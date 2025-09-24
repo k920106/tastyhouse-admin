@@ -26,7 +26,7 @@ const searchFormSchema = z.object({
   title: z.string(),
   startDate: z.string(),
   endDate: z.string(),
-  active: z.string(),
+  active: z.enum(['all', 'true', 'false']),
 }) satisfies z.ZodType<NoticeSearchForm>
 
 export default function NoticeFilters() {

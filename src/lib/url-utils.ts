@@ -3,7 +3,7 @@ import { INITIAL_PAGINATION } from '@/src/lib/constants'
 /**
  * URL 쿼리 파라미터를 지정된 폼 타입으로 변환하는 범용 함수
  */
-export const parseSearchParamsToForm = <T extends Record<string, string>>(
+export const parseSearchParamsToForm = <T extends Record<string, unknown>>(
   searchParams: URLSearchParams,
   defaultForm: T,
 ): T => {
@@ -19,8 +19,8 @@ export const parseSearchParamsToForm = <T extends Record<string, string>>(
 /**
  * 폼 데이터를 URL 쿼리 파라미터로 변환하는 범용 함수
  */
-export const buildSearchParams = <T extends Record<string, string>>(
-  form: Record<string, string>,
+export const buildSearchParams = <T extends Record<string, unknown>>(
+  form: Record<string, unknown>,
   defaultForm: T,
   currentPage?: number,
   pageSize?: number,
@@ -29,8 +29,9 @@ export const buildSearchParams = <T extends Record<string, string>>(
 
   // 검색 폼 파라미터 추가 (초기값과 다른 경우만)
   Object.entries(form).forEach(([key, value]) => {
-    if (value && value !== 'all' && value !== defaultForm[key as keyof T]) {
-      params.set(key, value)
+    const stringValue = String(value)
+    if (stringValue && stringValue !== 'all' && stringValue !== String(defaultForm[key as keyof T])) {
+      params.set(key, stringValue)
     }
   })
 
