@@ -1,7 +1,7 @@
 import { api } from '@/src/lib/api'
+import { isEmptyValue } from '@/src/lib/string-utils'
 import { PagedApiResponse } from '@/src/types/api'
 import { NoticeListItem, NoticeSearchForm } from '@/src/types/notice'
-import { isEmptyValue } from '@/src/lib/validations/notice'
 import { useQuery } from '@tanstack/react-query'
 
 interface NoticeQueryParams {
@@ -58,4 +58,4 @@ export const useNoticesQuery = (params: NoticeQueryParams, enabled = true) => {
   })
 }
 
-export type { NoticeQueryParams, NoticeQueryData }
+export type { NoticeQueryData, NoticeQueryParams }

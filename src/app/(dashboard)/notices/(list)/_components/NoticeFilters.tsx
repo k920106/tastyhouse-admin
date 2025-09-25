@@ -59,7 +59,7 @@ export default function NoticeFilters() {
     const validation = validateNoticeSearchForm(formValues)
 
     if (!validation.isValid) {
-      validation.errors.forEach((error) => toast.error(error))
+      toast.error(validation.error)
       return
     }
 

@@ -71,7 +71,7 @@ export const useProductSearchForm = (): ProductSearchFormHookResult => {
     const validation = validateProductSearchForm(searchForm)
 
     if (!validation.isValid) {
-      validation.errors.forEach((error) => toast.error(error))
+      toast.error(validation.error)
       return
     }
 
