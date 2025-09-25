@@ -1,12 +1,12 @@
 'use client'
 
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useEffect } from 'react'
+import { Loader2Icon } from 'lucide-react'
+import Link from 'next/link'
+import { useEffect, useRef } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import * as z from 'zod'
-import Link from 'next/link'
-import { Loader2Icon } from 'lucide-react'
 
 import BaseSearchForm from '@/src/components/forms/BaseSearchForm'
 import { Button, buttonVariants } from '@/src/components/ui/Button'
@@ -31,6 +31,7 @@ const searchFormSchema = z.object({
 
 export default function NoticeFilters() {
   const { urlSearchForm, isLoading, updateUrl } = useNoticeSearchWithQuery()
+  const submitButtonRef = useRef<HTMLButtonElement>(null)
 
   // React Hook Form 설정 - URL 상태를 직접 사용
   const form = useForm<NoticeSearchForm>({
@@ -57,6 +58,11 @@ export default function NoticeFilters() {
 
   // 폼 제출 핸들러
   const handleSubmit = () => {
+    // 로딩 중이면 제출 방지
+    if (isLoading) {
+      return
+    }
+
     const formValues = form.getValues()
     const validation = validateNoticeSearchForm(formValues)
 
@@ -69,9 +75,22 @@ export default function NoticeFilters() {
     updateUrl(formValues, 0)
   }
 
+  // 키보드 이벤트 핸들러
+  const handleKeyDown = (event: React.KeyboardEvent) => {
+    // Enter 키를 누르면 검색 실행
+    if (event.key === 'Enter' && !isLoading) {
+      event.preventDefault()
+      handleSubmit()
+      // 검색 후 submit 버튼에 포커스
+      setTimeout(() => {
+        submitButtonRef.current?.focus()
+      }, 100)
+    }
+  }
+
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleSubmit)}>
+      <form onSubmit={form.handleSubmit(handleSubmit)} onKeyDown={handleKeyDown}>
         <BaseSearchForm
           actions={
             <>
@@ -85,7 +104,7 @@ export default function NoticeFilters() {
               >
                 등록
               </Link>
-              <Button type="submit" disabled={isLoading}>
+              <Button ref={submitButtonRef} type="submit" disabled={isLoading}>
                 {isLoading ? (
                   <>
                     <Loader2Icon className="animate-spin" />
