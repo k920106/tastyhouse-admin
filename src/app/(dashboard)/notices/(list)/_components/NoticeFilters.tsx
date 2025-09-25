@@ -3,7 +3,7 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Loader2Icon } from 'lucide-react'
 import Link from 'next/link'
-import { useEffect, useRef } from 'react'
+import { useMemo, useRef } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import * as z from 'zod'
@@ -33,28 +33,20 @@ export default function NoticeFilters() {
   const { urlSearchForm, isLoading, updateUrl } = useNoticeSearchWithQuery()
   const submitButtonRef = useRef<HTMLButtonElement>(null)
 
-  // React Hook Form 설정 - URL 상태를 직접 사용
+  // URL 상태를 기반으로 한 기본값 메모이제이션
+  const defaultValues = useMemo(() => ({
+    companyId: urlSearchForm.companyId ?? '',
+    title: urlSearchForm.title ?? '',
+    startDate: urlSearchForm.startDate ?? '',
+    endDate: urlSearchForm.endDate ?? '',
+    active: urlSearchForm.active ?? '',
+  }), [urlSearchForm])
+
+  // React Hook Form 설정 - 메모이제이션된 기본값 사용
   const form = useForm<NoticeSearchForm>({
     resolver: zodResolver(searchFormSchema),
-    defaultValues: {
-      companyId: urlSearchForm.companyId ?? '',
-      title: urlSearchForm.title ?? '',
-      startDate: urlSearchForm.startDate ?? '',
-      endDate: urlSearchForm.endDate ?? '',
-      active: urlSearchForm.active ?? '',
-    },
+    values: defaultValues, // defaultValues 대신 values 사용으로 자동 리셋 처리
   })
-
-  // URL 상태가 변경되면 폼 리셋
-  useEffect(() => {
-    form.reset({
-      companyId: urlSearchForm.companyId ?? '',
-      title: urlSearchForm.title ?? '',
-      startDate: urlSearchForm.startDate ?? '',
-      endDate: urlSearchForm.endDate ?? '',
-      active: urlSearchForm.active ?? '',
-    })
-  }, [form, urlSearchForm])
 
   // 폼 제출 핸들러
   const handleSubmit = () => {
