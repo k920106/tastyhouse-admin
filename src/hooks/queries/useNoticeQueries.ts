@@ -1,11 +1,11 @@
 import { api } from '@/src/lib/api'
 import { isEmptyValue } from '@/src/lib/string-utils'
 import { PagedApiResponse } from '@/src/types/api'
-import { NoticeListItem, NoticeSearchForm } from '@/src/types/notice'
+import { NoticeListItem, NoticeSearchFormInput } from '@/src/types/notice'
 import { useQuery } from '@tanstack/react-query'
 
 interface NoticeQueryParams {
-  searchForm: NoticeSearchForm
+  searchForm: NoticeSearchFormInput
   pagination: {
     page: number
     size: number

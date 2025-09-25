@@ -10,11 +10,11 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/src/components/ui/Pop
 import { cn } from '@/src/lib/class-utils'
 import { formatDateRangeDisplay } from '@/src/lib/date-range-utils'
 import { formatToAPIDate } from '@/src/lib/date-utils'
-import { NoticeSearchForm } from '@/src/types/notice'
+import { NoticeSearchFormInput } from '@/src/types/notice'
 
 interface DateRangeFieldProps {
-  watch: UseFormWatch<NoticeSearchForm>
-  setValue: UseFormSetValue<NoticeSearchForm>
+  watch: UseFormWatch<NoticeSearchFormInput>
+  setValue: UseFormSetValue<NoticeSearchFormInput>
   isLoading: boolean
 }
 

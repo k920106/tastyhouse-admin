@@ -1,12 +1,12 @@
 import { isEmptyValue } from '@/src/lib/string-utils'
 import { ValidationResult } from '@/src/types/common'
-import { NoticeSearchForm } from '@/src/types/notice'
+import { NoticeSearchFormInput } from '@/src/types/notice'
 
 /**
  * 공지사항 검색 폼 검증
  */
 export const validateNoticeSearchForm = (
-  form: NoticeSearchForm,
+  form: NoticeSearchFormInput,
   hasSearchParams?: boolean,
 ): ValidationResult => {
   // 검색 파라미터 여부가 제공되었고 없으면 쿼리 실행하지 않음

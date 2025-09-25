@@ -4,11 +4,11 @@ import { INITIAL_NOTICE_SEARCH_FORM } from '@/src/constants/notice'
 import { INITIAL_PAGINATION } from '@/src/lib/constants'
 import { buildSearchParams, parseSearchParamsToForm } from '@/src/lib/url-utils'
 import { validateNoticeSearchForm } from '@/src/lib/validations/notice'
-import { NoticeSearchForm } from '@/src/types/notice'
+import { NoticeSearchFormInput } from '@/src/types/notice'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useCallback, useMemo } from 'react'
-import { useToastError } from '../useToastError'
 import { useNoticesQuery, type NoticeQueryData } from '../queries/useNoticeQueries'
+import { useToastError } from '../useToastError'
 
 const parseIntSafely = (value: string | null, fallback: number): number => {
   if (!value) return fallback
@@ -18,7 +18,7 @@ const parseIntSafely = (value: string | null, fallback: number): number => {
 
 export interface NoticeSearchWithQueryHookResult {
   // URL 기반 검색 폼 (실제 쿼리용)
-  urlSearchForm: NoticeSearchForm
+  urlSearchForm: NoticeSearchFormInput
 
   // 페이지네이션
   currentPage: number
@@ -29,7 +29,7 @@ export interface NoticeSearchWithQueryHookResult {
   isLoading: boolean
 
   // 액션들
-  updateUrl: (form: NoticeSearchForm, page?: number, size?: number) => void
+  updateUrl: (form: NoticeSearchFormInput, page?: number, size?: number) => void
 }
 
 export const useNoticeSearchWithQuery = (): NoticeSearchWithQueryHookResult => {
@@ -55,7 +55,7 @@ export const useNoticeSearchWithQuery = (): NoticeSearchWithQueryHookResult => {
 
   // URL 업데이트 헬퍼
   const updateUrl = useCallback(
-    (form: NoticeSearchForm, page: number = 0, size?: number) => {
+    (form: NoticeSearchFormInput, page: number = 0, size?: number) => {
       const targetSize = size ?? pageSize
       const params = buildSearchParams(form, INITIAL_NOTICE_SEARCH_FORM, page, targetSize)
       const url = params.toString() ? `?${params.toString()}` : ''

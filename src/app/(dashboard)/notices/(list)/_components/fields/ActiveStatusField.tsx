@@ -8,10 +8,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/src/components/ui/Select'
-import { NoticeActiveFilter, NoticeSearchForm, getNoticeUseStatusLabel } from '@/src/types/notice'
+import { NoticeActiveFilter, NoticeSearchFormInput, getNoticeUseStatusLabel } from '@/src/types/notice'
 
 interface ActiveStatusFieldProps {
-  control: Control<NoticeSearchForm>
+  control: Control<NoticeSearchFormInput>
   isLoading: boolean
 }
 

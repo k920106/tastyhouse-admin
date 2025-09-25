@@ -2,10 +2,10 @@ import { Control } from 'react-hook-form'
 
 import CompanySelector from '@/src/components/forms/CompanySelector'
 import { FormControl, FormField, FormItem, FormLabel } from '@/src/components/ui/Form'
-import { NoticeSearchForm } from '@/src/types/notice'
+import { NoticeSearchFormInput } from '@/src/types/notice'
 
 interface CompanyFieldProps {
-  control: Control<NoticeSearchForm>
+  control: Control<NoticeSearchFormInput>
   isLoading: boolean
 }
 

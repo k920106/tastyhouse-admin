@@ -1,7 +1,7 @@
 'use client'
 
 import { api } from '@/src/lib/api'
-import { isEmptyValue } from '@/src/lib/validations/product'
+import { isEmptyValue } from '@/src/lib/string-utils'
 import { PagedApiResponse } from '@/src/types/api'
 import { ProductListItem, ProductSearchForm } from '@/src/types/product'
 import { useQuery } from '@tanstack/react-query'

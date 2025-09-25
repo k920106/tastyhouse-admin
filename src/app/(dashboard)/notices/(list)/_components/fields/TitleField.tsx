@@ -2,10 +2,10 @@ import { Control } from 'react-hook-form'
 
 import { FormControl, FormField, FormItem, FormLabel } from '@/src/components/ui/Form'
 import { Input } from '@/src/components/ui/Input'
-import { NoticeSearchForm } from '@/src/types/notice'
+import { NoticeSearchFormInput } from '@/src/types/notice'
 
 interface TitleFieldProps {
-  control: Control<NoticeSearchForm>
+  control: Control<NoticeSearchFormInput>
   isLoading: boolean
 }
 

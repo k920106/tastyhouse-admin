@@ -29,8 +29,6 @@ export interface NoticeSearchQuery {
   isActive?: boolean
 }
 
-// 기존 호환성을 위한 별칭
-export type NoticeSearchForm = NoticeSearchFormInput
 
 export interface NoticeCreateRequest {
   companyId: number

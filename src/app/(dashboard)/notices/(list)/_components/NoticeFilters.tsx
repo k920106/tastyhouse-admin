@@ -14,7 +14,7 @@ import { Form } from '@/src/components/ui/Form'
 import { useNoticeSearchWithQuery } from '@/src/hooks/notice/useNoticeSearchWithQuery'
 import { cn } from '@/src/lib/class-utils'
 import { validateNoticeSearchForm } from '@/src/lib/validations/notice'
-import { type NoticeSearchForm } from '@/src/types/notice'
+import { type NoticeSearchFormInput } from '@/src/types/notice'
 
 import ActiveStatusField from './fields/ActiveStatusField'
 import CompanyField from './fields/CompanyField'
@@ -27,7 +27,7 @@ const searchFormSchema = z.object({
   startDate: z.string(),
   endDate: z.string(),
   active: z.enum(['all', 'true', 'false']),
-}) satisfies z.ZodType<NoticeSearchForm>
+}) satisfies z.ZodType<NoticeSearchFormInput>
 
 export default function NoticeFilters() {
   const { urlSearchForm, isLoading, updateUrl } = useNoticeSearchWithQuery()
@@ -43,7 +43,7 @@ export default function NoticeFilters() {
   }), [urlSearchForm])
 
   // React Hook Form 설정 - 메모이제이션된 기본값 사용
-  const form = useForm<NoticeSearchForm>({
+  const form = useForm<NoticeSearchFormInput>({
     resolver: zodResolver(searchFormSchema),
     values: defaultValues, // defaultValues 대신 values 사용으로 자동 리셋 처리
   })
