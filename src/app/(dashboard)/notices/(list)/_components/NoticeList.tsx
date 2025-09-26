@@ -14,11 +14,7 @@ const createColumns = (currentPage: number, pageSize: number): ColumnDef<NoticeL
     meta: {
       className: 'border-x text-center',
     },
-    cell: ({ row }) => (
-      <div aria-label={`${currentPage * pageSize + row.index + 1}번째 행`}>
-        {currentPage * pageSize + row.index + 1}
-      </div>
-    ),
+    cell: ({ row }) => <div>{currentPage * pageSize + row.index + 1}</div>,
   },
   {
     accessorKey: 'companyName',

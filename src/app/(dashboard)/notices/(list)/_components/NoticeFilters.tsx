@@ -34,13 +34,16 @@ export default function NoticeFilters() {
   const submitButtonRef = useRef<HTMLButtonElement>(null)
 
   // URL 상태를 기반으로 한 기본값 메모이제이션
-  const defaultValues = useMemo(() => ({
-    companyId: urlSearchForm.companyId ?? '',
-    title: urlSearchForm.title ?? '',
-    startDate: urlSearchForm.startDate ?? '',
-    endDate: urlSearchForm.endDate ?? '',
-    active: urlSearchForm.active ?? '',
-  }), [urlSearchForm])
+  const defaultValues = useMemo(
+    () => ({
+      companyId: urlSearchForm.companyId ?? '',
+      title: urlSearchForm.title ?? '',
+      startDate: urlSearchForm.startDate ?? '',
+      endDate: urlSearchForm.endDate ?? '',
+      active: urlSearchForm.active ?? '',
+    }),
+    [urlSearchForm],
+  )
 
   // React Hook Form 설정 - 메모이제이션된 기본값 사용
   const form = useForm<NoticeSearchFormInput>({
@@ -87,12 +90,11 @@ export default function NoticeFilters() {
           actions={
             <>
               <Link
-                href={isLoading ? '#' : '/notices/create'}
+                href="/notices/create"
                 className={cn(
                   buttonVariants({ variant: 'outline' }),
                   isLoading && 'pointer-events-none opacity-50',
                 )}
-                aria-disabled={isLoading}
               >
                 등록
               </Link>

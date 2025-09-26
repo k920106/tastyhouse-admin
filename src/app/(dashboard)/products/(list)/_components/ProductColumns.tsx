@@ -1,9 +1,9 @@
 'use client'
 
-import { ColumnDef } from '@tanstack/react-table'
 import { Checkbox } from '@/src/components/ui/Checkbox'
-import { ProductListItem, getProductDisplayStatusLabel } from '@/src/types/product'
 import { formatNumberWithCommas } from '@/src/lib/number-utils'
+import { ProductListItem, getProductDisplayStatusLabel } from '@/src/types/product'
+import { ColumnDef } from '@tanstack/react-table'
 
 export const createColumns = (
   currentPage: number,
@@ -19,7 +19,6 @@ export const createColumns = (
             (table.getIsSomePageRowsSelected() && 'indeterminate')
           }
           onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-          aria-label="Select all"
         />
       </div>
     ),
@@ -28,7 +27,6 @@ export const createColumns = (
         <Checkbox
           checked={row.getIsSelected()}
           onCheckedChange={(value) => row.toggleSelected(!!value)}
-          aria-label="Select row"
         />
       </div>
     ),
