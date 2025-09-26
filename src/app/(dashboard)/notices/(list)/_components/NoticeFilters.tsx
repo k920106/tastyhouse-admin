@@ -3,7 +3,7 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Loader2Icon } from 'lucide-react'
 import Link from 'next/link'
-import { useMemo, useRef } from 'react'
+import { useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import * as z from 'zod'
@@ -12,6 +12,7 @@ import BaseSearchForm from '@/src/components/forms/BaseSearchForm'
 import { Button, buttonVariants } from '@/src/components/ui/Button'
 import { Form } from '@/src/components/ui/Form'
 import { useNoticeSearchWithQuery } from '@/src/hooks/notice/useNoticeSearchWithQuery'
+import { useSearchFormKeyboard } from '@/src/hooks/useSearchFormKeyboard'
 import { cn } from '@/src/lib/class-utils'
 import { validateNoticeSearchForm } from '@/src/lib/validations/notice'
 import { type NoticeSearchFormInput } from '@/src/types/notice'
@@ -31,7 +32,6 @@ const searchFormSchema = z.object({
 
 export default function NoticeFilters() {
   const { urlSearchForm, isLoading, updateUrl } = useNoticeSearchWithQuery()
-  const submitButtonRef = useRef<HTMLButtonElement>(null)
 
   // URL 상태를 기반으로 한 기본값 메모이제이션
   const defaultValues = useMemo(
@@ -70,18 +70,11 @@ export default function NoticeFilters() {
     updateUrl(formValues, 0)
   }
 
-  // 키보드 이벤트 핸들러
-  const handleKeyDown = (event: React.KeyboardEvent) => {
-    // Enter 키를 누르면 검색 실행
-    if (event.key === 'Enter' && !isLoading) {
-      event.preventDefault()
-      handleSubmit()
-      // 검색 후 submit 버튼에 포커스
-      setTimeout(() => {
-        submitButtonRef.current?.focus()
-      }, 100)
-    }
-  }
+  // 키보드 이벤트 핸들러 (커스텀 훅 사용)
+  const { handleKeyDown } = useSearchFormKeyboard({
+    onSubmit: handleSubmit,
+    isLoading,
+  })
 
   return (
     <Form {...form}>
@@ -98,7 +91,7 @@ export default function NoticeFilters() {
               >
                 등록
               </Link>
-              <Button ref={submitButtonRef} type="submit" disabled={isLoading}>
+              <Button type="submit" disabled={isLoading}>
                 {isLoading ? (
                   <>
                     <Loader2Icon className="animate-spin" />
