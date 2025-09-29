@@ -10,14 +10,13 @@ export type NoticeListItem = {
 // 검색 폼에서 사용하는 활성 상태 타입
 export type NoticeActiveFilter = 'all' | 'true' | 'false'
 
-// 폼 입력용 타입 (모든 필드는 문자열)
+// 폼 입력용 타입 (각 필드별 명확한 타입 정의)
 export interface NoticeSearchFormInput {
   companyId: string
   title: string
   startDate: string
   endDate: string
   active: NoticeActiveFilter
-  [key: string]: string
 }
 
 // API 요청용 타입 (실제 서버로 전송될 때)

@@ -20,7 +20,7 @@ export const parseSearchParamsToForm = <T extends Record<string, unknown>>(
  * 폼 데이터를 URL 쿼리 파라미터로 변환하는 범용 함수
  */
 export const buildSearchParams = <T extends Record<string, unknown>>(
-  form: Record<string, unknown>,
+  form: T,
   defaultForm: T,
   currentPage?: number,
   pageSize?: number,
