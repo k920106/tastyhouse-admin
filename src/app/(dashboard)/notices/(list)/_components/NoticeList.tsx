@@ -5,17 +5,9 @@ import { useNoticeSearchWithQuery } from '@/src/hooks/notice/useNoticeSearchWith
 import { formatToYYYYMMDD } from '@/src/lib/date-utils'
 import { NoticeListItem, getNoticeUseStatusLabel } from '@/src/types/notice'
 import { ColumnDef } from '@tanstack/react-table'
-import { useCallback } from 'react'
+import { useCallback, useMemo } from 'react'
 
-const createColumns = (currentPage: number, pageSize: number): ColumnDef<NoticeListItem>[] => [
-  {
-    id: 'rowNumber',
-    header: 'No.',
-    meta: {
-      className: 'border-x text-center',
-    },
-    cell: ({ row }) => <div>{currentPage * pageSize + row.index + 1}</div>,
-  },
+const STATIC_COLUMNS: ColumnDef<NoticeListItem>[] = [
   {
     accessorKey: 'companyName',
     header: '매체사',
@@ -52,9 +44,29 @@ const createColumns = (currentPage: number, pageSize: number): ColumnDef<NoticeL
   },
 ]
 
+const useDynamicColumns = (currentPage: number, pageSize: number): ColumnDef<NoticeListItem>[] => {
+  return useMemo(
+    () => [
+      {
+        id: 'rowNumber',
+        header: 'No.',
+        meta: {
+          className: 'border-x text-center',
+        },
+        cell: ({ row }) => <div>{currentPage * pageSize + row.index + 1}</div>,
+      },
+      ...STATIC_COLUMNS,
+    ],
+    [currentPage, pageSize],
+  )
+}
+
 export default function NoticeList() {
   const { currentPage, pageSize, urlSearchForm, updateUrl, data, isLoading } =
     useNoticeSearchWithQuery()
+
+  // 최적화된 컬럼 생성
+  const columns = useDynamicColumns(currentPage, pageSize)
 
   const handlePageChange = useCallback(
     (newPage: number, newPageSize?: number) => {
@@ -66,7 +78,7 @@ export default function NoticeList() {
 
   return (
     <CommonDataTable
-      columns={createColumns(currentPage, pageSize)}
+      columns={columns}
       data={data?.notices || []}
       totalCount={data?.totalElements || 0}
       currentPage={currentPage}
