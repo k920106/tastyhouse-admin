@@ -58,8 +58,8 @@ export const useNoticeSearchWithQuery = (): NoticeSearchWithQueryHookResult => {
     (form: NoticeSearchFormInput, page: number = 0, size?: number) => {
       const targetSize = size ?? pageSize
       const params = buildSearchParams(
-        form as unknown as Record<string, unknown>,
-        INITIAL_NOTICE_SEARCH_FORM as unknown as Record<string, unknown>,
+        form,
+        INITIAL_NOTICE_SEARCH_FORM,
         page,
         targetSize,
       )

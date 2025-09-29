@@ -3,7 +3,7 @@ import { INITIAL_PAGINATION } from '@/src/lib/constants'
 /**
  * URL 쿼리 파라미터를 지정된 폼 타입으로 변환하는 범용 함수
  */
-export const parseSearchParamsToForm = <T extends Record<string, unknown>>(
+export const parseSearchParamsToForm = <T extends Record<string, string>>(
   searchParams: URLSearchParams,
   defaultForm: T,
 ): T => {
@@ -19,7 +19,7 @@ export const parseSearchParamsToForm = <T extends Record<string, unknown>>(
 /**
  * 폼 데이터를 URL 쿼리 파라미터로 변환하는 범용 함수
  */
-export const buildSearchParams = <T extends Record<string, unknown>>(
+export const buildSearchParams = <T extends Record<string, string>>(
   form: T,
   defaultForm: T,
   currentPage?: number,

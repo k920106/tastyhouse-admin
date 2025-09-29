@@ -11,7 +11,7 @@ export type NoticeListItem = {
 export type NoticeActiveFilter = 'all' | 'true' | 'false'
 
 // 폼 입력용 타입 (각 필드별 명확한 타입 정의)
-export interface NoticeSearchFormInput {
+export interface NoticeSearchFormInput extends Record<string, string> {
   companyId: string
   title: string
   startDate: string
