@@ -15,11 +15,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/src/components/ui/Select'
-import { type ProductSearchForm, getProductDisplayStatusLabel } from '@/src/types/product'
+import { getProductDisplayStatusLabel, type ProductSearchForm } from '@/src/types/product'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { LuDownload } from 'react-icons/lu'
-import { useForm } from 'react-hook-form'
 import { useEffect } from 'react'
+import { useForm } from 'react-hook-form'
+import { LuDownload } from 'react-icons/lu'
 import * as z from 'zod'
 
 const searchFormSchema = z.object({
@@ -109,7 +109,6 @@ export default function ProductSearchForm({
                 <FormLabel className="font-semibold">매체사</FormLabel>
                 <FormControl>
                   <CompanySelector
-                    label=""
                     value={field.value || ''}
                     onValueChange={(value) => {
                       field.onChange(value)

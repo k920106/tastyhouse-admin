@@ -1,3 +1,4 @@
+import React from 'react'
 import { Control } from 'react-hook-form'
 
 import CompanySelector from '@/src/components/forms/CompanySelector'
@@ -9,7 +10,7 @@ interface CompanyFieldProps {
   isLoading: boolean
 }
 
-export default function CompanyField({ control, isLoading = false }: CompanyFieldProps) {
+const CompanyField = React.memo(function CompanyField({ control, isLoading = false }: CompanyFieldProps) {
   return (
     <FormFieldWrapper name="companyId" label="매체사" control={control}>
       {({ value, onChange }) => (
@@ -17,4 +18,6 @@ export default function CompanyField({ control, isLoading = false }: CompanyFiel
       )}
     </FormFieldWrapper>
   )
-}
+})
+
+export default CompanyField

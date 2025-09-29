@@ -1,3 +1,4 @@
+import React from 'react'
 import { Control } from 'react-hook-form'
 
 import FormFieldWrapper from '@/src/components/forms/FormFieldWrapper'
@@ -9,7 +10,7 @@ interface TitleFieldProps {
   isLoading: boolean
 }
 
-export default function TitleField({ control, isLoading = false }: TitleFieldProps) {
+const TitleField = React.memo(function TitleField({ control, isLoading = false }: TitleFieldProps) {
   return (
     <FormFieldWrapper
       name="title"
@@ -26,4 +27,6 @@ export default function TitleField({ control, isLoading = false }: TitleFieldPro
       )}
     </FormFieldWrapper>
   )
-}
+})
+
+export default TitleField

@@ -1,3 +1,4 @@
+import React from 'react'
 import { Control } from 'react-hook-form'
 
 import FormFieldWrapper from '@/src/components/forms/FormFieldWrapper'
@@ -15,7 +16,7 @@ interface ActiveStatusFieldProps {
   isLoading: boolean
 }
 
-export default function ActiveStatusField({ control, isLoading = false }: ActiveStatusFieldProps) {
+const ActiveStatusField = React.memo(function ActiveStatusField({ control, isLoading = false }: ActiveStatusFieldProps) {
   return (
     <FormFieldWrapper
       name="active"
@@ -40,4 +41,6 @@ export default function ActiveStatusField({ control, isLoading = false }: Active
       )}
     </FormFieldWrapper>
   )
-}
+})
+
+export default ActiveStatusField

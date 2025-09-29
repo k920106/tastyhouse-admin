@@ -3,7 +3,7 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Loader2Icon } from 'lucide-react'
 import Link from 'next/link'
-import { useMemo } from 'react'
+import React, { useCallback, useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import * as z from 'zod'
@@ -30,7 +30,7 @@ const searchFormSchema = z.object({
   active: z.enum(['all', 'true', 'false']),
 }) satisfies z.ZodType<NoticeSearchFormInput>
 
-export default function NoticeFilters() {
+const NoticeFilters = React.memo(function NoticeFilters() {
   const { urlSearchForm, isLoading, updateUrl } = useNoticeSearchWithQuery()
 
   // URL 상태를 기반으로 한 기본값 메모이제이션
@@ -51,8 +51,8 @@ export default function NoticeFilters() {
     values: defaultValues, // defaultValues 대신 values 사용으로 자동 리셋 처리
   })
 
-  // 폼 제출 핸들러
-  const handleSubmit = () => {
+  // 폼 제출 핸들러 - useCallback으로 메모이제이션
+  const handleSubmit = useCallback(() => {
     // 로딩 중이면 제출 방지
     if (isLoading) {
       return
@@ -68,7 +68,7 @@ export default function NoticeFilters() {
 
     // 검색 조건을 URL에 반영하여 쿼리 실행 (페이지는 0으로 리셋)
     updateUrl(formValues, 0)
-  }
+  }, [isLoading, form, updateUrl])
 
   // 키보드 이벤트 핸들러 (커스텀 훅 사용)
   const { handleKeyDown } = useSearchFormKeyboard({
@@ -112,4 +112,6 @@ export default function NoticeFilters() {
       </form>
     </Form>
   )
-}
+})
+
+export default NoticeFilters

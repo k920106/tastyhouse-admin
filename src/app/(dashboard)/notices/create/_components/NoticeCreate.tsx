@@ -92,7 +92,6 @@ export default function NoticeCreate() {
                       <FormLabel className="font-semibold text-foreground">매체사</FormLabel>
                       <FormControl>
                         <CompanySelector
-                          label=""
                           value={field.value}
                           onValueChange={field.onChange}
                           loading={false}
