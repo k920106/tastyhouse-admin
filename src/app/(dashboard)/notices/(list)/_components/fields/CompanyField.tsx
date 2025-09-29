@@ -1,7 +1,7 @@
 import { Control } from 'react-hook-form'
 
 import CompanySelector from '@/src/components/forms/CompanySelector'
-import { FormControl, FormField, FormItem, FormLabel } from '@/src/components/ui/Form'
+import FormFieldWrapper from '@/src/components/forms/FormFieldWrapper'
 import { NoticeSearchFormInput } from '@/src/types/notice'
 
 interface CompanyFieldProps {
@@ -11,22 +11,10 @@ interface CompanyFieldProps {
 
 export default function CompanyField({ control, isLoading = false }: CompanyFieldProps) {
   return (
-    <FormField
-      control={control}
-      name="companyId"
-      render={({ field }) => (
-        <FormItem>
-          <FormLabel className="font-semibold">매체사</FormLabel>
-          <FormControl>
-            <CompanySelector
-              label=""
-              value={field.value ?? ''}
-              onValueChange={field.onChange}
-              loading={isLoading}
-            />
-          </FormControl>
-        </FormItem>
+    <FormFieldWrapper name="companyId" label="매체사" control={control}>
+      {({ value, onChange }) => (
+        <CompanySelector value={value as string} onValueChange={onChange} loading={isLoading} />
       )}
-    />
+    </FormFieldWrapper>
   )
 }

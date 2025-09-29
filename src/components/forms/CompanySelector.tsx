@@ -4,7 +4,6 @@ import { Combobox } from '@/src/components/ui/Combobox'
 import { useCompaniesQuery } from '@/src/hooks/queries/useCompanyQueries'
 
 interface CompanySelectorProps {
-  label: string
   value: string | undefined
   onValueChange: (value: string) => void
   loading: boolean

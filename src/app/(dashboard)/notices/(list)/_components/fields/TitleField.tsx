@@ -1,6 +1,6 @@
 import { Control } from 'react-hook-form'
 
-import { FormControl, FormField, FormItem, FormLabel } from '@/src/components/ui/Form'
+import FormFieldWrapper from '@/src/components/forms/FormFieldWrapper'
 import { Input } from '@/src/components/ui/Input'
 import { NoticeSearchFormInput } from '@/src/types/notice'
 
@@ -11,22 +11,19 @@ interface TitleFieldProps {
 
 export default function TitleField({ control, isLoading = false }: TitleFieldProps) {
   return (
-    <FormField
-      control={control}
+    <FormFieldWrapper
       name="title"
-      render={({ field }) => (
-        <FormItem>
-          <FormLabel className="font-semibold">제목</FormLabel>
-          <FormControl>
-            <Input
-              type="text"
-              value={field.value ?? ''}
-              onChange={field.onChange}
-              disabled={isLoading}
-            />
-          </FormControl>
-        </FormItem>
+      label="제목"
+      control={control}
+    >
+      {({ value, onChange }) => (
+        <Input
+          type="text"
+          value={value as string}
+          onChange={onChange}
+          disabled={isLoading}
+        />
       )}
-    />
+    </FormFieldWrapper>
   )
 }

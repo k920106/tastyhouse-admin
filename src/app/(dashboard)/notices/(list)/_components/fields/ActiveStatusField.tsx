@@ -1,6 +1,6 @@
 import { Control } from 'react-hook-form'
 
-import { FormControl, FormField, FormItem, FormLabel } from '@/src/components/ui/Form'
+import FormFieldWrapper from '@/src/components/forms/FormFieldWrapper'
 import {
   Select,
   SelectContent,
@@ -17,30 +17,27 @@ interface ActiveStatusFieldProps {
 
 export default function ActiveStatusField({ control, isLoading = false }: ActiveStatusFieldProps) {
   return (
-    <FormField
-      control={control}
+    <FormFieldWrapper
       name="active"
-      render={({ field }) => (
-        <FormItem>
-          <FormLabel className="font-semibold">사용 여부</FormLabel>
-          <FormControl>
-            <Select
-              value={(field.value as NoticeActiveFilter) ?? 'all'}
-              onValueChange={(value: NoticeActiveFilter) => field.onChange(value)}
-              disabled={isLoading}
-            >
-              <SelectTrigger className="w-full">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">전체</SelectItem>
-                <SelectItem value="true">{getNoticeUseStatusLabel(true)}</SelectItem>
-                <SelectItem value="false">{getNoticeUseStatusLabel(false)}</SelectItem>
-              </SelectContent>
-            </Select>
-          </FormControl>
-        </FormItem>
+      label="사용 여부"
+      control={control}
+    >
+      {({ value, onChange }) => (
+        <Select
+          value={(value as NoticeActiveFilter) ?? 'all'}
+          onValueChange={(value: NoticeActiveFilter) => onChange(value)}
+          disabled={isLoading}
+        >
+          <SelectTrigger className="w-full">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">전체</SelectItem>
+            <SelectItem value="true">{getNoticeUseStatusLabel(true)}</SelectItem>
+            <SelectItem value="false">{getNoticeUseStatusLabel(false)}</SelectItem>
+          </SelectContent>
+        </Select>
       )}
-    />
+    </FormFieldWrapper>
   )
 }
