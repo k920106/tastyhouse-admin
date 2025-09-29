@@ -14,6 +14,7 @@ import { Form } from '@/src/components/ui/Form'
 import { useNoticeSearchWithQuery } from '@/src/hooks/notice/useNoticeSearchWithQuery'
 import { useSearchFormKeyboard } from '@/src/hooks/useSearchFormKeyboard'
 import { cn } from '@/src/lib/class-utils'
+import { INITIAL_PAGINATION } from '@/src/lib/constants'
 import { validateNoticeSearchForm } from '@/src/lib/validations/notice'
 import { type NoticeSearchFormInput } from '@/src/types/notice'
 
@@ -66,8 +67,8 @@ const NoticeFilters = React.memo(function NoticeFilters() {
       return
     }
 
-    // 검색 조건을 URL에 반영하여 쿼리 실행 (페이지는 0으로 리셋)
-    updateUrl(formValues, 0)
+    // 검색 조건을 URL에 반영하여 쿼리 실행 (페이지는 초기 페이지로 리셋)
+    updateUrl(formValues, INITIAL_PAGINATION.currentPage)
   }, [isLoading, form, updateUrl])
 
   // 키보드 이벤트 핸들러 (커스텀 훅 사용)

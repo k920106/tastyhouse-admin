@@ -55,7 +55,7 @@ export const useNoticeSearchWithQuery = (): NoticeSearchWithQueryHookResult => {
 
   // URL 업데이트 헬퍼
   const updateUrl = useCallback(
-    (form: NoticeSearchFormInput, page: number = 0, size?: number) => {
+    (form: NoticeSearchFormInput, page: number = INITIAL_PAGINATION.currentPage, size?: number) => {
       const targetSize = size ?? pageSize
       const params = buildSearchParams(
         form,
