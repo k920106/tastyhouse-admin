@@ -69,10 +69,13 @@ export const useNoticeSearchWithQuery = (): NoticeSearchWithQueryHookResult => {
     [router, pageSize],
   )
 
+  // URL에 검색 파라미터가 있는지 메모이제이션
+  const hasSearchParams = useMemo(() => searchParams.size > 0, [searchParams])
+
   // URL 기반 검색 폼 검증 (searchParams 여부 포함)
   const validation = useMemo(
-    () => validateNoticeSearchForm(urlSearchForm, searchParams.size > 0),
-    [urlSearchForm, searchParams],
+    () => validateNoticeSearchForm(urlSearchForm, hasSearchParams),
+    [urlSearchForm, hasSearchParams],
   )
 
   // 데이터 쿼리
