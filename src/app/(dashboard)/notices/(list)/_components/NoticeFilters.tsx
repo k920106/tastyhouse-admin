@@ -16,6 +16,7 @@ import { useSearchFormKeyboard } from '@/src/hooks/useSearchFormKeyboard'
 import { cn } from '@/src/lib/class-utils'
 import { INITIAL_PAGINATION } from '@/src/lib/constants'
 import { validateNoticeSearchForm } from '@/src/lib/validations/notice'
+import { ROUTES } from '@/src/constants/routes'
 import { type NoticeSearchFormInput } from '@/src/types/notice'
 
 import ActiveStatusField from './fields/ActiveStatusField'
@@ -84,7 +85,7 @@ const NoticeFilters = React.memo(function NoticeFilters() {
           actions={
             <>
               <Link
-                href="/notices/create"
+                href={ROUTES.NOTICES.CREATE}
                 className={cn(
                   buttonVariants({ variant: 'outline' }),
                   isLoading && 'pointer-events-none opacity-50',
