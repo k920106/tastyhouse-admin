@@ -3,7 +3,6 @@
 import { getInitialNoticeSearchForm } from '@/src/constants/notice'
 import { INITIAL_PAGINATION } from '@/src/lib/constants'
 import { buildSearchParams, parseSearchParamsToForm } from '@/src/lib/url-utils'
-import { validateNoticeSearchForm } from '@/src/lib/validations/notice'
 import { NoticeSearchFormInput } from '@/src/types/notice'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useCallback, useMemo } from 'react'
@@ -72,16 +71,10 @@ export const useNoticeSearchWithQuery = (): NoticeSearchWithQueryHookResult => {
     [router, pageSize, initialSearchForm],
   )
 
-  // URL에 검색 파라미터가 있는지 메모이제이션
+  // URL에 검색 파라미터가 있는지 확인 (쿼리 실행 여부 결정)
   const hasSearchParams = useMemo(() => searchParams.size > 0, [searchParams])
 
-  // URL 기반 검색 폼 검증 (searchParams 여부 포함)
-  const validation = useMemo(
-    () => validateNoticeSearchForm(urlSearchForm, hasSearchParams),
-    [urlSearchForm, hasSearchParams],
-  )
-
-  // 데이터 쿼리
+  // 데이터 쿼리 - URL에 검색 파라미터가 있을 때만 실행
   const { data, isLoading, error } = useNoticesQuery(
     {
       searchForm: urlSearchForm,
@@ -90,7 +83,7 @@ export const useNoticeSearchWithQuery = (): NoticeSearchWithQueryHookResult => {
         size: pageSize,
       },
     },
-    validation.isValid,
+    hasSearchParams,
   )
 
   useToastError(error, '공지사항 목록 조회 중 오류가 발생했습니다.')
