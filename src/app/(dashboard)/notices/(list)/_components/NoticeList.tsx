@@ -1,6 +1,7 @@
 'use client'
 
 import { CommonDataTable } from '@/src/components/shared/CommonDataTable'
+import { useNoticeSearchContext } from '@/src/contexts/NoticeSearchContext'
 import { useNoticeSearchWithQuery } from '@/src/hooks/notice/useNoticeSearchWithQuery'
 import { formatToYYYYMMDD } from '@/src/lib/date-utils'
 import { NoticeListItem, getNoticeActiveStatusLabel } from '@/src/types/notice'
@@ -8,10 +9,9 @@ import { ColumnDef } from '@tanstack/react-table'
 import { useCallback, useMemo } from 'react'
 
 export default function NoticeList() {
-  const { currentPage, pageSize, urlSearchForm, updateUrl, data, isLoading } =
-    useNoticeSearchWithQuery()
+  const { currentPage, pageSize, urlSearchForm, updateUrl, data } = useNoticeSearchWithQuery()
+  const { isLoading } = useNoticeSearchContext()
 
-  // 컬럼 정의 - rowNumber만 동적이므로 한곳에서 관리
   const columns: ColumnDef<NoticeListItem>[] = useMemo(
     () => [
       {

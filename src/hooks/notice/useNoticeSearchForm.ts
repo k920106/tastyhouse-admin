@@ -25,22 +25,12 @@ export interface UseNoticeSearchFormResult {
   // 폼 관련
   form: ReturnType<typeof useForm<NoticeSearchFormInput>>
 
-  // 상태
-  isLoading: boolean
-
   // 액션
   handleSubmit: () => void
 }
 
-/**
- * 공지사항 검색 폼의 비즈니스 로직을 담당하는 커스텀 훅
- * - 폼 상태 관리
- * - 검색 검증 로직
- * - URL 업데이트
- * - 에러 처리
- */
 export const useNoticeSearchForm = (): UseNoticeSearchFormResult => {
-  const { urlSearchForm, isLoading, updateUrl } = useNoticeSearchWithQuery()
+  const { urlSearchForm, updateUrl } = useNoticeSearchWithQuery()
 
   // URL 상태를 기반으로 한 기본값 메모이제이션
   const defaultValues = useMemo(
@@ -62,11 +52,6 @@ export const useNoticeSearchForm = (): UseNoticeSearchFormResult => {
 
   // 폼 제출 핸들러
   const handleSubmit = useCallback(() => {
-    // 로딩 중이면 제출 방지
-    if (isLoading) {
-      return
-    }
-
     const formValues = form.getValues()
     const validation = validateNoticeSearchForm(formValues)
 
@@ -77,11 +62,10 @@ export const useNoticeSearchForm = (): UseNoticeSearchFormResult => {
 
     // 검색 조건을 URL에 반영하여 쿼리 실행 (페이지는 초기 페이지로 리셋)
     updateUrl(formValues, INITIAL_PAGINATION.currentPage)
-  }, [isLoading, form, updateUrl])
+  }, [form, updateUrl])
 
   return {
     form,
-    isLoading,
     handleSubmit,
   }
 }

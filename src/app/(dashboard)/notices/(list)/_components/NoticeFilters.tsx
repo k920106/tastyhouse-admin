@@ -8,6 +8,7 @@ import BaseSearchForm from '@/src/components/forms/BaseSearchForm'
 import { Button, buttonVariants } from '@/src/components/ui/Button'
 import { Form } from '@/src/components/ui/Form'
 import { ROUTES } from '@/src/constants/routes'
+import { useNoticeSearchContext } from '@/src/contexts/NoticeSearchContext'
 import { useNoticeSearchForm } from '@/src/hooks/notice/useNoticeSearchForm'
 import { useSearchFormKeyboard } from '@/src/hooks/useSearchFormKeyboard'
 import { cn } from '@/src/lib/class-utils'
@@ -18,7 +19,8 @@ import DateRangeField from './fields/DateRangeField'
 import TitleField from './fields/TitleField'
 
 const NoticeFilters = React.memo(function NoticeFilters() {
-  const { form, isLoading, handleSubmit } = useNoticeSearchForm()
+  const { form, handleSubmit } = useNoticeSearchForm()
+  const { isLoading } = useNoticeSearchContext()
 
   const { handleKeyDown } = useSearchFormKeyboard({
     onSubmit: handleSubmit,
