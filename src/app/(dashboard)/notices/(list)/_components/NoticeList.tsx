@@ -20,7 +20,10 @@ export default function NoticeList() {
         meta: {
           className: 'border-x text-center',
         },
-        cell: ({ row }) => <div>{currentPage * pageSize + row.index + 1}</div>,
+        cell: ({ row, table }) => {
+          const state = table.getState().pagination
+          return <div>{state.pageIndex * state.pageSize + row.index + 1}</div>
+        },
       },
       {
         accessorKey: 'companyName',
@@ -53,7 +56,7 @@ export default function NoticeList() {
         },
       },
     ],
-    [currentPage, pageSize],
+    [],
   )
 
   const handlePageChange = useCallback(
