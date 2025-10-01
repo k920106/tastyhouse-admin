@@ -7,45 +7,12 @@ import { NoticeListItem, getNoticeUseStatusLabel } from '@/src/types/notice'
 import { ColumnDef } from '@tanstack/react-table'
 import { useCallback, useMemo } from 'react'
 
-const STATIC_COLUMNS: ColumnDef<NoticeListItem>[] = [
-  {
-    accessorKey: 'companyName',
-    header: '매체사',
-    meta: {
-      className: 'border-x',
-    },
-  },
-  {
-    accessorKey: 'title',
-    header: '제목',
-    meta: {
-      className: 'border-x',
-    },
-  },
-  {
-    accessorKey: 'createdAt',
-    header: '등록일자',
-    cell: ({ row }) => {
-      return <div>{formatToYYYYMMDD(row.original.createdAt)}</div>
-    },
-    meta: {
-      className: 'border-x',
-    },
-  },
-  {
-    accessorKey: 'isUse',
-    header: '사용 여부',
-    cell: ({ row }) => {
-      return <div>{getNoticeUseStatusLabel(row.original.isUse)}</div>
-    },
-    meta: {
-      className: 'border-x',
-    },
-  },
-]
+export default function NoticeList() {
+  const { currentPage, pageSize, urlSearchForm, updateUrl, data, isLoading } =
+    useNoticeSearchWithQuery()
 
-const useDynamicColumns = (currentPage: number, pageSize: number): ColumnDef<NoticeListItem>[] => {
-  return useMemo(
+  // 컬럼 정의 - rowNumber만 동적이므로 한곳에서 관리
+  const columns: ColumnDef<NoticeListItem>[] = useMemo(
     () => [
       {
         id: 'rowNumber',
@@ -55,18 +22,39 @@ const useDynamicColumns = (currentPage: number, pageSize: number): ColumnDef<Not
         },
         cell: ({ row }) => <div>{currentPage * pageSize + row.index + 1}</div>,
       },
-      ...STATIC_COLUMNS,
+      {
+        accessorKey: 'companyName',
+        header: '매체사',
+        meta: {
+          className: 'border-x',
+        },
+      },
+      {
+        accessorKey: 'title',
+        header: '제목',
+        meta: {
+          className: 'border-x',
+        },
+      },
+      {
+        accessorKey: 'createdAt',
+        header: '등록일자',
+        cell: ({ row }) => <div>{formatToYYYYMMDD(row.original.createdAt)}</div>,
+        meta: {
+          className: 'border-x',
+        },
+      },
+      {
+        accessorKey: 'isUse',
+        header: '사용 여부',
+        cell: ({ row }) => <div>{getNoticeUseStatusLabel(row.original.isUse)}</div>,
+        meta: {
+          className: 'border-x',
+        },
+      },
     ],
     [currentPage, pageSize],
   )
-}
-
-export default function NoticeList() {
-  const { currentPage, pageSize, urlSearchForm, updateUrl, data, isLoading } =
-    useNoticeSearchWithQuery()
-
-  // 최적화된 컬럼 생성
-  const columns = useDynamicColumns(currentPage, pageSize)
 
   const handlePageChange = useCallback(
     (newPage: number, newPageSize?: number) => {
