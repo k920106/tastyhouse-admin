@@ -9,20 +9,23 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/src/components/ui/Select'
-import { NoticeActiveFilter, NoticeSearchFormInput, getNoticeUseStatusLabel } from '@/src/types/notice'
+import {
+  NoticeActiveFilter,
+  NoticeSearchFormInput,
+  getNoticeActiveStatusLabel,
+} from '@/src/types/notice'
 
 interface ActiveStatusFieldProps {
   control: Control<NoticeSearchFormInput>
   isLoading: boolean
 }
 
-const ActiveStatusField = React.memo(function ActiveStatusField({ control, isLoading = false }: ActiveStatusFieldProps) {
+const ActiveStatusField = React.memo(function ActiveStatusField({
+  control,
+  isLoading = false,
+}: ActiveStatusFieldProps) {
   return (
-    <FormFieldWrapper
-      name="active"
-      label="사용 여부"
-      control={control}
-    >
+    <FormFieldWrapper name="active" label="활성 여부" control={control}>
       {({ value, onChange }) => (
         <Select
           value={(value as NoticeActiveFilter) ?? 'all'}
@@ -34,8 +37,8 @@ const ActiveStatusField = React.memo(function ActiveStatusField({ control, isLoa
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">전체</SelectItem>
-            <SelectItem value="true">{getNoticeUseStatusLabel(true)}</SelectItem>
-            <SelectItem value="false">{getNoticeUseStatusLabel(false)}</SelectItem>
+            <SelectItem value="true">{getNoticeActiveStatusLabel(true)}</SelectItem>
+            <SelectItem value="false">{getNoticeActiveStatusLabel(false)}</SelectItem>
           </SelectContent>
         </Select>
       )}

@@ -37,7 +37,7 @@ export const validateNoticeSearchForm = (form: NoticeSearchFormInput): Validatio
   if (!['all', 'true', 'false'].includes(form.active)) {
     return {
       isValid: false,
-      error: '올바른 사용 여부 값이 아닙니다',
+      error: '올바른 활성 여부 값이 아닙니다',
     }
   }
 

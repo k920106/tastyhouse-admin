@@ -3,7 +3,7 @@ export type NoticeListItem = {
   companyName: string
   title: string
   content: string
-  isUse: boolean
+  active: boolean
   createdAt: string
 }
 
@@ -25,25 +25,24 @@ export interface NoticeSearchQuery {
   title?: string
   startDate?: string
   endDate?: string
-  isActive?: boolean
+  active?: boolean
 }
-
 
 export interface NoticeCreateRequest {
   companyId: number
-  isUse: boolean
-  isTop: boolean
   title: string
   content: string
+  active: boolean
+  top: boolean
 }
 
-// 사용 여부
-export const NOTICE_USE_STATUS = {
-  USE: { value: 'true', label: '사용' },
-  NOT_USE: { value: 'false', label: '미사용' },
+// 활성 여부
+export const NOTICE_ACTIVE_STATUS = {
+  ACTIVE: { value: 'true', label: '활성' },
+  NOT_ACTIVE: { value: 'false', label: '미활성' },
 } as const
 
-export type NoticeUseStatus = (typeof NOTICE_USE_STATUS)[keyof typeof NOTICE_USE_STATUS]
+export type NoticeActiveStatus = (typeof NOTICE_ACTIVE_STATUS)[keyof typeof NOTICE_ACTIVE_STATUS]
 
 // 상단 고정 여부
 export const NOTICE_TOP_STATUS = {
@@ -54,12 +53,12 @@ export const NOTICE_TOP_STATUS = {
 export type NoticeTopStatus = (typeof NOTICE_TOP_STATUS)[keyof typeof NOTICE_TOP_STATUS]
 
 // 유틸리티 함수
-export const getNoticeUseStatusLabel = (isUse: boolean): string => {
-  return isUse ? NOTICE_USE_STATUS.USE.label : NOTICE_USE_STATUS.NOT_USE.label
+export const getNoticeActiveStatusLabel = (active: boolean): string => {
+  return active ? NOTICE_ACTIVE_STATUS.ACTIVE.label : NOTICE_ACTIVE_STATUS.NOT_ACTIVE.label
 }
 
-export const getNoticeTopStatusLabel = (isTop: boolean): string => {
-  return isTop ? NOTICE_TOP_STATUS.TOP.label : NOTICE_TOP_STATUS.NOT_TOP.label
+export const getNoticeTopStatusLabel = (top: boolean): string => {
+  return top ? NOTICE_TOP_STATUS.TOP.label : NOTICE_TOP_STATUS.NOT_TOP.label
 }
 
 // 검색 폼을 API 쿼리로 변환하는 함수
@@ -85,15 +84,9 @@ export const convertFormToQuery = (form: NoticeSearchFormInput): NoticeSearchQue
     query.endDate = form.endDate
   }
 
-  // active: 'all'이 아닐 때만 포함
   if (form.active !== 'all') {
-    query.isActive = form.active === 'true'
+    query.active = form.active === 'true'
   }
 
   return query
-}
-
-// 활성 상태 필터 값이 유효한지 확인하는 타입 가드
-export const isValidActiveFilter = (value: string): value is NoticeActiveFilter => {
-  return ['all', 'true', 'false'].includes(value)
 }

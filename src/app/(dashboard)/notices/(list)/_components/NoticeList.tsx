@@ -3,7 +3,7 @@
 import { CommonDataTable } from '@/src/components/shared/CommonDataTable'
 import { useNoticeSearchWithQuery } from '@/src/hooks/notice/useNoticeSearchWithQuery'
 import { formatToYYYYMMDD } from '@/src/lib/date-utils'
-import { NoticeListItem, getNoticeUseStatusLabel } from '@/src/types/notice'
+import { NoticeListItem, getNoticeActiveStatusLabel } from '@/src/types/notice'
 import { ColumnDef } from '@tanstack/react-table'
 import { useCallback, useMemo } from 'react'
 
@@ -45,9 +45,9 @@ export default function NoticeList() {
         },
       },
       {
-        accessorKey: 'isUse',
-        header: '사용 여부',
-        cell: ({ row }) => <div>{getNoticeUseStatusLabel(row.original.isUse)}</div>,
+        accessorKey: 'active',
+        header: '활성 여부',
+        cell: ({ row }) => <div>{getNoticeActiveStatusLabel(row.original.active)}</div>,
         meta: {
           className: 'border-x',
         },

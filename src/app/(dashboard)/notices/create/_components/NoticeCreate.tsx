@@ -20,10 +20,10 @@ import * as z from 'zod'
 
 const noticeFormSchema = z.object({
   companyId: z.string().min(1, '매체사를 선택해주세요'),
-  isUse: z.boolean(),
-  isTop: z.boolean(),
   title: z.string().min(1, '제목을 입력해주세요'),
   content: z.string().min(1, '내용을 입력해주세요'),
+  active: z.boolean(),
+  top: z.boolean(),
 })
 
 type NoticeFormData = z.infer<typeof noticeFormSchema>
@@ -35,10 +35,10 @@ export default function NoticeCreate() {
     resolver: zodResolver(noticeFormSchema),
     defaultValues: {
       companyId: '',
-      isUse: false,
-      isTop: false,
       title: '',
       content: '',
+      active: false,
+      top: false,
     },
   })
 
@@ -48,10 +48,10 @@ export default function NoticeCreate() {
 
       const requestData: NoticeCreateRequest = {
         companyId: parseInt(data.companyId),
-        isUse: data.isUse,
-        isTop: data.isTop,
         title: data.title,
         content: data.content,
+        active: data.active,
+        top: data.top,
       }
 
       const response = await api.post<ApiResponse>('/notices', requestData)
@@ -103,10 +103,10 @@ export default function NoticeCreate() {
                 {/* 기존 RadioGroup 코드 주석 처리
                 <FormField
                   control={form.control}
-                  name="isUse"
+                  name="active"
                   render={({ field }) => (
                     <FormItem className="space-y-3">
-                      <FormLabel className="font-semibold">사용 여부</FormLabel>
+                      <FormLabel className="font-semibold">활성 여부</FormLabel>
                       <FormControl>
                         <RadioGroup
                           onValueChange={field.onChange}
@@ -118,7 +118,7 @@ export default function NoticeCreate() {
                               <RadioGroupItem id="use" value="true" />
                             </FormControl>
                             <FormLabel className="font-normal" htmlFor="use">
-                              {NOTICE_USE_STATUS.USE.label}
+                              {NOTICE_ACTIVE_STATUS.ACTIVE.label}
                             </FormLabel>
                           </FormItem>
                           <FormItem className="flex items-center gap-3 space-y-0">
@@ -126,7 +126,7 @@ export default function NoticeCreate() {
                               <RadioGroupItem id="not-use" value="false" />
                             </FormControl>
                             <FormLabel className="font-normal" htmlFor="not-use">
-                              {NOTICE_TOP_STATUS.NOT_USE.label}
+                              {NOTICE_ACTIVE_STATUS.NOT_ACTIVE.label}
                             </FormLabel>
                           </FormItem>
                         </RadioGroup>
@@ -138,10 +138,10 @@ export default function NoticeCreate() {
                 */}
                 <FormField
                   control={form.control}
-                  name="isUse"
+                  name="active"
                   render={({ field }) => (
                     <FormItem className="space-y-2">
-                      <FormLabel className="font-semibold">사용 여부</FormLabel>
+                      <FormLabel className="font-semibold">활성 여부</FormLabel>
                       <FormControl>
                         <Switch checked={field.value} onCheckedChange={field.onChange} />
                       </FormControl>
@@ -151,7 +151,7 @@ export default function NoticeCreate() {
                 {/* 기존 상단 고정 RadioGroup 코드 주석 처리
                 <FormField
                   control={form.control}
-                  name="isTop"
+                  name="top"
                   render={({ field }) => (
                     <FormItem className="space-y-3">
                       <FormLabel className="font-semibold">상단 고정</FormLabel>
@@ -186,7 +186,7 @@ export default function NoticeCreate() {
                 */}
                 <FormField
                   control={form.control}
-                  name="isTop"
+                  name="top"
                   render={({ field }) => (
                     <FormItem className="space-y-2">
                       <FormLabel className="font-semibold">상단 고정</FormLabel>
