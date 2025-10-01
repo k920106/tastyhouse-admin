@@ -1,6 +1,6 @@
-import { useMemo } from 'react'
+import React, { useMemo } from 'react'
 import { type DateRange } from 'react-day-picker'
-import { UseFormSetValue, UseFormWatch } from 'react-hook-form'
+import { Control, useController } from 'react-hook-form'
 import { LuCalendar } from 'react-icons/lu'
 
 import { Button } from '@/src/components/ui/Button'
@@ -13,18 +13,27 @@ import { formatToAPIDate } from '@/src/lib/date-utils'
 import { NoticeSearchFormInput } from '@/src/types/notice'
 
 interface DateRangeFieldProps {
-  watch: UseFormWatch<NoticeSearchFormInput>
-  setValue: UseFormSetValue<NoticeSearchFormInput>
+  control: Control<NoticeSearchFormInput>
   isLoading: boolean
 }
 
-export default function DateRangeField({
-  watch,
-  setValue,
+const DateRangeField = React.memo(function DateRangeField({
+  control,
   isLoading = false,
 }: DateRangeFieldProps) {
-  const startDate = watch('startDate')
-  const endDate = watch('endDate')
+  const {
+    field: { value: startDate, onChange: onStartDateChange },
+  } = useController({
+    name: 'startDate',
+    control,
+  })
+
+  const {
+    field: { value: endDate, onChange: onEndDateChange },
+  } = useController({
+    name: 'endDate',
+    control,
+  })
 
   const dateRange: DateRange | undefined = useMemo(() => {
     const fromDate = startDate ? new Date(startDate) : undefined
@@ -38,8 +47,8 @@ export default function DateRangeField({
     const newStartDate = range?.from ? formatToAPIDate(range.from) : ''
     const newEndDate = range?.to ? formatToAPIDate(range.to) : ''
 
-    setValue('startDate', newStartDate)
-    setValue('endDate', newEndDate)
+    onStartDateChange(newStartDate)
+    onEndDateChange(newEndDate)
   }
 
   return (
@@ -74,4 +83,6 @@ export default function DateRangeField({
       </FormControl>
     </FormItem>
   )
-}
+})
+
+export default DateRangeField

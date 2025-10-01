@@ -18,10 +18,8 @@ import DateRangeField from './fields/DateRangeField'
 import TitleField from './fields/TitleField'
 
 const NoticeFilters = React.memo(function NoticeFilters() {
-  // 검색 로직은 커스텀 훅에서 처리
   const { form, isLoading, handleSubmit } = useNoticeSearchForm()
 
-  // 키보드 이벤트 핸들러 (커스텀 훅 사용)
   const { handleKeyDown } = useSearchFormKeyboard({
     onSubmit: handleSubmit,
     isLoading,
@@ -57,7 +55,7 @@ const NoticeFilters = React.memo(function NoticeFilters() {
         >
           <CompanyField control={form.control} isLoading={isLoading} />
           <TitleField control={form.control} isLoading={isLoading} />
-          <DateRangeField watch={form.watch} setValue={form.setValue} isLoading={isLoading} />
+          <DateRangeField control={form.control} isLoading={isLoading} />
           <ActiveStatusField control={form.control} isLoading={isLoading} />
         </BaseSearchForm>
       </form>
