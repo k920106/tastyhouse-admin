@@ -1,24 +1,19 @@
 'use client'
 
-import { createContext, useContext, ReactNode } from 'react'
+import { NoticeSearchWithQueryHookResult } from '@/src/hooks/notice/useNoticeSearchWithQuery'
+import { ReactNode, createContext, useContext } from 'react'
 
-interface NoticeSearchContextValue {
-  isLoading: boolean
-}
+type NoticeSearchContextValue = NoticeSearchWithQueryHookResult
 
 const NoticeSearchContext = createContext<NoticeSearchContextValue | null>(null)
 
 interface NoticeSearchProviderProps {
   children: ReactNode
-  isLoading: boolean
+  value: NoticeSearchWithQueryHookResult
 }
 
-export function NoticeSearchProvider({ children, isLoading }: NoticeSearchProviderProps) {
-  return (
-    <NoticeSearchContext.Provider value={{ isLoading }}>
-      {children}
-    </NoticeSearchContext.Provider>
-  )
+export function NoticeSearchProvider({ children, value }: NoticeSearchProviderProps) {
+  return <NoticeSearchContext.Provider value={value}>{children}</NoticeSearchContext.Provider>
 }
 
 export function useNoticeSearchContext() {

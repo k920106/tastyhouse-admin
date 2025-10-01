@@ -9,7 +9,7 @@ interface NoticeSearchContainerProps {
 }
 
 export default function NoticeSearchContainer({ children }: NoticeSearchContainerProps) {
-  const { isLoading } = useNoticeSearchWithQuery()
+  const hookResult = useNoticeSearchWithQuery()
 
-  return <NoticeSearchProvider isLoading={isLoading}>{children}</NoticeSearchProvider>
+  return <NoticeSearchProvider value={hookResult}>{children}</NoticeSearchProvider>
 }

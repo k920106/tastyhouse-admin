@@ -10,7 +10,7 @@ import { INITIAL_PAGINATION } from '@/src/lib/constants'
 import { validateNoticeSearchForm } from '@/src/lib/validations/notice'
 import { type NoticeSearchFormInput } from '@/src/types/notice'
 
-import { useNoticeSearchWithQuery } from './useNoticeSearchWithQuery'
+import { useNoticeSearchContext } from '@/src/contexts/NoticeSearchContext'
 
 // 검색 폼 스키마
 const searchFormSchema = z.object({
@@ -30,7 +30,7 @@ export interface UseNoticeSearchFormResult {
 }
 
 export const useNoticeSearchForm = (): UseNoticeSearchFormResult => {
-  const { urlSearchForm, updateUrl } = useNoticeSearchWithQuery()
+  const { urlSearchForm, updateUrl } = useNoticeSearchContext()
 
   // URL 상태를 기반으로 한 기본값 메모이제이션
   const defaultValues = useMemo(

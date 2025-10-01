@@ -2,15 +2,14 @@
 
 import { CommonDataTable } from '@/src/components/shared/CommonDataTable'
 import { useNoticeSearchContext } from '@/src/contexts/NoticeSearchContext'
-import { useNoticeSearchWithQuery } from '@/src/hooks/notice/useNoticeSearchWithQuery'
 import { formatToYYYYMMDD } from '@/src/lib/date-utils'
 import { NoticeListItem, getNoticeActiveStatusLabel } from '@/src/types/notice'
 import { ColumnDef } from '@tanstack/react-table'
 import { useCallback, useMemo } from 'react'
 
 export default function NoticeList() {
-  const { currentPage, pageSize, urlSearchForm, updateUrl, data } = useNoticeSearchWithQuery()
-  const { isLoading } = useNoticeSearchContext()
+  const { currentPage, pageSize, urlSearchForm, updateUrl, data, isLoading } =
+    useNoticeSearchContext()
 
   const columns: ColumnDef<NoticeListItem>[] = useMemo(
     () => [
