@@ -32,8 +32,6 @@ import {
   TableHeader,
   TableRow,
 } from '@/src/components/ui/Table'
-import { Tabs, TabsContent } from '@/src/components/ui/Tabs'
-
 interface DataTableProps<T> {
   columns: ColumnDef<T>[]
   data: T[]
@@ -42,7 +40,8 @@ interface DataTableProps<T> {
   pageSize: number
   loading?: boolean
   handlePageChange: (pageIndex: number, pageSize: number) => void
-  additionalTabs?: React.ReactNode
+  enableRowSelection?: boolean
+  onRowSelectionChange?: (selectedRows: Record<string, boolean>) => void
 }
 
 export function CommonDataTable<T extends { id: number | string }>({
@@ -53,17 +52,29 @@ export function CommonDataTable<T extends { id: number | string }>({
   pageSize,
   loading = false,
   handlePageChange,
-  additionalTabs,
+  enableRowSelection = false,
+  onRowSelectionChange,
 }: DataTableProps<T>) {
   const [rowSelection, setRowSelection] = React.useState({})
 
   const pageCount = Math.max(1, Math.ceil(totalCount / pageSize))
 
+  const handleRowSelectionChange = React.useCallback(
+    (updater: React.SetStateAction<Record<string, boolean>>) => {
+      setRowSelection((prev) => {
+        const newSelection = typeof updater === 'function' ? updater(prev) : updater
+        onRowSelectionChange?.(newSelection)
+        return newSelection
+      })
+    },
+    [onRowSelectionChange],
+  )
+
   const table = useReactTable({
     columns,
     data,
     state: {
-      rowSelection,
+      rowSelection: enableRowSelection ? rowSelection : {},
       pagination: {
         pageIndex: currentPage,
         pageSize,
@@ -71,8 +82,8 @@ export function CommonDataTable<T extends { id: number | string }>({
     },
     getCoreRowModel: getCoreRowModel(),
     getRowId: (row: T) => row.id.toString(),
-    enableRowSelection: !loading,
-    onRowSelectionChange: setRowSelection,
+    enableRowSelection: enableRowSelection && !loading,
+    onRowSelectionChange: enableRowSelection ? handleRowSelectionChange : undefined,
     manualPagination: true,
     pageCount,
   })
@@ -97,11 +108,8 @@ export function CommonDataTable<T extends { id: number | string }>({
   )
 
   return (
-    <Tabs defaultValue="outline" className="w-full flex-col justify-start gap-6">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2"></div>
-      </div>
-      <TabsContent value="outline" className="relative flex flex-col gap-4 overflow-auto">
+    <div className="w-full flex-col justify-start gap-6">
+      <div className="relative flex flex-col gap-4 overflow-auto">
         <div className="overflow-hidden rounded-lg border">
           <Table>
             <TableHeader className="bg-muted sticky top-0 z-10">
@@ -150,10 +158,14 @@ export function CommonDataTable<T extends { id: number | string }>({
           </Table>
         </div>
         <div className="flex items-center justify-between px-4">
-          <div className="text-muted-foreground hidden flex-1 text-sm lg:flex">
-            {table.getFilteredSelectedRowModel().rows.length} of{' '}
-            {table.getFilteredRowModel().rows.length} row(s) selected.
-          </div>
+          {enableRowSelection ? (
+            <div className="text-muted-foreground hidden flex-1 text-sm lg:flex">
+              {table.getFilteredSelectedRowModel().rows.length} of{' '}
+              {table.getFilteredRowModel().rows.length} row(s) selected.
+            </div>
+          ) : (
+            <div className="hidden flex-1 lg:flex" />
+          )}
           <div className="flex w-full items-center gap-8 lg:w-fit">
             <div className="hidden items-center gap-2 lg:flex">
               <Label htmlFor="rows-per-page" className="text-sm font-medium">
@@ -224,8 +236,7 @@ export function CommonDataTable<T extends { id: number | string }>({
             </div>
           </div>
         </div>
-      </TabsContent>
-      {additionalTabs}
-    </Tabs>
+      </div>
+    </div>
   )
 }

@@ -1,4 +1,4 @@
-import { Suspense, ReactNode } from 'react'
+import { ReactNode, Suspense } from 'react'
 
 interface PageContentProps {
   children: ReactNode
@@ -10,10 +10,8 @@ export default function PageContent({
   fallback = <div>로딩 중...</div>,
 }: PageContentProps) {
   return (
-    <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-      <div className="flex-1 min-h-[100vh] md:min-h-min">
-        <Suspense fallback={fallback}>{children}</Suspense>
-      </div>
+    <div className="flex flex-1 flex-col gap-4 min-h-[100vh] md:min-h-min p-4 pt-0">
+      <Suspense fallback={fallback}>{children}</Suspense>
     </div>
   )
 }
