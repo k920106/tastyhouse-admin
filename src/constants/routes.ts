@@ -1,48 +1,39 @@
-/**
- * 애플리케이션에서 사용되는 경로 상수들
- */
-
-// 공지사항 관련 경로
+// 공지사항
 export const NOTICE_ROUTES = {
-  // 공지사항 목록
-  LIST: '/notices',
-  // 공지사항 등록
-  CREATE: '/notices/create',
-  // 공지사항 상세 (동적 경로)
-  DETAIL: (id: string | number) => `/notices/${id}`,
-  // 공지사항 편집 (동적 경로)
-  EDIT: (id: string | number) => `/notices/${id}/edit`,
+  LIST: '/notices', // 목록
+  CREATE: '/notices/create', // 등록
+  DETAIL: (id: string | number) => `/notices/${id}`, // 상세
+  EDIT: (id: string | number) => `/notices/${id}/edit`, // 수정
 } as const
 
-// 상품 관련 경로
+// 상품
 export const PRODUCT_ROUTES = {
-  LIST: '/products',
-  CREATE: '/products/create',
-  DETAIL: (id: string | number) => `/products/${id}`,
-  EDIT: (id: string | number) => `/products/${id}/edit`,
+  LIST: '/products', // 목록
+  CREATE: '/products/create', // 등록
+  DETAIL: (id: string | number) => `/products/${id}`, // 상세
+  EDIT: (id: string | number) => `/products/${id}/edit`, // 수정
 } as const
 
-// 이벤트 관련 경로
+// 이벤트
 export const EVENT_ROUTES = {
-  ROULETTES: '/events/roulettes',
+  ROULETTES: '/events/roulettes', // 룰렛
 } as const
 
-// 인증 관련 경로
+// 인증
 export const AUTH_ROUTES = {
-  LOGIN: '/login',
-  LOGOUT: '/logout',
+  LOGIN: '/login', // 로그인
+  LOGOUT: '/logout', // 로그아웃
 } as const
 
-// 대시보드 경로
+// 대시보드
 export const DASHBOARD_ROUTES = {
-  HOME: '/',
+  HOME: '/', // 홈
 } as const
 
-// 모든 경로를 하나로 통합
 export const ROUTES = {
   ...DASHBOARD_ROUTES,
-  AUTH: AUTH_ROUTES,
-  NOTICES: NOTICE_ROUTES,
-  PRODUCTS: PRODUCT_ROUTES,
-  EVENTS: EVENT_ROUTES,
+  AUTH: AUTH_ROUTES, // 인증
+  NOTICES: NOTICE_ROUTES, // 공지사항
+  PRODUCTS: PRODUCT_ROUTES, // 상품
+  EVENTS: EVENT_ROUTES, // 이벤트
 } as const

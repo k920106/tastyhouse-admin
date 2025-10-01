@@ -1,6 +1,6 @@
 'use client'
 
-import { INITIAL_NOTICE_SEARCH_FORM } from '@/src/constants/notice'
+import { getInitialNoticeSearchForm } from '@/src/constants/notice'
 import { INITIAL_PAGINATION } from '@/src/lib/constants'
 import { buildSearchParams, parseSearchParamsToForm } from '@/src/lib/url-utils'
 import { validateNoticeSearchForm } from '@/src/lib/validations/notice'
@@ -36,10 +36,13 @@ export const useNoticeSearchWithQuery = (): NoticeSearchWithQueryHookResult => {
   const searchParams = useSearchParams()
   const router = useRouter()
 
+  // 초기 검색 폼 값 (한 번만 생성)
+  const initialSearchForm = useMemo(() => getInitialNoticeSearchForm(), [])
+
   // URL에서 현재 검색 조건 파싱 (실제 쿼리 실행용)
   const urlSearchForm = useMemo(
-    () => parseSearchParamsToForm(searchParams, INITIAL_NOTICE_SEARCH_FORM),
-    [searchParams],
+    () => parseSearchParamsToForm(searchParams, initialSearchForm),
+    [searchParams, initialSearchForm],
   )
 
   // 페이지네이션 정보
@@ -59,14 +62,14 @@ export const useNoticeSearchWithQuery = (): NoticeSearchWithQueryHookResult => {
       const targetSize = size ?? pageSize
       const params = buildSearchParams(
         form,
-        INITIAL_NOTICE_SEARCH_FORM,
+        initialSearchForm,
         page,
         targetSize,
       )
       const url = params.toString() ? `?${params.toString()}` : ''
       router.push(url, { scroll: false })
     },
-    [router, pageSize],
+    [router, pageSize, initialSearchForm],
   )
 
   // URL에 검색 파라미터가 있는지 메모이제이션
