@@ -1,7 +1,10 @@
 'use client'
 
-import { NoticeSearchWithQueryHookResult } from '@/src/hooks/notice/useNoticeSearchWithQuery'
 import { ReactNode, createContext, useContext } from 'react'
+import {
+  useNoticeSearchWithQuery,
+  NoticeSearchWithQueryHookResult,
+} from '@/src/hooks/notice/useNoticeSearchWithQuery'
 
 type NoticeSearchContextValue = NoticeSearchWithQueryHookResult
 
@@ -9,10 +12,11 @@ const NoticeSearchContext = createContext<NoticeSearchContextValue | null>(null)
 
 interface NoticeSearchProviderProps {
   children: ReactNode
-  value: NoticeSearchWithQueryHookResult
 }
 
-export function NoticeSearchProvider({ children, value }: NoticeSearchProviderProps) {
+export function NoticeSearchProvider({ children }: NoticeSearchProviderProps) {
+  const value = useNoticeSearchWithQuery()
+
   return <NoticeSearchContext.Provider value={value}>{children}</NoticeSearchContext.Provider>
 }
 

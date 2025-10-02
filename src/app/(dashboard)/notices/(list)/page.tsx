@@ -1,19 +1,20 @@
+import { Suspense } from 'react'
+
 import NoticeFilters from '@/src/app/(dashboard)/notices/(list)/_components/NoticeFilters'
-import NoticeSearchContainer from '@/src/app/(dashboard)/notices/(list)/_components/NoticeSearchContainer'
+import NoticeList from '@/src/app/(dashboard)/notices/(list)/_components/NoticeList'
 import PageListSkeleton from '@/src/components/layout/PageListSkeleton'
 import PageTemplate from '@/src/components/layout/PageTemplate'
 import { NOTICE_LIST_BREADCRUMBS } from '@/src/constants/notice'
-import { Suspense } from 'react'
-import NoticeList from './_components/NoticeList'
+import { NoticeSearchProvider } from '@/src/contexts/NoticeSearchContext'
 
 export default function NoticeListPage() {
   return (
     <Suspense fallback={<PageListSkeleton />}>
       <PageTemplate breadcrumbs={NOTICE_LIST_BREADCRUMBS}>
-        <NoticeSearchContainer>
+        <NoticeSearchProvider>
           <NoticeFilters />
           <NoticeList />
-        </NoticeSearchContainer>
+        </NoticeSearchProvider>
       </PageTemplate>
     </Suspense>
   )
