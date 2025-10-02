@@ -44,11 +44,11 @@ export const useNoticeSearchWithQuery = (): NoticeSearchWithQueryHookResult => {
     [searchParams, initialSearchForm],
   )
 
-  // 페이지네이션 정보
-  const currentPage = useMemo(
-    () => parseIntSafely(searchParams.get('page'), INITIAL_PAGINATION.currentPage),
-    [searchParams],
-  )
+  // 페이지네이션 정보 (URL은 1-based, API는 0-based)
+  const currentPage = useMemo(() => {
+    const pageFromUrl = parseIntSafely(searchParams.get('page'), 1) // URL 기본값: 1 (사용자 친화적)
+    return pageFromUrl - 1 // API용 0-based로 변환
+  }, [searchParams])
 
   const pageSize = useMemo(
     () => parseIntSafely(searchParams.get('pageSize'), INITIAL_PAGINATION.pageSize),
@@ -70,11 +70,19 @@ export const useNoticeSearchWithQuery = (): NoticeSearchWithQueryHookResult => {
         formOverride ? { ...currentForm, ...formOverride } : currentForm
       ) as NoticeSearchFormInput
 
+      // page는 0-based로 전달되므로 URL에 저장할 때 1-based로 변환
       const targetPage = page ?? INITIAL_PAGINATION.currentPage
+      const targetPageForUrl = targetPage + 1 // URL용 1-based로 변환
+
       const targetSize =
         size ?? parseIntSafely(searchParams.get('pageSize'), INITIAL_PAGINATION.pageSize)
 
-      const params = buildSearchParams(finalForm, initialSearchForm, targetPage, targetSize)
+      const params = buildSearchParams(
+        finalForm,
+        initialSearchForm,
+        targetPageForUrl,
+        targetSize,
+      )
       const url = params.toString() ? `?${params.toString()}` : ''
       router.push(url, { scroll: false })
     },
