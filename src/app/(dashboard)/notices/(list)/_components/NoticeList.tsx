@@ -8,8 +8,7 @@ import { ColumnDef } from '@tanstack/react-table'
 import { useCallback, useMemo } from 'react'
 
 export default function NoticeList() {
-  const { currentPage, pageSize, urlSearchForm, updateUrl, data, isLoading } =
-    useNoticeSearchContext()
+  const { currentPage, pageSize, updateUrl, data, isLoading } = useNoticeSearchContext()
 
   const columns: ColumnDef<NoticeListItem>[] = useMemo(
     () => [
@@ -60,10 +59,9 @@ export default function NoticeList() {
 
   const handlePageChange = useCallback(
     (newPage: number, newPageSize?: number) => {
-      const targetPageSize = newPageSize ?? pageSize
-      updateUrl(urlSearchForm, newPage, targetPageSize)
+      updateUrl(null, newPage, newPageSize)
     },
-    [pageSize, updateUrl, urlSearchForm],
+    [updateUrl],
   )
 
   return (

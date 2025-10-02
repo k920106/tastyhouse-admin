@@ -2,10 +2,6 @@ import { isEmptyValue } from '@/src/lib/string-utils'
 import { ValidationResult } from '@/src/types/common'
 import { NoticeSearchFormInput } from '@/src/types/notice'
 
-/**
- * 공지사항 검색 폼 검증
- * 폼 제출 시에만 호출됨
- */
 export const validateNoticeSearchForm = (form: NoticeSearchFormInput): ValidationResult => {
   // 매체사 필수 검증
   if (isEmptyValue(form.companyId)) {

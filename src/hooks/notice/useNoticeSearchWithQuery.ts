@@ -28,7 +28,7 @@ export interface NoticeSearchWithQueryHookResult {
   isLoading: boolean
 
   // 액션들
-  updateUrl: (form: NoticeSearchFormInput, page?: number, size?: number) => void
+  updateUrl: (form?: Partial<NoticeSearchFormInput> | null, page?: number, size?: number) => void
 }
 
 export const useNoticeSearchWithQuery = (): NoticeSearchWithQueryHookResult => {
@@ -57,18 +57,28 @@ export const useNoticeSearchWithQuery = (): NoticeSearchWithQueryHookResult => {
 
   // URL 업데이트 헬퍼
   const updateUrl = useCallback(
-    (form: NoticeSearchFormInput, page: number = INITIAL_PAGINATION.currentPage, size?: number) => {
-      const targetSize = size ?? pageSize
-      const params = buildSearchParams(
-        form,
-        initialSearchForm,
-        page,
-        targetSize,
-      )
+    (
+      formOverride?: Partial<NoticeSearchFormInput> | null,
+      page?: number,
+      size?: number,
+    ) => {
+      // 현재 URL에서 폼 데이터를 파싱 (최신 상태 유지)
+      const currentForm = parseSearchParamsToForm(searchParams, initialSearchForm)
+
+      // formOverride가 null이면 현재 폼 유지, 있으면 병합
+      const finalForm = (
+        formOverride ? { ...currentForm, ...formOverride } : currentForm
+      ) as NoticeSearchFormInput
+
+      const targetPage = page ?? INITIAL_PAGINATION.currentPage
+      const targetSize =
+        size ?? parseIntSafely(searchParams.get('pageSize'), INITIAL_PAGINATION.pageSize)
+
+      const params = buildSearchParams(finalForm, initialSearchForm, targetPage, targetSize)
       const url = params.toString() ? `?${params.toString()}` : ''
       router.push(url, { scroll: false })
     },
-    [router, pageSize, initialSearchForm],
+    [router, searchParams, initialSearchForm],
   )
 
   // URL에 검색 파라미터가 있는지 확인 (쿼리 실행 여부 결정)

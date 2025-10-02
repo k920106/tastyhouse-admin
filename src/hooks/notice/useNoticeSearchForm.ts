@@ -32,7 +32,6 @@ export interface UseNoticeSearchFormResult {
 export const useNoticeSearchForm = (): UseNoticeSearchFormResult => {
   const { urlSearchForm, updateUrl } = useNoticeSearchContext()
 
-  // URL 상태를 기반으로 한 기본값 메모이제이션
   const defaultValues = useMemo(
     () => ({
       companyId: urlSearchForm.companyId ?? '',
@@ -44,13 +43,11 @@ export const useNoticeSearchForm = (): UseNoticeSearchFormResult => {
     [urlSearchForm],
   )
 
-  // React Hook Form 설정
   const form = useForm<NoticeSearchFormInput>({
     resolver: zodResolver(searchFormSchema),
     values: defaultValues,
   })
 
-  // 폼 제출 핸들러
   const handleSubmit = useCallback(() => {
     const formValues = form.getValues()
     const validation = validateNoticeSearchForm(formValues)
@@ -60,9 +57,8 @@ export const useNoticeSearchForm = (): UseNoticeSearchFormResult => {
       return
     }
 
-    // 검색 조건을 URL에 반영하여 쿼리 실행 (페이지는 초기 페이지로 리셋)
     updateUrl(formValues, INITIAL_PAGINATION.currentPage)
-  }, [form, updateUrl])
+  }, [updateUrl, form])
 
   return {
     form,
