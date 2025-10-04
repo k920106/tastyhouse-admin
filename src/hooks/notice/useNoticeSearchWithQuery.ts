@@ -4,7 +4,7 @@ import { getInitialNoticeSearchForm } from '@/src/constants/notice'
 import { INITIAL_PAGINATION } from '@/src/lib/constants'
 import { apiPageToUrlPage, urlPageToApiPage } from '@/src/lib/pagination-utils'
 import { buildSearchParams, parseSearchParamsToForm } from '@/src/lib/url-utils'
-import { NoticeSearchFormInput } from '@/src/types/notice'
+import { isNoticeSearchKey, NoticeSearchFormInput } from '@/src/types/notice'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useCallback, useMemo } from 'react'
 import { useNoticesQuery, type NoticeQueryData } from '../queries/useNoticeQueries'
@@ -39,9 +39,14 @@ export const useNoticeSearchWithQuery = (): NoticeSearchWithQueryHookResult => {
   const searchParams = useSearchParams()
   const router = useRouter()
 
-  // URL에서 현재 검색 조건 파싱 (실제 쿼리 실행용)
+  // URL에서 현재 검색 조건 파싱 (실제 쿼리 실행용, 타입 가드로 안정성 강화)
   const urlSearchForm = useMemo(
-    () => parseSearchParamsToForm(searchParams, initialSearchForm),
+    () =>
+      parseSearchParamsToForm(
+        searchParams,
+        initialSearchForm as unknown as Record<string, unknown>,
+        isNoticeSearchKey,
+      ) as unknown as NoticeSearchFormInput,
     [searchParams],
   )
 
@@ -63,8 +68,12 @@ export const useNoticeSearchWithQuery = (): NoticeSearchWithQueryHookResult => {
       page?: number,
       size?: number,
     ) => {
-      // 현재 URL에서 폼 데이터를 파싱 (최신 상태 유지)
-      const currentForm = parseSearchParamsToForm(searchParams, initialSearchForm)
+      // 현재 URL에서 폼 데이터를 파싱 (최신 상태 유지, 타입 가드 적용)
+      const currentForm = parseSearchParamsToForm(
+        searchParams,
+        initialSearchForm as unknown as Record<string, unknown>,
+        isNoticeSearchKey,
+      ) as unknown as NoticeSearchFormInput
 
       // formOverride가 null이면 현재 폼 유지, 있으면 병합
       const finalForm = (
@@ -79,10 +88,11 @@ export const useNoticeSearchWithQuery = (): NoticeSearchWithQueryHookResult => {
         size ?? parseIntSafely(searchParams.get('pageSize'), INITIAL_PAGINATION.pageSize)
 
       const params = buildSearchParams(
-        finalForm,
-        initialSearchForm,
+        finalForm as unknown as Record<string, unknown>,
+        initialSearchForm as unknown as Record<string, unknown>,
         targetPageForUrl,
         targetSize,
+        isNoticeSearchKey,
       )
       const url = params.toString() ? `?${params.toString()}` : ''
       router.push(url, { scroll: false })

@@ -11,12 +11,17 @@ export type NoticeListItem = {
 export type NoticeActiveFilter = 'all' | 'true' | 'false'
 
 // 폼 입력용 타입 (각 필드별 명확한 타입 정의)
-export interface NoticeSearchFormInput extends Record<string, string> {
+export interface NoticeSearchFormInput {
   companyId: string
   title: string
   startDate: string
   endDate: string
   active: NoticeActiveFilter
+}
+
+// 타입 가드: 문자열이 NoticeSearchFormInput의 키인지 확인
+export const isNoticeSearchKey = (key: string): key is keyof NoticeSearchFormInput => {
+  return ['companyId', 'title', 'startDate', 'endDate', 'active'].includes(key)
 }
 
 // API 요청용 타입 (실제 서버로 전송될 때)
