@@ -13,6 +13,7 @@ import { api } from '@/src/lib/api'
 import { ApiResponse } from '@/src/types/api'
 import { NoticeCreateRequest } from '@/src/types/notice'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
@@ -29,6 +30,7 @@ const noticeFormSchema = z.object({
 type NoticeFormData = z.infer<typeof noticeFormSchema>
 
 export default function NoticeCreate() {
+  const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
 
   const form = useForm<NoticeFormData>({
@@ -55,10 +57,14 @@ export default function NoticeCreate() {
       }
 
       const response = await api.post<ApiResponse>('/notices', requestData)
-      if (response.success) {
-        toast.success('등록되었습니다')
-        form.reset()
+      if (!response.success) {
+        toast.error('등록에 실패했습니다. 다시 시도해 주세요.')
+        return
       }
+
+      toast.success('등록되었습니다')
+
+      router.back()
     } catch (error) {
       console.error('공지사항 등록 실패:', error)
       toast.error(

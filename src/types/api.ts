@@ -1,12 +1,3 @@
-export interface DataTablesResponse<T> {
-  pagination: {
-    draw: number
-    total: number
-    filtered: number
-  }
-  data: T[]
-}
-
 export interface ApiResponse<T = unknown> {
   success: boolean
   data: T | null
