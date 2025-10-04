@@ -5,7 +5,8 @@ import { useCallback } from 'react'
 import { CommonDataTable } from '@/src/components/shared/CommonDataTable'
 import { useNoticeSearchContext } from '@/src/contexts/NoticeSearchContext'
 import { formatToYYYYMMDD } from '@/src/lib/date-utils'
-import { NoticeListItem, getNoticeActiveStatusLabel } from '@/src/types/notice'
+import { getActiveStatusLabel } from '@/src/types/common'
+import { NoticeListItem } from '@/src/types/notice'
 import { ColumnDef } from '@tanstack/react-table'
 
 const NOTICE_COLUMNS: ColumnDef<NoticeListItem>[] = [
@@ -45,7 +46,7 @@ const NOTICE_COLUMNS: ColumnDef<NoticeListItem>[] = [
   {
     accessorKey: 'active',
     header: '활성 여부',
-    cell: ({ row }) => <div>{getNoticeActiveStatusLabel(row.original.active)}</div>,
+    cell: ({ row }) => <div>{getActiveStatusLabel(row.original.active)}</div>,
     meta: {
       className: 'border-x',
     },

@@ -13,10 +13,11 @@ import { useNoticeSearchForm } from '@/src/hooks/notice/useNoticeSearchForm'
 import { useSearchFormKeyboard } from '@/src/hooks/useSearchFormKeyboard'
 import { cn } from '@/src/lib/class-utils'
 
-import ActiveStatusField from './fields/ActiveStatusField'
-import CompanyField from './fields/CompanyField'
+import ActiveStatusSelectFilter from '@/src/components/forms/ActiveStatusSelectFilter'
+import CompanyField from '@/src/components/forms/CompanyField'
+import TextField from '@/src/components/forms/TextField'
+
 import DateRangeField from './fields/DateRangeField'
-import TitleField from './fields/TitleField'
 
 const NoticeFilters = React.memo(function NoticeFilters() {
   const { form, handleSubmit } = useNoticeSearchForm()
@@ -55,10 +56,10 @@ const NoticeFilters = React.memo(function NoticeFilters() {
             </>
           }
         >
-          <CompanyField control={form.control} isLoading={isLoading} />
-          <TitleField control={form.control} isLoading={isLoading} />
+          <CompanyField control={form.control} name="companyId" isLoading={isLoading} />
+          <TextField name="title" label="제목" control={form.control} isLoading={isLoading} />
           <DateRangeField control={form.control} isLoading={isLoading} />
-          <ActiveStatusField control={form.control} isLoading={isLoading} />
+          <ActiveStatusSelectFilter control={form.control} name="active" isLoading={isLoading} />
         </BaseSearchForm>
       </form>
     </Form>
