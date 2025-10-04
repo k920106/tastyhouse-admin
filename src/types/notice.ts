@@ -45,14 +45,6 @@ export interface NoticeCreateResponse {
   id: number
 }
 
-// 활성 여부
-export const NOTICE_ACTIVE_STATUS = {
-  ACTIVE: { value: 'true', label: '활성' },
-  NOT_ACTIVE: { value: 'false', label: '미활성' },
-} as const
-
-export type NoticeActiveStatus = (typeof NOTICE_ACTIVE_STATUS)[keyof typeof NOTICE_ACTIVE_STATUS]
-
 // 상단 고정 여부
 export const NOTICE_TOP_STATUS = {
   TOP: { value: 'true', label: '적용' },
@@ -62,10 +54,6 @@ export const NOTICE_TOP_STATUS = {
 export type NoticeTopStatus = (typeof NOTICE_TOP_STATUS)[keyof typeof NOTICE_TOP_STATUS]
 
 // 유틸리티 함수
-export const getNoticeActiveStatusLabel = (active: boolean): string => {
-  return active ? NOTICE_ACTIVE_STATUS.ACTIVE.label : NOTICE_ACTIVE_STATUS.NOT_ACTIVE.label
-}
-
 export const getNoticeTopStatusLabel = (top: boolean): string => {
   return top ? NOTICE_TOP_STATUS.TOP.label : NOTICE_TOP_STATUS.NOT_TOP.label
 }

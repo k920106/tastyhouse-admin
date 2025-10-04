@@ -5,7 +5,8 @@
       "Bash(npm run build:*)",
       "Bash(npx tsc:*)",
       "Bash(sed:*)",
-      "Bash(cat:*)"
+      "Bash(cat:*)",
+      "Bash(mv:*)"
     ],
     "deny": [],
     "ask": []
