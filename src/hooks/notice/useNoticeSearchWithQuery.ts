@@ -2,6 +2,7 @@
 
 import { getInitialNoticeSearchForm } from '@/src/constants/notice'
 import { INITIAL_PAGINATION } from '@/src/lib/constants'
+import { apiPageToUrlPage, urlPageToApiPage } from '@/src/lib/pagination-utils'
 import { buildSearchParams, parseSearchParamsToForm } from '@/src/lib/url-utils'
 import { NoticeSearchFormInput } from '@/src/types/notice'
 import { useRouter, useSearchParams } from 'next/navigation'
@@ -47,7 +48,7 @@ export const useNoticeSearchWithQuery = (): NoticeSearchWithQueryHookResult => {
   // 페이지네이션 정보 (URL은 1-based, API는 0-based)
   const currentPage = useMemo(() => {
     const pageFromUrl = parseIntSafely(searchParams.get('page'), 1) // URL 기본값: 1 (사용자 친화적)
-    return pageFromUrl - 1 // API용 0-based로 변환
+    return urlPageToApiPage(pageFromUrl) // API용 0-based로 변환
   }, [searchParams])
 
   const pageSize = useMemo(
@@ -72,7 +73,7 @@ export const useNoticeSearchWithQuery = (): NoticeSearchWithQueryHookResult => {
 
       // page는 0-based로 전달되므로 URL에 저장할 때 1-based로 변환
       const targetPage = page ?? INITIAL_PAGINATION.currentPage
-      const targetPageForUrl = targetPage + 1 // URL용 1-based로 변환
+      const targetPageForUrl = apiPageToUrlPage(targetPage) // URL용 1-based로 변환
 
       const targetSize =
         size ?? parseIntSafely(searchParams.get('pageSize'), INITIAL_PAGINATION.pageSize)
