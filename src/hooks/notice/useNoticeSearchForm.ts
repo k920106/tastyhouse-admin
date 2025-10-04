@@ -1,7 +1,7 @@
 'use client'
 
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useCallback, useEffect, useMemo } from 'react'
+import { useCallback, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import * as z from 'zod'
@@ -32,26 +32,15 @@ export interface UseNoticeSearchFormResult {
 export const useNoticeSearchForm = (): UseNoticeSearchFormResult => {
   const { urlSearchForm, updateUrl } = useNoticeSearchContext()
 
-  const defaultValues = useMemo(
-    () => ({
-      companyId: urlSearchForm.companyId ?? '',
-      title: urlSearchForm.title ?? '',
-      startDate: urlSearchForm.startDate ?? '',
-      endDate: urlSearchForm.endDate ?? '',
-      active: urlSearchForm.active ?? '',
-    }),
-    [urlSearchForm],
-  )
-
   const form = useForm<NoticeSearchFormInput>({
     resolver: zodResolver(searchFormSchema),
-    defaultValues,
+    defaultValues: urlSearchForm,
   })
 
   // URL 변경 시에만 폼 리셋 (매 렌더링마다 리셋하지 않음)
   useEffect(() => {
-    form.reset(defaultValues)
-  }, [defaultValues, form])
+    form.reset(urlSearchForm)
+  }, [urlSearchForm, form])
 
   const handleSubmit = useCallback(() => {
     const formValues = form.getValues()

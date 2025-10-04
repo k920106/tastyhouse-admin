@@ -16,13 +16,23 @@ export const NOTICE_CREATE_BREADCRUMBS = [
 ]
 
 /**
+ * 공지사항 검색 폼 초기값 (날짜 제외)
+ * URL이 비어있을 때 기본값으로 사용
+ */
+export const INITIAL_NOTICE_SEARCH_FORM = {
+  companyId: '',
+  title: '',
+  active: 'all' as const,
+}
+
+/**
  * 공지사항 검색 폼 초기값을 생성하는 팩토리 함수
  * 날짜 값이 동적으로 생성되므로 함수로 제공
  */
-export const getInitialNoticeSearchForm = (): NoticeSearchFormInput => ({
-  companyId: '',
-  title: '',
-  startDate: getTodayYYYYMMDD(),
-  endDate: getTodayYYYYMMDD(),
-  active: 'all',
-})
+export const getInitialNoticeSearchForm = (): NoticeSearchFormInput => {
+  return {
+    ...INITIAL_NOTICE_SEARCH_FORM,
+    startDate: getTodayYYYYMMDD(),
+    endDate: getTodayYYYYMMDD(),
+  }
+}

@@ -32,17 +32,17 @@ export interface NoticeSearchWithQueryHookResult {
   updateUrl: (form?: Partial<NoticeSearchFormInput> | null, page?: number, size?: number) => void
 }
 
+// 초기 검색 폼 값 (컴포넌트 외부에서 한 번만 생성)
+const initialSearchForm = getInitialNoticeSearchForm()
+
 export const useNoticeSearchWithQuery = (): NoticeSearchWithQueryHookResult => {
   const searchParams = useSearchParams()
   const router = useRouter()
 
-  // 초기 검색 폼 값 (한 번만 생성)
-  const initialSearchForm = useMemo(() => getInitialNoticeSearchForm(), [])
-
   // URL에서 현재 검색 조건 파싱 (실제 쿼리 실행용)
   const urlSearchForm = useMemo(
     () => parseSearchParamsToForm(searchParams, initialSearchForm),
-    [searchParams, initialSearchForm],
+    [searchParams],
   )
 
   // 페이지네이션 정보 (URL은 1-based, API는 0-based)
@@ -87,7 +87,7 @@ export const useNoticeSearchWithQuery = (): NoticeSearchWithQueryHookResult => {
       const url = params.toString() ? `?${params.toString()}` : ''
       router.push(url, { scroll: false })
     },
-    [router, searchParams, initialSearchForm],
+    [router, searchParams],
   )
 
   // URL에 검색 파라미터가 있는지 확인 (쿼리 실행 여부 결정)
