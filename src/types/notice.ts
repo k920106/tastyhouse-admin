@@ -41,6 +41,10 @@ export interface NoticeCreateRequest {
   top: boolean
 }
 
+export interface NoticeCreateResponse {
+  id: number
+}
+
 // 활성 여부
 export const NOTICE_ACTIVE_STATUS = {
   ACTIVE: { value: 'true', label: '활성' },

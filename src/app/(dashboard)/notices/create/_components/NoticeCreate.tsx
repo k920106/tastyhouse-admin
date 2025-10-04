@@ -11,7 +11,7 @@ import { Textarea } from '@/src/components/ui/Textarea'
 import { NOTICE_CREATE_BREADCRUMBS } from '@/src/constants/notice'
 import { api } from '@/src/lib/api'
 import { ApiResponse } from '@/src/types/api'
-import { NoticeCreateRequest } from '@/src/types/notice'
+import { NoticeCreateRequest, NoticeCreateResponse } from '@/src/types/notice'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
@@ -56,15 +56,15 @@ export default function NoticeCreate() {
         top: data.top,
       }
 
-      const response = await api.post<ApiResponse>('/notices', requestData)
-      if (!response.success) {
+      const response = await api.post<ApiResponse<NoticeCreateResponse>>('/notices', requestData)
+      if (!response.success || !response.data) {
         toast.error('등록에 실패했습니다. 다시 시도해 주세요.')
         return
       }
 
       toast.success('등록되었습니다')
 
-      router.back()
+      router.push(`/notice/create/${response.data.id}`)
     } catch (error) {
       console.error('공지사항 등록 실패:', error)
       toast.error(
