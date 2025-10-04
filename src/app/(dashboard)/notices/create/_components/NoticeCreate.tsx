@@ -19,9 +19,9 @@ import { toast } from 'sonner'
 import * as z from 'zod'
 
 const noticeFormSchema = z.object({
-  companyId: z.string().min(1, '매체사를 선택해주세요'),
-  title: z.string().min(1, '제목을 입력해주세요'),
-  content: z.string().min(1, '내용을 입력해주세요'),
+  companyId: z.string().min(1, '매체사를 선택해 주세요'),
+  title: z.string().min(1, '제목을 입력해 주세요'),
+  content: z.string().min(1, '내용을 입력해 주세요'),
   active: z.boolean(),
   top: z.boolean(),
 })
@@ -62,7 +62,7 @@ export default function NoticeCreate() {
     } catch (error) {
       console.error('공지사항 등록 실패:', error)
       toast.error(
-        error instanceof Error ? error.message : '등록에 실패하였습니다. 다시 시도해주세요.',
+        error instanceof Error ? error.message : '등록에 실패하였습니다. 다시 시도해 주세요.',
       )
     } finally {
       setIsLoading(false)
