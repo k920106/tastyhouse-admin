@@ -1,18 +1,9 @@
 'use client'
 
-import CompanyCombobox from '@/src/components/forms/CompanyCombobox'
-import {
-  DetailTableDoubleRow,
-  DetailTableField,
-  DetailTableRow,
-} from '@/src/components/forms/DetailTable'
 import PageTemplate from '@/src/components/layout/PageTemplate'
 import { Button } from '@/src/components/ui/Button'
 import { Card, CardContent, CardFooter } from '@/src/components/ui/Card'
-import { Form, FormControl, FormField, FormItem, FormMessage } from '@/src/components/ui/Form'
-import { Input } from '@/src/components/ui/Input'
-import { Switch } from '@/src/components/ui/Switch'
-import { Textarea } from '@/src/components/ui/Textarea'
+import { Form } from '@/src/components/ui/Form'
 import { INITIAL_NOTICE_CREATE_FORM, NOTICE_CREATE_BREADCRUMBS } from '@/src/constants/notice'
 import { api } from '@/src/lib/api'
 import { handleFormError } from '@/src/lib/form-utils'
@@ -27,6 +18,7 @@ import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import * as z from 'zod'
+import NoticeFormFields from '../../_components/NoticeFormFields'
 
 const noticeFormSchema = z.object({
   companyId: z
@@ -86,94 +78,7 @@ export default function NoticeCreate() {
         <form onSubmit={form.handleSubmit(onSubmit, handleFormError)}>
           <Card className="w-full shadow-none">
             <CardContent>
-              <table className="w-full border-collapse">
-                <tbody className="border">
-                  <DetailTableDoubleRow>
-                    <DetailTableField label="매체사">
-                      <FormField
-                        control={form.control}
-                        name="companyId"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormControl>
-                              <CompanyCombobox
-                                value={field.value as string}
-                                onValueChange={field.onChange}
-                                disabled={isSubmitting}
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </DetailTableField>
-                    <DetailTableField label="활성상태">
-                      <FormField
-                        control={form.control}
-                        name="active"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormControl>
-                              <Switch
-                                checked={field.value}
-                                onCheckedChange={field.onChange}
-                                disabled={isSubmitting}
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </DetailTableField>
-                  </DetailTableDoubleRow>
-                  <DetailTableRow label="상단 고정">
-                    <FormField
-                      control={form.control}
-                      name="top"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormControl>
-                            <Switch
-                              checked={field.value}
-                              onCheckedChange={field.onChange}
-                              disabled={isSubmitting}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </DetailTableRow>
-                  <DetailTableRow label="제목">
-                    <FormField
-                      control={form.control}
-                      name="title"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormControl>
-                            <Input {...field} disabled={isSubmitting} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </DetailTableRow>
-                  <DetailTableRow label="내용">
-                    <FormField
-                      control={form.control}
-                      name="content"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormControl>
-                            <Textarea {...field} disabled={isSubmitting} rows={15} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </DetailTableRow>
-                </tbody>
-              </table>
+              <NoticeFormFields form={form} isSubmitting={isSubmitting} />
             </CardContent>
             <CardFooter className="flex justify-end gap-3">
               <Button type="submit" disabled={isSubmitting}>

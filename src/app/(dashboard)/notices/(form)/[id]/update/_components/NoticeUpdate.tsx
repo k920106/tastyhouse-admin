@@ -1,28 +1,20 @@
 'use client'
 
-import CompanyCombobox from '@/src/components/forms/CompanyCombobox'
-import {
-  DetailTableDoubleRow,
-  DetailTableField,
-  DetailTableRow,
-} from '@/src/components/forms/DetailTable'
 import PageTemplate from '@/src/components/layout/PageTemplate'
 import { Button } from '@/src/components/ui/Button'
 import { Card, CardContent, CardFooter } from '@/src/components/ui/Card'
-import { Form, FormControl, FormField, FormItem, FormMessage } from '@/src/components/ui/Form'
-import { Input } from '@/src/components/ui/Input'
-import { Switch } from '@/src/components/ui/Switch'
-import { Textarea } from '@/src/components/ui/Textarea'
+import { Form } from '@/src/components/ui/Form'
 import { NOTICE_DETAIL_BREADCRUMBS } from '@/src/constants/notice'
 import { api } from '@/src/lib/api'
 import { handleFormError } from '@/src/lib/form-utils'
 import { ApiResponse } from '@/src/types/api'
-import { Notice, NoticeCreateFormInput, NoticeCreateRequest } from '@/src/types/notice'
+import { Notice, NoticeUpdateFormInput, NoticeUpdateRequest } from '@/src/types/notice'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import * as z from 'zod'
+import NoticeFormFields from '../../../_components/NoticeFormFields'
 import { revalidateNoticePaths } from './actions'
 
 const noticeFormSchema = z.object({
@@ -36,7 +28,7 @@ const noticeFormSchema = z.object({
   content: z.string().min(1, '내용을 입력해 주세요'),
   active: z.boolean(),
   top: z.boolean(),
-}) satisfies z.ZodType<NoticeCreateFormInput>
+}) satisfies z.ZodType<NoticeUpdateFormInput>
 
 interface NoticeUpdateProps {
   notice: Notice
@@ -45,7 +37,7 @@ interface NoticeUpdateProps {
 export default function NoticeUpdate({ notice }: NoticeUpdateProps) {
   const router = useRouter()
 
-  const form = useForm<NoticeCreateFormInput>({
+  const form = useForm<NoticeUpdateFormInput>({
     resolver: zodResolver(noticeFormSchema),
     defaultValues: {
       companyId: String(notice.companyId),
@@ -60,9 +52,9 @@ export default function NoticeUpdate({ notice }: NoticeUpdateProps) {
     formState: { isSubmitting },
   } = form
 
-  const onSubmit = async (data: NoticeCreateFormInput) => {
+  const onSubmit = async (data: NoticeUpdateFormInput) => {
     try {
-      const request: NoticeCreateRequest = {
+      const request: NoticeUpdateRequest = {
         companyId: Number(data.companyId),
         title: data.title,
         content: data.content,
@@ -95,94 +87,7 @@ export default function NoticeUpdate({ notice }: NoticeUpdateProps) {
         <form onSubmit={form.handleSubmit(onSubmit, handleFormError)}>
           <Card className="w-full shadow-none">
             <CardContent>
-              <table className="w-full border-collapse">
-                <tbody className="border">
-                  <DetailTableDoubleRow>
-                    <DetailTableField label="매체사">
-                      <FormField
-                        control={form.control}
-                        name="companyId"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormControl>
-                              <CompanyCombobox
-                                value={field.value as string}
-                                onValueChange={field.onChange}
-                                disabled={isSubmitting}
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </DetailTableField>
-                    <DetailTableField label="활성상태">
-                      <FormField
-                        control={form.control}
-                        name="active"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormControl>
-                              <Switch
-                                checked={field.value}
-                                onCheckedChange={field.onChange}
-                                disabled={isSubmitting}
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </DetailTableField>
-                  </DetailTableDoubleRow>
-                  <DetailTableRow label="상단 고정">
-                    <FormField
-                      control={form.control}
-                      name="top"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormControl>
-                            <Switch
-                              checked={field.value}
-                              onCheckedChange={field.onChange}
-                              disabled={isSubmitting}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </DetailTableRow>
-                  <DetailTableRow label="제목">
-                    <FormField
-                      control={form.control}
-                      name="title"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormControl>
-                            <Input {...field} disabled={isSubmitting} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </DetailTableRow>
-                  <DetailTableRow label="내용">
-                    <FormField
-                      control={form.control}
-                      name="content"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormControl>
-                            <Textarea {...field} disabled={isSubmitting} rows={15} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </DetailTableRow>
-                </tbody>
-              </table>
+              <NoticeFormFields form={form} isSubmitting={isSubmitting} />
             </CardContent>
             <CardFooter className="flex justify-end gap-3">
               <Button type="submit" disabled={isSubmitting}>

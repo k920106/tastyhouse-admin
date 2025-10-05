@@ -36,6 +36,14 @@ export interface NoticeCreateFormInput {
   top: boolean
 }
 
+export interface NoticeUpdateFormInput {
+  companyId: string
+  title: string
+  content: string
+  active: boolean
+  top: boolean
+}
+
 export const isNoticeSearchKey = (key: string): key is keyof NoticeSearchFormInput => {
   return ['companyId', 'title', 'startDate', 'endDate', 'active'].includes(key)
 }
@@ -49,6 +57,14 @@ export interface NoticeSearchQuery {
 }
 
 export interface NoticeCreateRequest {
+  companyId: number
+  title: string
+  content: string
+  active: boolean
+  top: boolean
+}
+
+export interface NoticeUpdateRequest {
   companyId: number
   title: string
   content: string
