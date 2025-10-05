@@ -1,3 +1,5 @@
+import { ApiError, statusToErrorCode } from '@/src/types/error'
+
 interface apiOptions {
   method?: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH'
   body?: unknown
@@ -40,14 +42,18 @@ export class api {
       clearTimeout(timeoutId)
 
       if (!response.ok) {
-        let errorMessage = `API Error: ${response.status} ${response.statusText}`
+        const status = response.status
+        const errorCode = statusToErrorCode(status)
+
+        let errorMessage = `API Error: ${status} ${response.statusText}`
         try {
           const errorData = await response.json()
           errorMessage = errorData.message || errorMessage
         } catch {
           // JSON 파싱 실패 시 기본 에러 메시지 사용
         }
-        throw new Error(errorMessage)
+
+        throw new ApiError(errorCode, errorMessage, status)
       }
 
       const contentType = response.headers.get('content-type')
@@ -59,15 +65,19 @@ export class api {
     } catch (error) {
       clearTimeout(timeoutId)
 
+      if (error instanceof ApiError) {
+        throw error
+      }
+
       if (error instanceof Error) {
         if (error.name === 'AbortError') {
-          throw new Error(`Request timeout after ${timeout}ms`)
+          throw new ApiError('TIMEOUT', `Request timeout after ${timeout}ms`)
         }
         console.error('API Request failed:', error)
         throw error
       }
 
-      throw new Error('Unknown API error occurred')
+      throw new ApiError('UNKNOWN_ERROR', 'Unknown API error occurred')
     }
   }
 
