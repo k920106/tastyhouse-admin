@@ -11,8 +11,13 @@ import { Card, CardContent, CardFooter } from '@/src/components/ui/Card'
 import { Form } from '@/src/components/ui/Form'
 import { NOTICE_CREATE_BREADCRUMBS } from '@/src/constants/notice'
 import { api } from '@/src/lib/api'
+import { handleFormError } from '@/src/lib/form-utils'
 import { ApiResponse } from '@/src/types/api'
-import { NoticeCreateRequest, NoticeCreateResponse } from '@/src/types/notice'
+import {
+  NoticeCreateFormInput,
+  NoticeCreateRequest,
+  NoticeCreateResponse,
+} from '@/src/types/notice'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
@@ -25,14 +30,12 @@ const noticeFormSchema = z.object({
   content: z.string().min(1, '내용을 입력해 주세요'),
   active: z.boolean(),
   top: z.boolean(),
-})
-
-type NoticeFormData = z.infer<typeof noticeFormSchema>
+}) satisfies z.ZodType<NoticeCreateFormInput>
 
 export default function NoticeCreate() {
   const router = useRouter()
 
-  const form = useForm<NoticeFormData>({
+  const form = useForm<NoticeCreateFormInput>({
     resolver: zodResolver(noticeFormSchema),
     defaultValues: {
       companyId: '',
@@ -47,9 +50,9 @@ export default function NoticeCreate() {
     formState: { isSubmitting },
   } = form
 
-  const onSubmit = async (data: NoticeFormData) => {
+  const onSubmit = async (data: NoticeCreateFormInput) => {
     try {
-      const requestData: NoticeCreateRequest = {
+      const request: NoticeCreateRequest = {
         companyId: Number(data.companyId),
         title: data.title,
         content: data.content,
@@ -57,7 +60,7 @@ export default function NoticeCreate() {
         top: data.top,
       }
 
-      const response = await api.post<ApiResponse<NoticeCreateResponse>>('/notices', requestData)
+      const response = await api.post<ApiResponse<NoticeCreateResponse>>('/notices', request)
       if (!response.success || !response.data) {
         toast.error(response.message || '등록에 실패했습니다. 다시 시도해 주세요.')
         return
@@ -78,12 +81,7 @@ export default function NoticeCreate() {
       <Card className={'w-full shadow-none'}>
         <Form {...form}>
           <form
-            onSubmit={form.handleSubmit(onSubmit, (errors) => {
-              const firstError = Object.values(errors)[0]
-              if (firstError?.message) {
-                toast.error(firstError.message)
-              }
-            })}
+            onSubmit={form.handleSubmit(onSubmit, handleFormError)}
             className="space-y-6"
           >
             <CardContent>

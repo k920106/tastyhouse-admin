@@ -16,21 +16,22 @@ import { cn } from '@/src/lib/class-utils'
 import ActiveStatusSelectFilter from '@/src/components/forms/ActiveStatusSelectFilter'
 import CompanyField from '@/src/components/forms/CompanyField'
 import TextField from '@/src/components/forms/TextField'
+import { handleFormError } from '@/src/lib/form-utils'
 
 import DateRangeField from './fields/DateRangeField'
 
 const NoticeFilters = React.memo(function NoticeFilters() {
-  const { form, handleSubmit } = useNoticeSearchForm()
+  const { form, onSubmit } = useNoticeSearchForm()
   const { isLoading } = useNoticeSearchContext()
 
   const { handleKeyDown } = useSearchFormKeyboard({
-    onSubmit: handleSubmit,
+    onSubmit,
     isLoading,
   })
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleSubmit)} onKeyDown={handleKeyDown}>
+      <form onSubmit={form.handleSubmit(onSubmit, handleFormError)} onKeyDown={handleKeyDown}>
         <BaseSearchForm
           actions={
             <>

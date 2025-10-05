@@ -19,6 +19,14 @@ export interface NoticeSearchFormInput {
   active: NoticeActiveFilter
 }
 
+export interface NoticeCreateFormInput {
+  companyId: string
+  title: string
+  content: string
+  active: boolean
+  top: boolean
+}
+
 // 타입 가드: 문자열이 NoticeSearchFormInput의 키인지 확인
 export const isNoticeSearchKey = (key: string): key is keyof NoticeSearchFormInput => {
   return ['companyId', 'title', 'startDate', 'endDate', 'active'].includes(key)

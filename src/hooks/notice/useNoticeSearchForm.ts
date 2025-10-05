@@ -3,18 +3,16 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useCallback, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
-import { toast } from 'sonner'
 import * as z from 'zod'
 
 import { INITIAL_PAGINATION } from '@/src/lib/constants'
-import { validateNoticeSearchForm } from '@/src/lib/validations/notice'
 import { type NoticeSearchFormInput } from '@/src/types/notice'
 
 import { useNoticeSearchContext } from '@/src/contexts/NoticeSearchContext'
 
 // 검색 폼 스키마
 const searchFormSchema = z.object({
-  companyId: z.string(),
+  companyId: z.string().min(1, '매체사를 선택해 주세요'),
   title: z.string(),
   startDate: z.string(),
   endDate: z.string(),
@@ -26,7 +24,7 @@ export interface UseNoticeSearchFormResult {
   form: ReturnType<typeof useForm<NoticeSearchFormInput>>
 
   // 액션
-  handleSubmit: () => void
+  onSubmit: () => void
 }
 
 export const useNoticeSearchForm = (): UseNoticeSearchFormResult => {
@@ -42,20 +40,14 @@ export const useNoticeSearchForm = (): UseNoticeSearchFormResult => {
     form.reset(urlSearchForm)
   }, [urlSearchForm, form])
 
-  const handleSubmit = useCallback(() => {
+  const onSubmit = useCallback(() => {
     const formValues = form.getValues()
-    const validation = validateNoticeSearchForm(formValues)
-
-    if (!validation.isValid) {
-      toast.error(validation.error)
-      return
-    }
-
+    console.log(formValues)
     updateUrl(formValues, INITIAL_PAGINATION.currentPage)
   }, [updateUrl, form])
 
   return {
     form,
-    handleSubmit,
+    onSubmit,
   }
 }
