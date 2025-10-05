@@ -1,3 +1,16 @@
+// 상단 고정 여부
+export const NOTICE_TOP_STATUS = {
+  TOP: { value: 'true', label: '적용' },
+  NOT_TOP: { value: 'false', label: '미적용' },
+} as const
+
+export type NoticeTopStatus = (typeof NOTICE_TOP_STATUS)[keyof typeof NOTICE_TOP_STATUS]
+
+// 유틸리티 함수
+export const getNoticeTopStatusLabel = (top: boolean): string => {
+  return top ? NOTICE_TOP_STATUS.TOP.label : NOTICE_TOP_STATUS.NOT_TOP.label
+}
+
 export type NoticeListItem = {
   id: number
   companyName: string
@@ -7,16 +20,12 @@ export type NoticeListItem = {
   createdAt: string
 }
 
-// 검색 폼에서 사용하는 활성 상태 타입
-export type NoticeActiveFilter = 'all' | 'true' | 'false'
-
-// 폼 입력용 타입 (각 필드별 명확한 타입 정의)
 export interface NoticeSearchFormInput {
   companyId: string
   title: string
   startDate: string
   endDate: string
-  active: NoticeActiveFilter
+  active: 'all' | 'true' | 'false'
 }
 
 export interface NoticeCreateFormInput {
@@ -27,12 +36,10 @@ export interface NoticeCreateFormInput {
   top: boolean
 }
 
-// 타입 가드: 문자열이 NoticeSearchFormInput의 키인지 확인
 export const isNoticeSearchKey = (key: string): key is keyof NoticeSearchFormInput => {
   return ['companyId', 'title', 'startDate', 'endDate', 'active'].includes(key)
 }
 
-// API 요청용 타입 (실제 서버로 전송될 때)
 export interface NoticeSearchQuery {
   companyId: number
   title: string | null
@@ -51,17 +58,4 @@ export interface NoticeCreateRequest {
 
 export interface NoticeCreateResponse {
   id: number
-}
-
-// 상단 고정 여부
-export const NOTICE_TOP_STATUS = {
-  TOP: { value: 'true', label: '적용' },
-  NOT_TOP: { value: 'false', label: '미적용' },
-} as const
-
-export type NoticeTopStatus = (typeof NOTICE_TOP_STATUS)[keyof typeof NOTICE_TOP_STATUS]
-
-// 유틸리티 함수
-export const getNoticeTopStatusLabel = (top: boolean): string => {
-  return top ? NOTICE_TOP_STATUS.TOP.label : NOTICE_TOP_STATUS.NOT_TOP.label
 }
