@@ -15,7 +15,6 @@ import { ApiResponse } from '@/src/types/api'
 import { NoticeCreateRequest, NoticeCreateResponse } from '@/src/types/notice'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
-import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import * as z from 'zod'
@@ -32,7 +31,6 @@ type NoticeFormData = z.infer<typeof noticeFormSchema>
 
 export default function NoticeCreate() {
   const router = useRouter()
-  const [isLoading, setIsLoading] = useState(false)
 
   const form = useForm<NoticeFormData>({
     resolver: zodResolver(noticeFormSchema),
@@ -45,10 +43,12 @@ export default function NoticeCreate() {
     },
   })
 
+  const {
+    formState: { isSubmitting },
+  } = form
+
   const onSubmit = async (data: NoticeFormData) => {
     try {
-      setIsLoading(true)
-
       const requestData: NoticeCreateRequest = {
         companyId: Number(data.companyId),
         title: data.title,
@@ -64,15 +64,12 @@ export default function NoticeCreate() {
       }
 
       toast.success('등록되었습니다')
-
       router.push(`/notices/${response.data.id}`)
     } catch (error) {
       console.error('공지사항 등록 실패:', error)
       toast.error(
         error instanceof Error ? error.message : '등록에 실패하였습니다. 다시 시도해 주세요.',
       )
-    } finally {
-      setIsLoading(false)
     }
   }
 
@@ -91,22 +88,27 @@ export default function NoticeCreate() {
           >
             <CardContent>
               <div className="space-y-6">
-                <CompanyField control={form.control} name="companyId" isLoading={isLoading} />
+                <CompanyField control={form.control} name="companyId" isLoading={isSubmitting} />
                 <ActiveStatusSwitchField control={form.control} name="active" />
                 <SwitchField control={form.control} name="top" label="상단 고정" />
-                <TextField name="title" label="제목" control={form.control} isLoading={isLoading} />
+                <TextField
+                  name="title"
+                  label="제목"
+                  control={form.control}
+                  isLoading={isSubmitting}
+                />
                 <TextareaField
                   name="content"
                   label="내용"
                   control={form.control}
-                  isLoading={isLoading}
+                  isLoading={isSubmitting}
                   rows={15}
                 />
               </div>
             </CardContent>
             <CardFooter className="flex justify-end gap-3">
-              <Button type="submit" disabled={isLoading}>
-                {isLoading ? '등록 중...' : '등록'}
+              <Button type="submit" disabled={isSubmitting}>
+                {isSubmitting ? '등록 중...' : '등록'}
               </Button>
             </CardFooter>
           </form>
