@@ -1,13 +1,14 @@
 'use client'
 
-import CompanySelector from '@/src/components/forms/CompanySelector'
+import ActiveStatusSwitchField from '@/src/components/forms/ActiveStatusSwitchField'
+import CompanyField from '@/src/components/forms/CompanyField'
+import SwitchField from '@/src/components/forms/SwitchField'
+import TextField from '@/src/components/forms/TextField'
+import TextareaField from '@/src/components/forms/TextareaField'
 import PageTemplate from '@/src/components/layout/PageTemplate'
 import { Button } from '@/src/components/ui/Button'
 import { Card, CardContent, CardFooter } from '@/src/components/ui/Card'
-import { Form, FormControl, FormField, FormItem, FormLabel } from '@/src/components/ui/Form'
-import { Input } from '@/src/components/ui/Input'
-import { Switch } from '@/src/components/ui/Switch'
-import { Textarea } from '@/src/components/ui/Textarea'
+import { Form } from '@/src/components/ui/Form'
 import { NOTICE_CREATE_BREADCRUMBS } from '@/src/constants/notice'
 import { api } from '@/src/lib/api'
 import { ApiResponse } from '@/src/types/api'
@@ -64,7 +65,7 @@ export default function NoticeCreate() {
 
       toast.success('등록되었습니다')
 
-      router.push(`/notice/create/${response.data.id}`)
+      router.push(`/notice/${response.data.id}`)
     } catch (error) {
       console.error('공지사항 등록 실패:', error)
       toast.error(
@@ -90,146 +91,16 @@ export default function NoticeCreate() {
           >
             <CardContent>
               <div className="space-y-6">
-                <FormField
-                  control={form.control}
-                  name="companyId"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="font-semibold text-foreground">매체사</FormLabel>
-                      <FormControl>
-                        <CompanySelector
-                          value={field.value}
-                          onValueChange={field.onChange}
-                          loading={false}
-                        />
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
-                {/* 기존 RadioGroup 코드 주석 처리
-                <FormField
-                  control={form.control}
-                  name="active"
-                  render={({ field }) => (
-                    <FormItem className="space-y-3">
-                      <FormLabel className="font-semibold">활성 여부</FormLabel>
-                      <FormControl>
-                        <RadioGroup
-                          onValueChange={field.onChange}
-                          defaultValue={field.value}
-                          className="flex flex-col"
-                        >
-                          <FormItem className="flex items-center gap-3 space-y-0">
-                            <FormControl>
-                              <RadioGroupItem id="use" value="true" />
-                            </FormControl>
-                            <FormLabel className="font-normal" htmlFor="use">
-                              {NOTICE_ACTIVE_STATUS.ACTIVE.label}
-                            </FormLabel>
-                          </FormItem>
-                          <FormItem className="flex items-center gap-3 space-y-0">
-                            <FormControl>
-                              <RadioGroupItem id="not-use" value="false" />
-                            </FormControl>
-                            <FormLabel className="font-normal" htmlFor="not-use">
-                              {NOTICE_ACTIVE_STATUS.NOT_ACTIVE.label}
-                            </FormLabel>
-                          </FormItem>
-                        </RadioGroup>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                */}
-                <FormField
-                  control={form.control}
-                  name="active"
-                  render={({ field }) => (
-                    <FormItem className="space-y-2">
-                      <FormLabel className="font-semibold">활성 여부</FormLabel>
-                      <FormControl>
-                        <Switch checked={field.value} onCheckedChange={field.onChange} />
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
-                {/* 기존 상단 고정 RadioGroup 코드 주석 처리
-                <FormField
-                  control={form.control}
-                  name="top"
-                  render={({ field }) => (
-                    <FormItem className="space-y-3">
-                      <FormLabel className="font-semibold">상단 고정</FormLabel>
-                      <FormControl>
-                        <RadioGroup
-                          onValueChange={field.onChange}
-                          defaultValue={field.value}
-                          className="flex flex-col"
-                        >
-                          <FormItem className="flex items-center gap-3 space-y-0">
-                            <FormControl>
-                              <RadioGroupItem id="top" value="true" />
-                            </FormControl>
-                            <FormLabel className="font-normal" htmlFor="top">
-                              {NOTICE_TOP_STATUS.TOP.label}
-                            </FormLabel>
-                          </FormItem>
-                          <FormItem className="flex items-center gap-3 space-y-0">
-                            <FormControl>
-                              <RadioGroupItem id="not-top" value="false" />
-                            </FormControl>
-                            <FormLabel className="font-normal" htmlFor="not-top">
-                              {NOTICE_TOP_STATUS.NOT_TOP.label}
-                            </FormLabel>
-                          </FormItem>
-                        </RadioGroup>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                */}
-                <FormField
-                  control={form.control}
-                  name="top"
-                  render={({ field }) => (
-                    <FormItem className="space-y-2">
-                      <FormLabel className="font-semibold">상단 고정</FormLabel>
-                      <FormControl>
-                        <Switch checked={field.value} onCheckedChange={field.onChange} />
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="title"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="font-semibold text-foreground">제목</FormLabel>
-                      <FormControl>
-                        <Input type="text" value={field.value} onChange={field.onChange} />
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
+                <CompanyField control={form.control} name="companyId" isLoading={isLoading} />
+                <ActiveStatusSwitchField control={form.control} name="active" />
+                <SwitchField control={form.control} name="top" label="상단 고정" />
+                <TextField name="title" label="제목" control={form.control} isLoading={isLoading} />
+                <TextareaField
                   name="content"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="font-semibold text-foreground">내용</FormLabel>
-                      <FormControl>
-                        <Textarea
-                          id="content"
-                          value={field.value}
-                          onChange={field.onChange}
-                          rows={15}
-                        />
-                      </FormControl>
-                    </FormItem>
-                  )}
+                  label="내용"
+                  control={form.control}
+                  isLoading={isLoading}
+                  rows={15}
                 />
               </div>
             </CardContent>

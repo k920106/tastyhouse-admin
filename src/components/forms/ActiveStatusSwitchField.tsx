@@ -1,8 +1,7 @@
 import React from 'react'
 import { Control, FieldValues, Path } from 'react-hook-form'
 
-import FormFieldWrapper from '@/src/components/forms/FormFieldWrapper'
-import { Switch } from '@/src/components/ui/Switch'
+import SwitchField from '@/src/components/forms/SwitchField'
 
 interface ActiveStatusSwitchFieldProps<T extends FieldValues> {
   control: Control<T>
@@ -17,17 +16,7 @@ function ActiveStatusSwitchFieldInner<T extends FieldValues>({
   label = '활성 여부',
   disabled = false,
 }: ActiveStatusSwitchFieldProps<T>) {
-  return (
-    <FormFieldWrapper name={name} label={label} control={control}>
-      {({ value, onChange }) => (
-        <Switch
-          checked={value === 'true'}
-          onCheckedChange={(checked) => onChange(checked ? 'true' : 'false')}
-          disabled={disabled}
-        />
-      )}
-    </FormFieldWrapper>
-  )
+  return <SwitchField control={control} name={name} label={label} disabled={disabled} />
 }
 
 const ActiveStatusSwitchField = React.memo(
