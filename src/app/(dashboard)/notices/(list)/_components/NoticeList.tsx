@@ -3,7 +3,7 @@
 import { useCallback } from 'react'
 
 import { CommonDataTable } from '@/src/components/shared/CommonDataTable'
-import { useNoticeSearchContext } from '@/src/contexts/NoticeSearchContext'
+import { useNoticeSearchWithQuery } from '@/src/hooks/notice/useNoticeSearchWithQuery'
 import { formatToYYYYMMDD } from '@/src/lib/date-utils'
 import { getActiveStatusLabel } from '@/src/types/common'
 import { NoticeListItem } from '@/src/types/notice'
@@ -54,7 +54,7 @@ const NOTICE_COLUMNS: ColumnDef<NoticeListItem>[] = [
 ]
 
 export default function NoticeList() {
-  const { currentPage, pageSize, updateUrl, data, isLoading } = useNoticeSearchContext()
+  const { currentPage, pageSize, updateUrl, data, isLoading } = useNoticeSearchWithQuery()
 
   const handlePageChange = useCallback(
     (newPage: number, newPageSize?: number) => {

@@ -1,16 +1,16 @@
 'use client'
 
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useSearchParams } from 'next/navigation'
 import { useCallback, useMemo } from 'react'
 import { useForm } from 'react-hook-form'
-import { useSearchParams } from 'next/navigation'
 import * as z from 'zod'
 
-import { INITIAL_PAGINATION } from '@/src/lib/constants'
 import { getInitialNoticeSearchForm } from '@/src/constants/notice'
+import { INITIAL_PAGINATION } from '@/src/lib/constants'
 import { parseSearchParamsToForm } from '@/src/lib/url-utils'
 import { isNoticeSearchKey, type NoticeSearchFormInput } from '@/src/types/notice'
-import { useNoticeSearchContext } from '@/src/contexts/NoticeSearchContext'
+import { useNoticeSearchWithQuery } from './useNoticeSearchWithQuery'
 
 // 검색 폼 스키마
 const searchFormSchema = z.object({
@@ -46,10 +46,11 @@ const useNoticeUrlSearchForm = (): NoticeSearchFormInput => {
 export interface UseNoticeSearchFormResult {
   form: ReturnType<typeof useForm<NoticeSearchFormInput>>
   onSubmit: () => void
+  isLoading: boolean
 }
 
 export const useNoticeSearchForm = (): UseNoticeSearchFormResult => {
-  const { updateUrl } = useNoticeSearchContext()
+  const { updateUrl, isLoading } = useNoticeSearchWithQuery()
 
   // URL에서 초기값 파싱
   const urlSearchForm = useNoticeUrlSearchForm()
@@ -69,9 +70,9 @@ export const useNoticeSearchForm = (): UseNoticeSearchFormResult => {
   return {
     form,
     onSubmit,
+    isLoading,
   }
 }
 
 // 외부에서 URL 파싱만 필요한 경우를 위해 export (필요시 사용)
 export { useNoticeUrlSearchForm }
-
