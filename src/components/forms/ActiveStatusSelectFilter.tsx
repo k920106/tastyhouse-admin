@@ -17,14 +17,14 @@ interface ActiveStatusSelectFilterProps<T extends FieldValues> {
   control: Control<T>
   name: Path<T>
   label?: string
-  isLoading?: boolean
+  disabled: boolean
 }
 
 function ActiveStatusSelectFilterInner<T extends FieldValues>({
   control,
   name,
-  label = '활성 여부',
-  isLoading = false,
+  label = '활성상태',
+  disabled = false,
 }: ActiveStatusSelectFilterProps<T>) {
   return (
     <FormFieldWrapper name={name} label={label} control={control}>
@@ -32,7 +32,7 @@ function ActiveStatusSelectFilterInner<T extends FieldValues>({
         <Select
           value={(value as ActiveFilter) ?? 'all'}
           onValueChange={(value: ActiveFilter) => onChange(value)}
-          disabled={isLoading}
+          disabled={disabled}
         >
           <SelectTrigger className="w-full">
             <SelectValue />

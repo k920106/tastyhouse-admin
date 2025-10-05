@@ -14,12 +14,12 @@ import { NoticeSearchFormInput } from '@/src/types/notice'
 
 interface DateRangeFieldProps {
   control: Control<NoticeSearchFormInput>
-  isLoading: boolean
+  disabled: boolean
 }
 
 const DateRangeField = React.memo(function DateRangeField({
   control,
-  isLoading = false,
+  disabled = false,
 }: DateRangeFieldProps) {
   const {
     field: { value: startDate, onChange: onStartDateChange },
@@ -60,7 +60,7 @@ const DateRangeField = React.memo(function DateRangeField({
             <Button
               id="date"
               variant="outline"
-              disabled={isLoading}
+              disabled={disabled}
               className={cn(
                 'w-full justify-start text-left font-normal',
                 !dateRange && 'text-muted-foreground',

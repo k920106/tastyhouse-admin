@@ -14,7 +14,7 @@ export interface RadioOption {
 interface RadioFieldProps<T extends FieldValues> {
   control: Control<T>
   name: Path<T>
-  label?: string
+  label: string
   options: RadioOption[]
 }
 

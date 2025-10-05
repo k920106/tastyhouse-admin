@@ -7,8 +7,8 @@ import { Switch } from '@/src/components/ui/Switch'
 interface SwitchFieldProps<T extends FieldValues> {
   control: Control<T>
   name: Path<T>
-  label?: string
-  disabled?: boolean
+  label: string
+  disabled: boolean
 }
 
 function SwitchFieldInner<T extends FieldValues>({

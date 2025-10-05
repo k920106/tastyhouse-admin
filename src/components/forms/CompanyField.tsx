@@ -8,19 +8,19 @@ interface CompanyFieldProps<T extends FieldValues> {
   control: Control<T>
   name: Path<T>
   label?: string
-  isLoading?: boolean
+  disabled: boolean
 }
 
 function CompanyFieldInner<T extends FieldValues>({
   control,
   name,
   label = '매체사',
-  isLoading = false,
+  disabled: disabled = false,
 }: CompanyFieldProps<T>) {
   return (
     <FormFieldWrapper name={name} label={label} control={control}>
       {({ value, onChange }) => (
-        <CompanyCombobox value={value as string} onValueChange={onChange} loading={isLoading} />
+        <CompanyCombobox value={value as string} onValueChange={onChange} disabled={disabled} />
       )}
     </FormFieldWrapper>
   )

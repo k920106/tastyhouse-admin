@@ -6,13 +6,13 @@ import { useCompaniesQuery } from '@/src/hooks/queries/useCompanyQueries'
 interface CompanyComboboxProps {
   value: string | undefined
   onValueChange: (value: string) => void
-  loading: boolean
+  disabled: boolean
 }
 
 export default function CompanyCombobox({
   value,
   onValueChange,
-  loading = false,
+  disabled = false,
 }: CompanyComboboxProps) {
   const { data: companies = [], isLoading } = useCompaniesQuery()
 
@@ -24,7 +24,7 @@ export default function CompanyCombobox({
       labelKey="name"
       value={value || 'all'}
       onValueChange={onValueChange}
-      disabled={loading || isLoading}
+      disabled={disabled || isLoading}
       disabledOptions={['all']}
     />
   )

@@ -4,30 +4,22 @@ import FormFieldWrapper from '@/src/components/forms/FormFieldWrapper'
 import { Input } from '@/src/components/ui/Input'
 
 interface TextFieldProps<T extends FieldValues> {
+  control: Control<T>
   name: Path<T>
   label: string
-  control: Control<T>
-  isLoading?: boolean
-  placeholder?: string
+  disabled: boolean
 }
 
 function TextField<T extends FieldValues>({
+  control,
   name,
   label,
-  control,
-  isLoading = false,
-  placeholder,
+  disabled = false,
 }: TextFieldProps<T>) {
   return (
     <FormFieldWrapper name={name} label={label} control={control}>
       {({ value, onChange }) => (
-        <Input
-          type="text"
-          value={value as string}
-          onChange={onChange}
-          disabled={isLoading}
-          placeholder={placeholder}
-        />
+        <Input type="text" value={value as string} onChange={onChange} disabled={disabled} />
       )}
     </FormFieldWrapper>
   )

@@ -4,20 +4,18 @@ import FormFieldWrapper from '@/src/components/forms/FormFieldWrapper'
 import { Textarea } from '@/src/components/ui/Textarea'
 
 interface TextareaFieldProps<T extends FieldValues> {
+  control: Control<T>
   name: Path<T>
   label: string
-  control: Control<T>
-  isLoading?: boolean
-  placeholder?: string
-  rows?: number
+  disabled: boolean
+  rows: number
 }
 
 function TextareaField<T extends FieldValues>({
+  control,
   name,
   label,
-  control,
-  isLoading = false,
-  placeholder,
+  disabled = false,
   rows = 15,
 }: TextareaFieldProps<T>) {
   return (
@@ -27,8 +25,7 @@ function TextareaField<T extends FieldValues>({
           id={name}
           value={value as string}
           onChange={onChange}
-          disabled={isLoading}
-          placeholder={placeholder}
+          disabled={disabled}
           rows={rows}
         />
       )}

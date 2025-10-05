@@ -26,7 +26,7 @@ const ACTIVE_STATUS_OPTIONS: RadioOption[] = [
 function ActiveStatusRadioFieldInner<T extends FieldValues>({
   control,
   name,
-  label = '활성 여부',
+  label = '활성상태',
 }: ActiveStatusRadioFieldProps<T>) {
   return <RadioField control={control} name={name} label={label} options={ACTIVE_STATUS_OPTIONS} />
 }
