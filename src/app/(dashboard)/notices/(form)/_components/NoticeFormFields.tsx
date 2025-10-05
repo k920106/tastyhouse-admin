@@ -8,11 +8,11 @@ import { FormControl, FormField, FormItem, FormMessage } from '@/src/components/
 import { Input } from '@/src/components/ui/Input'
 import { Switch } from '@/src/components/ui/Switch'
 import { Textarea } from '@/src/components/ui/Textarea'
-import { NoticeCreateFormInput } from '@/src/types/notice'
+import { NoticeFormInput } from '@/src/types/notice'
 import { UseFormReturn } from 'react-hook-form'
 
 interface NoticeFormFieldsProps {
-  form: UseFormReturn<NoticeCreateFormInput>
+  form: UseFormReturn<NoticeFormInput>
   isSubmitting: boolean
 }
 

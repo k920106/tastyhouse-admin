@@ -28,7 +28,7 @@ export interface NoticeSearchFormInput {
   active: 'all' | 'true' | 'false'
 }
 
-export interface NoticeCreateFormInput {
+export interface NoticeFormInput {
   companyId: string
   title: string
   content: string
@@ -36,13 +36,9 @@ export interface NoticeCreateFormInput {
   top: boolean
 }
 
-export interface NoticeUpdateFormInput {
-  companyId: string
-  title: string
-  content: string
-  active: boolean
-  top: boolean
-}
+// 별칭으로 유지 (하위 호환성)
+export type NoticeCreateFormInput = NoticeFormInput
+export type NoticeUpdateFormInput = NoticeFormInput
 
 export const isNoticeSearchKey = (key: string): key is keyof NoticeSearchFormInput => {
   return ['companyId', 'title', 'startDate', 'endDate', 'active'].includes(key)

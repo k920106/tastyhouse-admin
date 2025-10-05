@@ -7,36 +7,19 @@ import { Form } from '@/src/components/ui/Form'
 import { INITIAL_NOTICE_CREATE_FORM, NOTICE_CREATE_BREADCRUMBS } from '@/src/constants/notice'
 import { api } from '@/src/lib/api'
 import { handleFormError } from '@/src/lib/form-utils'
+import { noticeFormSchema } from '@/src/lib/schemas/notice-schema'
 import { ApiResponse } from '@/src/types/api'
-import {
-  NoticeCreateFormInput,
-  NoticeCreateRequest,
-  NoticeCreateResponse,
-} from '@/src/types/notice'
+import { NoticeCreateRequest, NoticeCreateResponse, NoticeFormInput } from '@/src/types/notice'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
-import * as z from 'zod'
 import NoticeFormFields from '../../_components/NoticeFormFields'
-
-const noticeFormSchema = z.object({
-  companyId: z
-    .string()
-    .min(1, '매체사를 선택해 주세요')
-    .refine((value) => value !== 'all', {
-      message: '매체사를 선택해 주세요',
-    }),
-  title: z.string().min(1, '제목을 입력해 주세요'),
-  content: z.string().min(1, '내용을 입력해 주세요'),
-  active: z.boolean(),
-  top: z.boolean(),
-}) satisfies z.ZodType<NoticeCreateFormInput>
 
 export default function NoticeCreate() {
   const router = useRouter()
 
-  const form = useForm<NoticeCreateFormInput>({
+  const form = useForm<NoticeFormInput>({
     resolver: zodResolver(noticeFormSchema),
     defaultValues: INITIAL_NOTICE_CREATE_FORM,
   })
@@ -45,7 +28,7 @@ export default function NoticeCreate() {
     formState: { isSubmitting },
   } = form
 
-  const onSubmit = async (data: NoticeCreateFormInput) => {
+  const onSubmit = async (data: NoticeFormInput) => {
     try {
       const request: NoticeCreateRequest = {
         companyId: Number(data.companyId),
