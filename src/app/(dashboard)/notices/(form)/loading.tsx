@@ -1,5 +1,10 @@
 'use client'
 
+import {
+  DetailTableDoubleRow,
+  DetailTableField,
+  DetailTableRow,
+} from '@/src/components/forms/DetailTable'
 import { Card, CardContent, CardFooter } from '@/src/components/ui/Card'
 import { Separator } from '@/src/components/ui/Separator'
 import { Skeleton } from '@/src/components/ui/Skeleton'
@@ -25,36 +30,32 @@ export default function NoticeFormLoading() {
         <div className="flex-1 min-h-[100vh] md:min-h-min">
           <Card className="w-full shadow-none">
             <CardContent>
-              <div className="space-y-6">
-                <div className="space-y-2">
-                  <Skeleton className="h-4 w-12" />
-                  <Skeleton className="h-10 w-full" />
-                </div>
-                <div className="space-y-2">
-                  <Skeleton className="h-4 w-12" />
-                  <Skeleton className="h-10 w-full" />
-                </div>
-                <div className="space-y-2">
-                  <Skeleton className="h-4 w-12" />
-                  <Skeleton className="h-10 w-full" />
-                </div>
-                <div className="space-y-2">
-                  <Skeleton className="h-4 w-8" />
-                  <Skeleton className="h-10 w-full" />
-                </div>
-                <div className="space-y-2">
-                  <Skeleton className="h-4 w-12" />
-                  <Skeleton className="h-10 w-full" />
-                </div>
-                <div className="space-y-2">
-                  <Skeleton className="h-4 w-12" />
-                  <Skeleton className="h-10 w-full" />
-                </div>
-                <div className="space-y-2">
-                  <Skeleton className="h-4 w-12" />
-                  <Skeleton className="h-10 w-full" />
-                </div>
-              </div>
+              <table className="w-full border-collapse">
+                <tbody className="border">
+                  <DetailTableDoubleRow>
+                    <DetailTableField label="">
+                      <Skeleton className="h-5 w-full" />
+                    </DetailTableField>
+                    <DetailTableField label="">
+                      <Skeleton className="h-5 w-full" />
+                    </DetailTableField>
+                  </DetailTableDoubleRow>
+                  <DetailTableDoubleRow>
+                    <DetailTableField label="">
+                      <Skeleton className="h-5 w-full" />
+                    </DetailTableField>
+                    <DetailTableField label="">
+                      <Skeleton className="h-5 w-full" />
+                    </DetailTableField>
+                  </DetailTableDoubleRow>
+                  <DetailTableRow label="">
+                    <Skeleton className="h-5 w-full" />
+                  </DetailTableRow>
+                  <DetailTableRow label="">
+                    <Skeleton className="h-5 w-full" />
+                  </DetailTableRow>
+                </tbody>
+              </table>
             </CardContent>
             <CardFooter className="flex justify-end gap-3">
               <Skeleton className="h-9 w-16" />
