@@ -1,4 +1,5 @@
 import { api } from '@/src/lib/api'
+import { type ApiPage } from '@/src/lib/pagination-utils'
 import { PagedApiResponse } from '@/src/types/api'
 import { NoticeListItem, NoticeSearchFormInput } from '@/src/types/notice'
 import { useQuery } from '@tanstack/react-query'
@@ -7,7 +8,7 @@ import { noticeSearchQuerySchema } from '../notice/useNoticeSearchForm'
 interface NoticeQueryParams {
   searchForm: NoticeSearchFormInput
   pagination: {
-    page: number
+    page: ApiPage
     size: number
   }
 }

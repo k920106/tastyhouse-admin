@@ -8,6 +8,7 @@ import * as z from 'zod'
 
 import { getInitialNoticeSearchForm } from '@/src/constants/notice'
 import { INITIAL_PAGINATION } from '@/src/lib/constants'
+import { toApiPage } from '@/src/lib/pagination-utils'
 import { parseSearchParamsToForm } from '@/src/lib/url-utils'
 import {
   isNoticeSearchKey,
@@ -79,7 +80,7 @@ export const useNoticeSearchForm = (): UseNoticeSearchFormResult => {
   // 제출 로직
   const onSubmit = useCallback(() => {
     const formValues = form.getValues()
-    updateUrl(formValues, INITIAL_PAGINATION.currentPage)
+    updateUrl(formValues, toApiPage(INITIAL_PAGINATION.currentPage))
   }, [updateUrl, form])
 
   return {

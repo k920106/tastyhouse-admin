@@ -2,7 +2,14 @@
 
 import { getInitialNoticeSearchForm } from '@/src/constants/notice'
 import { INITIAL_PAGINATION } from '@/src/lib/constants'
-import { apiPageToUrlPage, urlPageToApiPage } from '@/src/lib/pagination-utils'
+import {
+  apiPageToUrlPage,
+  toApiPage,
+  toUrlPage,
+  urlPageToApiPage,
+  type ApiPage,
+  type UrlPage,
+} from '@/src/lib/pagination-utils'
 import { buildSearchParams } from '@/src/lib/url-utils'
 import { NoticeSearchFormInput, isNoticeSearchKey } from '@/src/types/notice'
 import { useRouter, useSearchParams } from 'next/navigation'
@@ -21,8 +28,8 @@ export interface NoticeSearchWithQueryHookResult {
   // URL 기반 검색 폼 (실제 쿼리용)
   urlSearchForm: NoticeSearchFormInput
 
-  // 페이지네이션
-  currentPage: number
+  // 페이지네이션 (브랜드 타입 사용)
+  currentPage: ApiPage
   pageSize: number
 
   // 데이터 쿼리 관련
@@ -30,7 +37,7 @@ export interface NoticeSearchWithQueryHookResult {
   isLoading: boolean
 
   // 액션들
-  updateUrl: (form?: Partial<NoticeSearchFormInput> | null, page?: number, size?: number) => void
+  updateUrl: (form?: Partial<NoticeSearchFormInput> | null, page?: ApiPage, size?: number) => void
 }
 
 // 초기 검색 폼 값 (컴포넌트 외부에서 한 번만 생성)
@@ -44,9 +51,9 @@ export const useNoticeSearchWithQuery = (): NoticeSearchWithQueryHookResult => {
   const urlSearchForm = useNoticeUrlSearchForm()
 
   // 페이지네이션 정보 (URL은 1-based, API는 0-based)
-  const currentPage = useMemo(() => {
+  const currentPage: ApiPage = useMemo(() => {
     const pageFromUrl = parseIntSafely(searchParams.get('page'), 1)
-    return urlPageToApiPage(pageFromUrl)
+    return urlPageToApiPage(toUrlPage(pageFromUrl))
   }, [searchParams])
 
   const pageSize = useMemo(
@@ -56,15 +63,15 @@ export const useNoticeSearchWithQuery = (): NoticeSearchWithQueryHookResult => {
 
   // URL 업데이트 헬퍼
   const updateUrl = useCallback(
-    (formOverride?: Partial<NoticeSearchFormInput> | null, page?: number, size?: number) => {
+    (formOverride?: Partial<NoticeSearchFormInput> | null, page?: ApiPage, size?: number) => {
       // formOverride가 null이면 현재 폼 유지, 있으면 병합
       const finalForm = (
         formOverride ? { ...urlSearchForm, ...formOverride } : urlSearchForm
       ) as NoticeSearchFormInput
 
-      // page는 0-based로 전달되므로 URL에 저장할 때 1-based로 변환
-      const targetPage = page ?? INITIAL_PAGINATION.currentPage
-      const targetPageForUrl = apiPageToUrlPage(targetPage) // URL용 1-based로 변환
+      // page는 0-based(ApiPage)로 전달되므로 URL에 저장할 때 1-based(UrlPage)로 변환
+      const targetPage: ApiPage = page ?? toApiPage(INITIAL_PAGINATION.currentPage)
+      const targetPageForUrl: UrlPage = apiPageToUrlPage(targetPage)
 
       const targetSize =
         size ?? parseIntSafely(searchParams.get('pageSize'), INITIAL_PAGINATION.pageSize)
