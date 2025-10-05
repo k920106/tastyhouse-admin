@@ -8,7 +8,8 @@
       "Bash(cat:*)",
       "Bash(mv:*)",
       "Bash(npm run lint:*)",
-      "Bash(ls:*)"
+      "Bash(ls:*)",
+      "Bash(npx eslint:*)"
     ],
     "deny": [],
     "ask": []
