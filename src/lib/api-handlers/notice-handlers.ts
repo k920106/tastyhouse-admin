@@ -1,11 +1,7 @@
 import { api } from '@/src/lib/api'
+import { transformNoticeFormToRequest } from '@/src/lib/transformers/notice-transformer'
 import { ApiResponse } from '@/src/types/api'
-import {
-  NoticeCreateRequest,
-  NoticeCreateResponse,
-  NoticeFormInput,
-  NoticeUpdateRequest,
-} from '@/src/types/notice'
+import { NoticeCreateResponse, NoticeFormInput } from '@/src/types/notice'
 
 /**
  * 공지사항 등록 API 호출
@@ -15,13 +11,7 @@ import {
  */
 export async function handleNoticeCreate(data: NoticeFormInput) {
   try {
-    const request: NoticeCreateRequest = {
-      companyId: Number(data.companyId),
-      title: data.title,
-      content: data.content,
-      active: data.active,
-      top: data.top,
-    }
+    const request = transformNoticeFormToRequest(data)
 
     const response = await api.post<ApiResponse<NoticeCreateResponse>>('/notices', request)
     if (!response.success || !response.data) {
@@ -41,13 +31,7 @@ export async function handleNoticeCreate(data: NoticeFormInput) {
  */
 export async function handleNoticeUpdate(noticeId: number, data: NoticeFormInput) {
   try {
-    const request: NoticeUpdateRequest = {
-      companyId: Number(data.companyId),
-      title: data.title,
-      content: data.content,
-      active: data.active,
-      top: data.top,
-    }
+    const request = transformNoticeFormToRequest(data)
 
     const response = await api.put<ApiResponse<null>>(`/notices/${noticeId}`, request)
     if (!response.success) {
