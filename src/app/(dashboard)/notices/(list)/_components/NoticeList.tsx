@@ -46,7 +46,7 @@ const NOTICE_COLUMNS: ColumnDef<NoticeListItem>[] = [
   },
   {
     accessorKey: 'active',
-    header: '활성 여부',
+    header: '활성상태',
     cell: ({ row }) => <div>{getActiveStatusLabel(row.original.active)}</div>,
     meta: {
       className: 'border-x',

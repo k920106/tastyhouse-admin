@@ -3,7 +3,7 @@ export interface ValidationResult {
   error?: string
 }
 
-// 활성 여부
+// 활성상태
 export const ACTIVE_STATUS = {
   ACTIVE: { value: 'true', label: '활성' },
   NOT_ACTIVE: { value: 'false', label: '미활성' },

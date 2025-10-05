@@ -54,10 +54,10 @@ const NoticeFilters = React.memo(function NoticeFilters() {
             </>
           }
         >
-          <CompanyField control={form.control} name="companyId" isLoading={isLoading} />
-          <TextField name="title" label="제목" control={form.control} isLoading={isLoading} />
-          <DateRangeField control={form.control} isLoading={isLoading} />
-          <ActiveStatusSelectFilter control={form.control} name="active" isLoading={isLoading} />
+          <CompanyField control={form.control} name="companyId" disabled={isLoading} />
+          <TextField name="title" label="제목" control={form.control} disabled={isLoading} />
+          <DateRangeField control={form.control} disabled={isLoading} />
+          <ActiveStatusSelectFilter control={form.control} name="active" disabled={isLoading} />
         </BaseSearchForm>
       </form>
     </Form>
