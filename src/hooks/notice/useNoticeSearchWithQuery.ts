@@ -3,12 +3,13 @@
 import { getInitialNoticeSearchForm } from '@/src/constants/notice'
 import { INITIAL_PAGINATION } from '@/src/lib/constants'
 import { apiPageToUrlPage, urlPageToApiPage } from '@/src/lib/pagination-utils'
-import { buildSearchParams, parseSearchParamsToForm } from '@/src/lib/url-utils'
-import { isNoticeSearchKey, NoticeSearchFormInput } from '@/src/types/notice'
+import { buildSearchParams } from '@/src/lib/url-utils'
+import { NoticeSearchFormInput, isNoticeSearchKey } from '@/src/types/notice'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useCallback, useMemo } from 'react'
 import { useNoticesQuery, type NoticeQueryData } from '../queries/useNoticeQueries'
 import { useToastError } from '../useToastError'
+import { useNoticeUrlSearchForm } from './useNoticeSearchForm'
 
 const parseIntSafely = (value: string | null, fallback: number): number => {
   if (!value) return fallback
@@ -39,21 +40,13 @@ export const useNoticeSearchWithQuery = (): NoticeSearchWithQueryHookResult => {
   const searchParams = useSearchParams()
   const router = useRouter()
 
-  // URL에서 현재 검색 조건 파싱 (실제 쿼리 실행용, 타입 가드로 안정성 강화)
-  const urlSearchForm = useMemo(
-    () =>
-      parseSearchParamsToForm(
-        searchParams,
-        initialSearchForm as unknown as Record<string, unknown>,
-        isNoticeSearchKey,
-      ) as unknown as NoticeSearchFormInput,
-    [searchParams],
-  )
+  // URL 파싱 로직을 별도 훅으로 분리
+  const urlSearchForm = useNoticeUrlSearchForm()
 
   // 페이지네이션 정보 (URL은 1-based, API는 0-based)
   const currentPage = useMemo(() => {
-    const pageFromUrl = parseIntSafely(searchParams.get('page'), 1) // URL 기본값: 1 (사용자 친화적)
-    return urlPageToApiPage(pageFromUrl) // API용 0-based로 변환
+    const pageFromUrl = parseIntSafely(searchParams.get('page'), 1)
+    return urlPageToApiPage(pageFromUrl)
   }, [searchParams])
 
   const pageSize = useMemo(
@@ -63,21 +56,10 @@ export const useNoticeSearchWithQuery = (): NoticeSearchWithQueryHookResult => {
 
   // URL 업데이트 헬퍼
   const updateUrl = useCallback(
-    (
-      formOverride?: Partial<NoticeSearchFormInput> | null,
-      page?: number,
-      size?: number,
-    ) => {
-      // 현재 URL에서 폼 데이터를 파싱 (최신 상태 유지, 타입 가드 적용)
-      const currentForm = parseSearchParamsToForm(
-        searchParams,
-        initialSearchForm as unknown as Record<string, unknown>,
-        isNoticeSearchKey,
-      ) as unknown as NoticeSearchFormInput
-
+    (formOverride?: Partial<NoticeSearchFormInput> | null, page?: number, size?: number) => {
       // formOverride가 null이면 현재 폼 유지, 있으면 병합
       const finalForm = (
-        formOverride ? { ...currentForm, ...formOverride } : currentForm
+        formOverride ? { ...urlSearchForm, ...formOverride } : urlSearchForm
       ) as NoticeSearchFormInput
 
       // page는 0-based로 전달되므로 URL에 저장할 때 1-based로 변환
@@ -94,10 +76,12 @@ export const useNoticeSearchWithQuery = (): NoticeSearchWithQueryHookResult => {
         targetSize,
         isNoticeSearchKey,
       )
+
       const url = params.toString() ? `?${params.toString()}` : ''
+
       router.push(url, { scroll: false })
     },
-    [router, searchParams],
+    [router, searchParams, urlSearchForm],
   )
 
   // URL에 검색 파라미터가 있는지 확인 (쿼리 실행 여부 결정)

@@ -1,13 +1,15 @@
 'use client'
 
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useCallback, useEffect } from 'react'
+import { useCallback, useMemo } from 'react'
 import { useForm } from 'react-hook-form'
+import { useSearchParams } from 'next/navigation'
 import * as z from 'zod'
 
 import { INITIAL_PAGINATION } from '@/src/lib/constants'
-import { type NoticeSearchFormInput } from '@/src/types/notice'
-
+import { getInitialNoticeSearchForm } from '@/src/constants/notice'
+import { parseSearchParamsToForm } from '@/src/lib/url-utils'
+import { isNoticeSearchKey, type NoticeSearchFormInput } from '@/src/types/notice'
 import { useNoticeSearchContext } from '@/src/contexts/NoticeSearchContext'
 
 // 검색 폼 스키마
@@ -24,30 +26,43 @@ const searchFormSchema = z.object({
   active: z.enum(['all', 'true', 'false']),
 }) satisfies z.ZodType<NoticeSearchFormInput>
 
-export interface UseNoticeSearchFormResult {
-  // 폼 관련
-  form: ReturnType<typeof useForm<NoticeSearchFormInput>>
+/**
+ * URL 쿼리스트링을 NoticeSearchFormInput으로 파싱
+ * 내부 헬퍼 함수로 사용
+ */
+const useNoticeUrlSearchForm = (): NoticeSearchFormInput => {
+  const searchParams = useSearchParams()
 
-  // 액션
+  return useMemo(() => {
+    const initialForm = getInitialNoticeSearchForm()
+    return parseSearchParamsToForm(
+      searchParams,
+      initialForm as unknown as Record<string, unknown>,
+      isNoticeSearchKey,
+    ) as unknown as NoticeSearchFormInput
+  }, [searchParams])
+}
+
+export interface UseNoticeSearchFormResult {
+  form: ReturnType<typeof useForm<NoticeSearchFormInput>>
   onSubmit: () => void
 }
 
 export const useNoticeSearchForm = (): UseNoticeSearchFormResult => {
-  const { urlSearchForm, updateUrl } = useNoticeSearchContext()
+  const { updateUrl } = useNoticeSearchContext()
 
+  // URL에서 초기값 파싱
+  const urlSearchForm = useNoticeUrlSearchForm()
+
+  // 폼 초기화 (values로 자동 동기화)
   const form = useForm<NoticeSearchFormInput>({
     resolver: zodResolver(searchFormSchema),
-    defaultValues: urlSearchForm,
+    values: urlSearchForm,
   })
 
-  // URL 변경 시에만 폼 리셋 (매 렌더링마다 리셋하지 않음)
-  useEffect(() => {
-    form.reset(urlSearchForm)
-  }, [urlSearchForm, form])
-
+  // 제출 로직
   const onSubmit = useCallback(() => {
     const formValues = form.getValues()
-    console.log(formValues)
     updateUrl(formValues, INITIAL_PAGINATION.currentPage)
   }, [updateUrl, form])
 
@@ -56,3 +71,7 @@ export const useNoticeSearchForm = (): UseNoticeSearchFormResult => {
     onSubmit,
   }
 }
+
+// 외부에서 URL 파싱만 필요한 경우를 위해 export (필요시 사용)
+export { useNoticeUrlSearchForm }
+
