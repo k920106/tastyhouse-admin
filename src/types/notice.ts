@@ -59,3 +59,16 @@ export interface NoticeCreateRequest {
 export interface NoticeCreateResponse {
   id: number
 }
+
+export interface Notice {
+  id: number
+  companyId: number
+  companyName: string
+  title: string
+  content: string
+  active: boolean
+  top: boolean
+  createdBy: string
+  createdAt: string
+  updatedAt: string
+}

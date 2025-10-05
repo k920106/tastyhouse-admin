@@ -11,8 +11,15 @@ export const NOTICE_LIST_BREADCRUMBS = [
 export const NOTICE_CREATE_BREADCRUMBS = [
   { label: '고객센터' },
   { label: '게시판' },
-  { label: '공지사항' },
-  { label: '공지사항 등록', href: ROUTES.NOTICES.CREATE },
+  { label: '공지사항', href: ROUTES.NOTICES.LIST },
+  { label: '등록' },
+]
+
+export const NOTICE_DETAIL_BREADCRUMBS = [
+  { label: '고객센터' },
+  { label: '게시판' },
+  { label: '공지사항', href: ROUTES.NOTICES.LIST },
+  { label: '상세' },
 ]
 
 /**
