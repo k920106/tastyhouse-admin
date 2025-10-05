@@ -22,6 +22,14 @@ export const NOTICE_DETAIL_BREADCRUMBS = [
   { label: '상세' },
 ]
 
+export const NOTICE_UPDATE_BREADCRUMBS = [
+  { label: '고객센터' },
+  { label: '게시판' },
+  { label: '공지사항', href: ROUTES.NOTICES.LIST },
+  { label: '상세' },
+  { label: '수정' },
+]
+
 /**
  * 공지사항 검색 폼 초기값 (날짜 제외)
  * URL이 비어있을 때 기본값으로 사용

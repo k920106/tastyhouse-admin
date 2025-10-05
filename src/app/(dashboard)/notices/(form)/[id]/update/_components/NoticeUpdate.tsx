@@ -4,7 +4,6 @@ import PageTemplate from '@/src/components/layout/PageTemplate'
 import { Button } from '@/src/components/ui/Button'
 import { Card, CardContent, CardFooter } from '@/src/components/ui/Card'
 import { Form } from '@/src/components/ui/Form'
-import { NOTICE_DETAIL_BREADCRUMBS } from '@/src/constants/notice'
 import { handleNoticeUpdate } from '@/src/lib/api-handlers/notice-handlers'
 import { handleFormError } from '@/src/lib/form-utils'
 import { noticeFormSchema } from '@/src/lib/schemas/notice-schema'
@@ -15,6 +14,7 @@ import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import NoticeFormFields from '../../../_components/NoticeFormFields'
 import { revalidateNoticePaths } from './actions'
+import { NOTICE_UPDATE_BREADCRUMBS } from '@/src/constants/notice'
 
 interface NoticeUpdateProps {
   notice: Notice
@@ -50,7 +50,7 @@ export default function NoticeUpdate({ notice }: NoticeUpdateProps) {
   }
 
   return (
-    <PageTemplate breadcrumbs={NOTICE_DETAIL_BREADCRUMBS}>
+    <PageTemplate breadcrumbs={NOTICE_UPDATE_BREADCRUMBS}>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit, handleFormError)}>
           <Card className="w-full shadow-none">
