@@ -13,11 +13,11 @@ export const useBrandsQuery = () => {
 }
 
 export const useBrandQueries = () => {
-  const companiesQuery = useBrandsQuery()
+  const brandsQuery = useBrandsQuery()
 
   return {
-    brands: companiesQuery.data || [],
-    loading: companiesQuery.isLoading,
-    error: companiesQuery.error,
+    brands: brandsQuery.data || [],
+    loading: brandsQuery.isLoading,
+    error: brandsQuery.error,
   }
 }
