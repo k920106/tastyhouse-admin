@@ -14,10 +14,9 @@ import { cn } from '@/src/lib/class-utils'
 
 import ActiveStatusSelectFilter from '@/src/components/forms/ActiveStatusSelectFilter'
 import CompanyField from '@/src/components/forms/CompanyField'
+import DateRangeField from '@/src/components/forms/DateRangeField'
 import TextField from '@/src/components/forms/TextField'
 import { handleFormError } from '@/src/lib/form-utils'
-
-import DateRangeField from './fields/DateRangeField'
 
 const NoticeFilters = React.memo(function NoticeFilters() {
   const { form, onSubmit, isLoading } = useNoticeSearchForm()
