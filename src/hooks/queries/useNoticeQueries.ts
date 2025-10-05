@@ -1,7 +1,8 @@
 import { api } from '@/src/lib/api'
 import { PagedApiResponse } from '@/src/types/api'
-import { NoticeListItem, NoticeSearchFormInput, NoticeSearchQuery } from '@/src/types/notice'
+import { NoticeListItem, NoticeSearchFormInput } from '@/src/types/notice'
 import { useQuery } from '@tanstack/react-query'
+import { noticeSearchQuerySchema } from '../notice/useNoticeSearchForm'
 
 interface NoticeQueryParams {
   searchForm: NoticeSearchFormInput
@@ -17,29 +18,14 @@ interface NoticeQueryData {
 }
 
 /**
- * 검색 폼을 API 쿼리로 변환하는 함수
- */
-const convertFormToQuery = (form: NoticeSearchFormInput): NoticeSearchQuery => {
-  const query: NoticeSearchQuery = {
-    companyId: parseInt(form.companyId),
-    title: form.title.trim() || null,
-    startDate: form.startDate,
-    endDate: form.endDate,
-    active: form.active === 'all' ? null : form.active === 'true',
-  }
-
-  return query
-}
-
-/**
  * 검색 폼과 페이지네이션을 API 쿼리 스트링으로 변환
- * convertFormToQuery를 활용하여 타입 변환 로직 통일
+ * Zod 스키마를 활용하여 타입 변환 로직 통일 및 검증
  */
 const buildNoticeQueryString = (params: NoticeQueryParams): string => {
   const { searchForm, pagination } = params
 
-  // 검색 폼을 API 쿼리로 변환 (타입 변환 로직 통일)
-  const searchQuery = convertFormToQuery(searchForm)
+  // Zod 스키마로 Form → Query 변환 (타입 안전성 보장)
+  const searchQuery = noticeSearchQuerySchema.parse(searchForm)
 
   // 페이지네이션 파라미터 추가
   const requestData = {

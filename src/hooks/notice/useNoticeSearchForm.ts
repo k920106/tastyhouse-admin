@@ -9,10 +9,14 @@ import * as z from 'zod'
 import { getInitialNoticeSearchForm } from '@/src/constants/notice'
 import { INITIAL_PAGINATION } from '@/src/lib/constants'
 import { parseSearchParamsToForm } from '@/src/lib/url-utils'
-import { isNoticeSearchKey, type NoticeSearchFormInput } from '@/src/types/notice'
+import {
+  isNoticeSearchKey,
+  type NoticeSearchFormInput,
+  type NoticeSearchQuery,
+} from '@/src/types/notice'
 import { useNoticeSearchWithQuery } from './useNoticeSearchWithQuery'
 
-// 검색 폼 스키마
+// 검색 폼 유효성 검사 스키마 (Form 입력용)
 const searchFormSchema = z.object({
   companyId: z
     .string()
@@ -25,6 +29,17 @@ const searchFormSchema = z.object({
   endDate: z.string(),
   active: z.enum(['all', 'true', 'false']),
 }) satisfies z.ZodType<NoticeSearchFormInput>
+
+// API 쿼리 변환 스키마 (Form → Query 변환)
+export const noticeSearchQuerySchema = searchFormSchema.transform(
+  (data): NoticeSearchQuery => ({
+    companyId: parseInt(data.companyId),
+    title: data.title.trim() || null,
+    startDate: data.startDate,
+    endDate: data.endDate,
+    active: data.active === 'all' ? null : data.active === 'true',
+  }),
+)
 
 /**
  * URL 쿼리스트링을 NoticeSearchFormInput으로 파싱
