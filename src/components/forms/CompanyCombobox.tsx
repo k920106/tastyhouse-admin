@@ -3,17 +3,17 @@
 import { Combobox } from '@/src/components/ui/Combobox'
 import { useCompaniesQuery } from '@/src/hooks/queries/useCompanyQueries'
 
-interface CompanySelectorProps {
+interface CompanyComboboxProps {
   value: string | undefined
   onValueChange: (value: string) => void
   loading: boolean
 }
 
-export default function CompanySelector({
+export default function CompanyCombobox({
   value,
   onValueChange,
   loading = false,
-}: CompanySelectorProps) {
+}: CompanyComboboxProps) {
   const { data: companies = [], isLoading } = useCompaniesQuery()
 
   return (

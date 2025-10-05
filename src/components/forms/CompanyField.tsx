@@ -1,7 +1,7 @@
 import React from 'react'
 import { Control, FieldValues, Path } from 'react-hook-form'
 
-import CompanySelector from '@/src/components/forms/CompanySelector'
+import CompanyCombobox from '@/src/components/forms/CompanyCombobox'
 import FormFieldWrapper from '@/src/components/forms/FormFieldWrapper'
 
 interface CompanyFieldProps<T extends FieldValues> {
@@ -20,7 +20,7 @@ function CompanyFieldInner<T extends FieldValues>({
   return (
     <FormFieldWrapper name={name} label={label} control={control}>
       {({ value, onChange }) => (
-        <CompanySelector value={value as string} onValueChange={onChange} loading={isLoading} />
+        <CompanyCombobox value={value as string} onValueChange={onChange} loading={isLoading} />
       )}
     </FormFieldWrapper>
   )

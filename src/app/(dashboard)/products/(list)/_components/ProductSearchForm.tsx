@@ -2,7 +2,7 @@
 
 import BaseSearchForm from '@/src/components/forms/BaseSearchForm'
 import BrandSelector from '@/src/components/forms/BrandSelector'
-import CompanySelector from '@/src/components/forms/CompanySelector'
+import CompanyCombobox from '@/src/components/forms/CompanyCombobox'
 import SearchActions from '@/src/components/forms/SearchActions'
 import SupplySelector from '@/src/components/forms/SupplySelector'
 import { Button } from '@/src/components/ui/Button'
@@ -108,7 +108,7 @@ export default function ProductSearchForm({
               <FormItem>
                 <FormLabel className="font-semibold">매체사</FormLabel>
                 <FormControl>
-                  <CompanySelector
+                  <CompanyCombobox
                     value={field.value || ''}
                     onValueChange={(value) => {
                       field.onChange(value)
