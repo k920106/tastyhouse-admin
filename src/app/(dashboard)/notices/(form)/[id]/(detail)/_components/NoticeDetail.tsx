@@ -4,10 +4,14 @@ import {
   DetailTableRow,
 } from '@/src/components/forms/DetailTable'
 import PageTemplate from '@/src/components/layout/PageTemplate'
-import { Card, CardContent } from '@/src/components/ui/Card'
+import { buttonVariants } from '@/src/components/ui/Button'
+import { Card, CardContent, CardFooter } from '@/src/components/ui/Card'
 import { NOTICE_DETAIL_BREADCRUMBS } from '@/src/constants/notice'
+import { ROUTES } from '@/src/constants/routes'
+import { cn } from '@/src/lib/class-utils'
 import { formatToYYYYMMDDHHMMSS } from '@/src/lib/date-utils'
 import { Notice, getNoticeTopStatusLabel } from '@/src/types/notice'
+import Link from 'next/link'
 
 interface NoticeDetailProps {
   notice: Notice
@@ -41,6 +45,14 @@ export default function NoticeDetail({ notice }: NoticeDetailProps) {
             </tbody>
           </table>
         </CardContent>
+        <CardFooter className="flex justify-end gap-3">
+          <Link
+            href={ROUTES.NOTICES.UPDATE(notice.id)}
+            className={cn(buttonVariants({ variant: 'outline' }))}
+          >
+            수정
+          </Link>
+        </CardFooter>
       </Card>
     </PageTemplate>
   )

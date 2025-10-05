@@ -13,20 +13,17 @@ import { Form, FormControl, FormField, FormItem, FormMessage } from '@/src/compo
 import { Input } from '@/src/components/ui/Input'
 import { Switch } from '@/src/components/ui/Switch'
 import { Textarea } from '@/src/components/ui/Textarea'
-import { INITIAL_NOTICE_CREATE_FORM, NOTICE_CREATE_BREADCRUMBS } from '@/src/constants/notice'
+import { NOTICE_DETAIL_BREADCRUMBS } from '@/src/constants/notice'
 import { api } from '@/src/lib/api'
 import { handleFormError } from '@/src/lib/form-utils'
 import { ApiResponse } from '@/src/types/api'
-import {
-  NoticeCreateFormInput,
-  NoticeCreateRequest,
-  NoticeCreateResponse,
-} from '@/src/types/notice'
+import { Notice, NoticeCreateFormInput, NoticeCreateRequest } from '@/src/types/notice'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import * as z from 'zod'
+import { revalidateNoticePaths } from './actions'
 
 const noticeFormSchema = z.object({
   companyId: z
@@ -41,12 +38,22 @@ const noticeFormSchema = z.object({
   top: z.boolean(),
 }) satisfies z.ZodType<NoticeCreateFormInput>
 
-export default function NoticeCreate() {
+interface NoticeUpdateProps {
+  notice: Notice
+}
+
+export default function NoticeUpdate({ notice }: NoticeUpdateProps) {
   const router = useRouter()
 
   const form = useForm<NoticeCreateFormInput>({
     resolver: zodResolver(noticeFormSchema),
-    defaultValues: INITIAL_NOTICE_CREATE_FORM,
+    defaultValues: {
+      companyId: String(notice.companyId),
+      title: notice.title,
+      content: notice.content,
+      active: notice.active,
+      top: notice.top,
+    },
   })
 
   const {
@@ -63,25 +70,27 @@ export default function NoticeCreate() {
         top: data.top,
       }
 
-      const response = await api.post<ApiResponse<NoticeCreateResponse>>('/notices', request)
-      if (!response.success || !response.data) {
-        toast.error(response.message || '등록에 실패했습니다. 다시 시도해 주세요.')
+      const response = await api.put<ApiResponse<null>>(`/notices/${notice.id}`, request)
+      if (!response.success) {
+        toast.error(response.message || '수정에 실패했습니다. 다시 시도해 주세요.')
         return
       }
 
-      toast.success('등록되었습니다')
+      toast.success('수정되었습니다')
 
-      router.push(`/notices/${response.data.id}`)
+      await revalidateNoticePaths(notice.id)
+
+      router.back()
     } catch (error) {
-      console.error('공지사항 등록 실패:', error)
+      console.error('공지사항 수정 실패:', error)
       toast.error(
-        error instanceof Error ? error.message : '등록에 실패하였습니다. 다시 시도해 주세요.',
+        error instanceof Error ? error.message : '수정에 실패하였습니다. 다시 시도해 주세요.',
       )
     }
   }
 
   return (
-    <PageTemplate breadcrumbs={NOTICE_CREATE_BREADCRUMBS}>
+    <PageTemplate breadcrumbs={NOTICE_DETAIL_BREADCRUMBS}>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit, handleFormError)}>
           <Card className="w-full shadow-none">
@@ -177,7 +186,7 @@ export default function NoticeCreate() {
             </CardContent>
             <CardFooter className="flex justify-end gap-3">
               <Button type="submit" disabled={isSubmitting}>
-                {isSubmitting ? '등록 중...' : '등록'}
+                {isSubmitting ? '수정 중...' : '수정'}
               </Button>
             </CardFooter>
           </Card>
