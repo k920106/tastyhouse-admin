@@ -4,7 +4,7 @@ import { Card, CardContent, CardFooter } from '@/src/components/ui/Card'
 import { Separator } from '@/src/components/ui/Separator'
 import { Skeleton } from '@/src/components/ui/Skeleton'
 
-export default function PageListSkeleton() {
+export default function NoticeListLoading() {
   return (
     <>
       <div role="status" className="sr-only">
