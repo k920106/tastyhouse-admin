@@ -9,7 +9,7 @@ import PageTemplate from '@/src/components/layout/PageTemplate'
 import { Button } from '@/src/components/ui/Button'
 import { Card, CardContent, CardFooter } from '@/src/components/ui/Card'
 import { Form } from '@/src/components/ui/Form'
-import { NOTICE_CREATE_BREADCRUMBS } from '@/src/constants/notice'
+import { INITIAL_NOTICE_CREATE_FORM, NOTICE_CREATE_BREADCRUMBS } from '@/src/constants/notice'
 import { api } from '@/src/lib/api'
 import { handleFormError } from '@/src/lib/form-utils'
 import { ApiResponse } from '@/src/types/api'
@@ -25,7 +25,12 @@ import { toast } from 'sonner'
 import * as z from 'zod'
 
 const noticeFormSchema = z.object({
-  companyId: z.string().min(1, '매체사를 선택해 주세요'),
+  companyId: z
+    .string()
+    .min(1, '매체사를 선택해 주세요')
+    .refine((value) => value !== 'all', {
+      message: '매체사를 선택해 주세요',
+    }),
   title: z.string().min(1, '제목을 입력해 주세요'),
   content: z.string().min(1, '내용을 입력해 주세요'),
   active: z.boolean(),
@@ -37,13 +42,7 @@ export default function NoticeCreate() {
 
   const form = useForm<NoticeCreateFormInput>({
     resolver: zodResolver(noticeFormSchema),
-    defaultValues: {
-      companyId: '',
-      title: '',
-      content: '',
-      active: false,
-      top: false,
-    },
+    defaultValues: INITIAL_NOTICE_CREATE_FORM,
   })
 
   const {
@@ -80,10 +79,7 @@ export default function NoticeCreate() {
     <PageTemplate breadcrumbs={NOTICE_CREATE_BREADCRUMBS}>
       <Card className={'w-full shadow-none'}>
         <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit, handleFormError)}
-            className="space-y-6"
-          >
+          <form onSubmit={form.handleSubmit(onSubmit, handleFormError)} className="space-y-6">
             <CardContent>
               <div className="space-y-6">
                 <CompanyField control={form.control} name="companyId" isLoading={isSubmitting} />

@@ -20,9 +20,17 @@ export const NOTICE_CREATE_BREADCRUMBS = [
  * URL이 비어있을 때 기본값으로 사용
  */
 export const INITIAL_NOTICE_SEARCH_FORM = {
-  companyId: '',
+  companyId: 'all',
   title: '',
   active: 'all' as const,
+}
+
+export const INITIAL_NOTICE_CREATE_FORM = {
+  companyId: 'all',
+  title: '',
+  content: '',
+  active: false,
+  top: false,
 }
 
 /**
