@@ -1,6 +1,6 @@
 import { api } from '@/src/lib/api'
 import { PagedApiResponse } from '@/src/types/api'
-import { NoticeListItem, NoticeSearchFormInput, convertFormToQuery } from '@/src/types/notice'
+import { NoticeListItem, NoticeSearchFormInput, NoticeSearchQuery } from '@/src/types/notice'
 import { useQuery } from '@tanstack/react-query'
 
 interface NoticeQueryParams {
@@ -14,6 +14,21 @@ interface NoticeQueryParams {
 interface NoticeQueryData {
   notices: NoticeListItem[]
   totalElements: number
+}
+
+/**
+ * 검색 폼을 API 쿼리로 변환하는 함수
+ */
+const convertFormToQuery = (form: NoticeSearchFormInput): NoticeSearchQuery => {
+  const query: NoticeSearchQuery = {
+    companyId: parseInt(form.companyId),
+    title: form.title.trim() || null,
+    startDate: form.startDate,
+    endDate: form.endDate,
+    active: form.active === 'all' ? null : form.active === 'true',
+  }
+
+  return query
 }
 
 /**
