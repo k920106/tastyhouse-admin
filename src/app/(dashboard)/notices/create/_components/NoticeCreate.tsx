@@ -50,7 +50,7 @@ export default function NoticeCreate() {
       setIsLoading(true)
 
       const requestData: NoticeCreateRequest = {
-        companyId: parseInt(data.companyId),
+        companyId: Number(data.companyId),
         title: data.title,
         content: data.content,
         active: data.active,
@@ -59,13 +59,13 @@ export default function NoticeCreate() {
 
       const response = await api.post<ApiResponse<NoticeCreateResponse>>('/notices', requestData)
       if (!response.success || !response.data) {
-        toast.error('등록에 실패했습니다. 다시 시도해 주세요.')
+        toast.error(response.message || '등록에 실패했습니다. 다시 시도해 주세요.')
         return
       }
 
       toast.success('등록되었습니다')
 
-      router.push(`/notice/${response.data.id}`)
+      router.push(`/notices/${response.data.id}`)
     } catch (error) {
       console.error('공지사항 등록 실패:', error)
       toast.error(
