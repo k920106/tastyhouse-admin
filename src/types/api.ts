@@ -7,11 +7,11 @@ export interface ApiResponse<T = unknown> {
 export interface PagedApiResponse<T> {
   success: boolean
   data: T[] | null
+  message: string | null
   pagination: {
     page: number
     size: number
     totalElements: number
     totalPages: number
   } | null
-  message: string | null
 }
