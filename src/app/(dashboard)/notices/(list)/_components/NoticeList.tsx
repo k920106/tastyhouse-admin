@@ -5,6 +5,7 @@ import { useCallback } from 'react'
 import { CommonDataTable } from '@/src/components/shared/CommonDataTable'
 import { useNoticeSearchWithQuery } from '@/src/hooks/notice/useNoticeSearchWithQuery'
 import { formatToYYYYMMDD } from '@/src/lib/date-utils'
+import { type ApiPage } from '@/src/lib/pagination-utils'
 import { getActiveStatusLabel } from '@/src/types/common'
 import { NoticeListItem } from '@/src/types/notice'
 import { ColumnDef } from '@tanstack/react-table'
@@ -58,7 +59,7 @@ export default function NoticeList() {
 
   const handlePageChange = useCallback(
     (newPage: number, newPageSize?: number) => {
-      updateUrl(null, newPage, newPageSize)
+      updateUrl(null, newPage as ApiPage, newPageSize)
     },
     [updateUrl],
   )
