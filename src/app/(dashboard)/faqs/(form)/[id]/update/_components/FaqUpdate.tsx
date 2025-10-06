@@ -61,9 +61,12 @@ export default function FaqUpdate({ faq }: FaqUpdateProps) {
               <FaqFormFields form={form} isSubmitting={isSubmitting} />
             </CardContent>
             <CardFooter className="flex justify-end gap-3">
-              <SpinnerButton type="submit" isLoading={isSubmitting}>
-                등록
-              </SpinnerButton>
+              <SpinnerButton
+                type="submit"
+                idleLabel="수정"
+                loadingLabel="수정 중..."
+                isLoading={isSubmitting}
+              />
             </CardFooter>
           </Card>
         </form>

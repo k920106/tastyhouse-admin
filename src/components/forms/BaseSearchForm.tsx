@@ -22,9 +22,12 @@ export default function BaseSearchForm({
         </div>
       </CardContent>
       <CardFooter className="flex justify-end gap-3">
-        <SpinnerButton type="submit" isLoading={isLoading}>
-          조회
-        </SpinnerButton>
+        <SpinnerButton
+          type="submit"
+          idleLabel="조회"
+          loadingLabel="조회 중..."
+          isLoading={isLoading}
+        />
       </CardFooter>
     </Card>
   )

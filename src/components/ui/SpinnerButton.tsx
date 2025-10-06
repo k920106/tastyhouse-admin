@@ -1,42 +1,26 @@
 import { Button, buttonVariants } from '@/src/components/ui/Button'
-import { Spinner } from '@/src/components/ui/Spinner'
+import { SpinnerWithText } from '@/src/components/ui/SpinnerWithText'
 import { VariantProps } from 'class-variance-authority'
 import React from 'react'
 
 interface SpinnerButtonProps
   extends React.ComponentProps<'button'>,
     VariantProps<typeof buttonVariants> {
-  isLoading?: boolean
-  asChild?: boolean
+  idleLabel: React.ReactNode
+  loadingLabel: React.ReactNode
+  isLoading: boolean
 }
 
 export function SpinnerButton({
-  isLoading = false,
-  children,
-  disabled,
   variant,
-  size,
-  className,
-  asChild,
+  idleLabel,
+  loadingLabel,
+  isLoading = false,
   ...props
 }: SpinnerButtonProps) {
   return (
-    <Button
-      variant={variant}
-      size={size}
-      className={className}
-      asChild={asChild}
-      disabled={disabled || isLoading}
-      {...props}
-    >
-      {isLoading ? (
-        <>
-          <Spinner />
-          {children} 중...
-        </>
-      ) : (
-        children
-      )}
+    <Button variant={variant} disabled={isLoading} {...props}>
+      {isLoading ? <SpinnerWithText text={loadingLabel} /> : idleLabel}
     </Button>
   )
 }

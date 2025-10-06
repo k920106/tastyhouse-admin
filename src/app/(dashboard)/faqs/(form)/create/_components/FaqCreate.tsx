@@ -48,9 +48,12 @@ export default function FaqCreate() {
               <FaqFormFields form={form} isSubmitting={isSubmitting} />
             </CardContent>
             <CardFooter className="flex justify-end gap-3">
-              <SpinnerButton type="submit" isLoading={isSubmitting}>
-                등록
-              </SpinnerButton>
+              <SpinnerButton
+                type="submit"
+                idleLabel="등록"
+                loadingLabel="등록 중..."
+                isLoading={isSubmitting}
+              />
             </CardFooter>
           </Card>
         </form>
