@@ -1,16 +1,13 @@
 'use client'
 
 import { Loader2Icon } from 'lucide-react'
-import Link from 'next/link'
 import React from 'react'
 
 import BaseSearchForm from '@/src/components/forms/BaseSearchForm'
-import { Button, buttonVariants } from '@/src/components/ui/Button'
+import { Button } from '@/src/components/ui/Button'
 import { Form } from '@/src/components/ui/Form'
-import { ROUTES } from '@/src/constants/routes'
 import { useNoticeSearchForm } from '@/src/hooks/notice/useNoticeSearchForm'
 import { useSearchFormKeyboard } from '@/src/hooks/useSearchFormKeyboard'
-import { cn } from '@/src/lib/class-utils'
 
 import ActiveStatusSelectFilter from '@/src/components/forms/ActiveStatusSelectFilter'
 import CompanyField from '@/src/components/forms/CompanyField'
@@ -32,7 +29,7 @@ const NoticeFilters = React.memo(function NoticeFilters() {
         <BaseSearchForm
           actions={
             <>
-              <Link
+              {/* <Link
                 href={ROUTES.NOTICES.CREATE}
                 className={cn(
                   buttonVariants({ variant: 'outline' }),
@@ -40,7 +37,7 @@ const NoticeFilters = React.memo(function NoticeFilters() {
                 )}
               >
                 등록
-              </Link>
+              </Link> */}
               <Button type="submit" disabled={isLoading}>
                 {isLoading ? (
                   <>
