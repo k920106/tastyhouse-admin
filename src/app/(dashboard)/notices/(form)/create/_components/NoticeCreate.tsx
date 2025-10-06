@@ -1,9 +1,10 @@
 'use client'
 
+import NoticeFormFields from '@/src/app/(dashboard)/notices/(form)/_components/NoticeFormFields'
 import PageTemplate from '@/src/components/layout/PageTemplate'
-import { Button } from '@/src/components/ui/Button'
 import { Card, CardContent, CardFooter } from '@/src/components/ui/Card'
 import { Form } from '@/src/components/ui/Form'
+import { SpinnerButton } from '@/src/components/ui/SpinnerButton'
 import { INITIAL_NOTICE_CREATE_FORM, NOTICE_CREATE_BREADCRUMBS } from '@/src/constants/notice'
 import { handleNoticeCreate } from '@/src/lib/api-handlers/notice-handlers'
 import { handleFormError } from '@/src/lib/form-utils'
@@ -13,7 +14,6 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
-import NoticeFormFields from '../../_components/NoticeFormFields'
 
 export default function NoticeCreate() {
   const router = useRouter()
@@ -30,7 +30,9 @@ export default function NoticeCreate() {
   const onSubmit = async (data: NoticeFormInput) => {
     try {
       const result = await handleNoticeCreate(data)
+
       toast.success('등록되었습니다')
+
       router.push(`/notices/${result.id}`)
     } catch (error) {
       toast.error(error instanceof Error ? error.message : '오류가 발생했습니다.')
@@ -46,9 +48,9 @@ export default function NoticeCreate() {
               <NoticeFormFields form={form} isSubmitting={isSubmitting} />
             </CardContent>
             <CardFooter className="flex justify-end gap-3">
-              <Button type="submit" disabled={isSubmitting}>
-                {isSubmitting ? '등록 중...' : '등록'}
-              </Button>
+              <SpinnerButton type="submit" isLoading={isSubmitting}>
+                등록
+              </SpinnerButton>
             </CardFooter>
           </Card>
         </form>

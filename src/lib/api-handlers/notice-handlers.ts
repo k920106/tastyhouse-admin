@@ -1,13 +1,22 @@
 import { api } from '@/src/lib/api'
-import { transformNoticeFormToRequest } from '@/src/lib/transformers/notice-transformer'
 import { ApiResponse } from '@/src/types/api'
-import { NoticeCreateResponse, NoticeFormInput } from '@/src/types/notice'
+import { NoticeCreateRequest, NoticeCreateResponse, NoticeFormInput } from '@/src/types/notice'
 
 /**
- * 공지사항 등록 API 호출
- * @param data - 공지사항 폼 데이터
- * @returns 생성된 공지사항 ID
- * @throws Error - API 호출 실패 시
+ * 공지사항 폼 데이터를 API 요청 형식으로 변환
+ */
+export const transformNoticeFormToRequest = (
+  data: NoticeFormInput,
+): Omit<NoticeCreateRequest, 'id'> => ({
+  companyId: Number(data.companyId),
+  title: data.title,
+  content: data.content,
+  active: data.active,
+  top: data.top,
+})
+
+/**
+ * 공지사항 등록 API
  */
 export async function handleNoticeCreate(data: NoticeFormInput) {
   try {
@@ -24,10 +33,7 @@ export async function handleNoticeCreate(data: NoticeFormInput) {
 }
 
 /**
- * 공지사항 수정 API 호출
- * @param noticeId - 공지사항 ID
- * @param data - 공지사항 폼 데이터
- * @throws Error - API 호출 실패 시
+ * 공지사항 수정 API
  */
 export async function handleNoticeUpdate(noticeId: number, data: NoticeFormInput) {
   try {
