@@ -42,6 +42,7 @@ interface DataTableProps<T> {
   handlePageChange: (pageIndex: number, pageSize: number) => void
   enableRowSelection?: boolean
   onRowSelectionChange?: (selectedRows: Record<string, boolean>) => void
+  onRowClick?: (rowId: number | string) => void
 }
 
 export function CommonDataTable<T extends { id: number | string }>({
@@ -54,6 +55,7 @@ export function CommonDataTable<T extends { id: number | string }>({
   handlePageChange,
   enableRowSelection = false,
   onRowSelectionChange,
+  onRowClick,
 }: DataTableProps<T>) {
   const [rowSelection, setRowSelection] = React.useState({})
 
@@ -136,7 +138,12 @@ export function CommonDataTable<T extends { id: number | string }>({
                 <TableRowSkeleton columnCount={columns.length} />
               ) : table.getRowModel().rows?.length ? (
                 table.getRowModel().rows.map((row) => (
-                  <TableRow key={row.id} data-state={row.getIsSelected() && 'selected'}>
+                  <TableRow
+                    key={row.id}
+                    data-state={row.getIsSelected() && 'selected'}
+                    className={onRowClick ? 'cursor-pointer hover:bg-muted/50' : ''}
+                    onClick={() => onRowClick?.(row.original.id)}
+                  >
                     {row.getVisibleCells().map((cell) => (
                       <TableCell
                         key={cell.id}

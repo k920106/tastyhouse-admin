@@ -1,8 +1,10 @@
 'use client'
 
+import { useRouter } from 'next/navigation'
 import { useCallback } from 'react'
 
 import { CommonDataTable } from '@/src/components/shared/CommonDataTable'
+import { ROUTES } from '@/src/constants/routes'
 import { useNoticeSearchWithQuery } from '@/src/hooks/notice/useNoticeSearchWithQuery'
 import { formatToYYYYMMDD } from '@/src/lib/date-utils'
 import { type ApiPage } from '@/src/lib/pagination-utils'
@@ -55,6 +57,7 @@ const NOTICE_COLUMNS: ColumnDef<NoticeListItem>[] = [
 ]
 
 export default function NoticeList() {
+  const router = useRouter()
   const { currentPage, pageSize, updateUrl, data, isLoading } = useNoticeSearchWithQuery()
 
   const handlePageChange = useCallback(
@@ -62,6 +65,13 @@ export default function NoticeList() {
       updateUrl(null, newPage as ApiPage, newPageSize)
     },
     [updateUrl],
+  )
+
+  const handleRowClick = useCallback(
+    (noticeId: number | string) => {
+      router.push(ROUTES.NOTICES.DETAIL(noticeId))
+    },
+    [router],
   )
 
   return (
@@ -73,6 +83,7 @@ export default function NoticeList() {
       pageSize={pageSize}
       loading={isLoading}
       handlePageChange={handlePageChange}
+      onRowClick={handleRowClick}
     />
   )
 }
