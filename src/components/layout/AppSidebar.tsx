@@ -138,7 +138,7 @@ const data = {
         },
         {
           title: 'FAQ',
-          url: '/',
+          url: '/faqs',
         },
       ],
     },

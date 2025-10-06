@@ -6,16 +6,15 @@ import { useCallback } from 'react'
 import { CommonDataTable } from '@/src/components/shared/CommonDataTable'
 import { buttonVariants } from '@/src/components/ui/Button'
 import { ROUTES } from '@/src/constants/routes'
-import { useNoticeSearchWithQuery } from '@/src/hooks/notice/useNoticeSearchWithQuery'
+import { useFaqSearchWithQuery } from '@/src/hooks/faq/useFaqSearchWithQuery'
 import { cn } from '@/src/lib/class-utils'
-import { formatToYYYYMMDD } from '@/src/lib/date-utils'
 import { type ApiPage } from '@/src/lib/pagination-utils'
 import { getActiveStatusLabel } from '@/src/types/common'
-import { Notice } from '@/src/types/notice'
+import { Faq } from '@/src/types/faq'
 import { ColumnDef } from '@tanstack/react-table'
 import Link from 'next/link'
 
-const NOTICE_COLUMNS: ColumnDef<Notice>[] = [
+const FAQ_COLUMNS: ColumnDef<Faq>[] = [
   {
     id: 'rowNumber',
     header: 'No.',
@@ -35,14 +34,6 @@ const NOTICE_COLUMNS: ColumnDef<Notice>[] = [
     },
   },
   {
-    accessorKey: 'createdAt',
-    header: '등록일자',
-    cell: ({ row }) => <div>{formatToYYYYMMDD(row.original.createdAt)}</div>,
-    meta: {
-      className: 'border-x',
-    },
-  },
-  {
     accessorKey: 'active',
     header: '활성상태',
     cell: ({ row }) => <div>{getActiveStatusLabel(row.original.active)}</div>,
@@ -51,19 +42,19 @@ const NOTICE_COLUMNS: ColumnDef<Notice>[] = [
     },
   },
   {
-    accessorKey: 'id',
-    header: 'ID',
-    cell: ({ row }) => <div>{row.original.id}</div>,
+    accessorKey: 'sort',
+    header: '우선순위',
+    cell: ({ row }) => <div>{row.original.sort}</div>,
     meta: {
-      className: 'border-x',
+      className: 'border-x text-center',
     },
   },
 ]
 
-export default function NoticeList() {
+export default function FaqList() {
   const router = useRouter()
   const { currentPage, pageSize, updateUrl, data, isLoading, urlSearchForm } =
-    useNoticeSearchWithQuery()
+    useFaqSearchWithQuery()
 
   const handlePageChange = useCallback(
     (newPage: number, newPageSize?: number) => {
@@ -73,8 +64,8 @@ export default function NoticeList() {
   )
 
   const handleRowClick = useCallback(
-    (noticeId: number | string) => {
-      router.push(ROUTES.NOTICES.DETAIL(noticeId))
+    (faqId: number | string) => {
+      router.push(ROUTES.FAQS.DETAIL(faqId))
     },
     [router],
   )
@@ -91,7 +82,7 @@ export default function NoticeList() {
           )}
         </div>
         <Link
-          href={ROUTES.NOTICES.CREATE}
+          href={ROUTES.FAQS.CREATE}
           className={cn(
             buttonVariants({ variant: 'outline' }),
             isLoading && 'pointer-events-none opacity-50',
@@ -101,8 +92,8 @@ export default function NoticeList() {
         </Link>
       </div>
       <CommonDataTable
-        columns={NOTICE_COLUMNS}
-        data={data?.notices || []}
+        columns={FAQ_COLUMNS}
+        data={data?.faqs || []}
         totalCount={data?.totalElements || 0}
         currentPage={currentPage}
         pageSize={pageSize}

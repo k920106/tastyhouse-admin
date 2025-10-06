@@ -1,27 +1,29 @@
-// 상단 고정 여부
+// 상단 고정
 export const NOTICE_TOP_STATUS = {
   TOP: { value: 'true', label: '적용' },
   NOT_TOP: { value: 'false', label: '미적용' },
 } as const
 
-export type NoticeTopStatus = (typeof NOTICE_TOP_STATUS)[keyof typeof NOTICE_TOP_STATUS]
-
-// 유틸리티 함수
 export const getNoticeTopStatusLabel = (top: boolean): string => {
   return top ? NOTICE_TOP_STATUS.TOP.label : NOTICE_TOP_STATUS.NOT_TOP.label
 }
 
-export type NoticeListItem = {
+export interface Notice {
   id: number
+  companyId: number
+  companyName: string
   title: string
   content: string
   active: boolean
+  top: boolean
+  createdBy: string
   createdAt: string
+  updatedAt: string
 }
 
 export interface NoticeSearchFormInput {
   companyId: string
-  companyName?: string // 선택된 회사명 (URL 파라미터용)
+  companyName?: string
   title: string
   startDate: string
   endDate: string
@@ -35,10 +37,6 @@ export interface NoticeFormInput {
   active: boolean
   top: boolean
 }
-
-// 별칭으로 유지 (하위 호환성)
-export type NoticeCreateFormInput = NoticeFormInput
-export type NoticeUpdateFormInput = NoticeFormInput
 
 export const isNoticeSearchKey = (key: string): key is keyof NoticeSearchFormInput => {
   return ['companyId', 'companyName', 'title', 'startDate', 'endDate', 'active'].includes(key)
@@ -60,6 +58,10 @@ export interface NoticeCreateRequest {
   top: boolean
 }
 
+export interface NoticeCreateResponse {
+  id: number
+}
+
 export interface NoticeUpdateRequest {
   companyId: number
   title: string
@@ -68,19 +70,5 @@ export interface NoticeUpdateRequest {
   top: boolean
 }
 
-export interface NoticeCreateResponse {
-  id: number
-}
-
-export interface Notice {
-  id: number
-  companyId: number
-  companyName: string
-  title: string
-  content: string
-  active: boolean
-  top: boolean
-  createdBy: string
-  createdAt: string
-  updatedAt: string
-}
+export type NoticeCreateFormInput = NoticeFormInput
+export type NoticeUpdateFormInput = NoticeFormInput
