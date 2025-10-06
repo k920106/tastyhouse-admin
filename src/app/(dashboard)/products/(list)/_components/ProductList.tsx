@@ -69,7 +69,7 @@ const PRODUCT_COLUMNS: ColumnDef<Product>[] = [
   {
     accessorKey: '',
     header: '상품판매타입',
-    cell: ({ row }) => <div>-</div>,
+    cell: () => <div>-</div>,
     meta: {
       className: 'border-x',
     },
@@ -77,7 +77,7 @@ const PRODUCT_COLUMNS: ColumnDef<Product>[] = [
   {
     accessorKey: '',
     header: '유효일수',
-    cell: ({ row }) => <div>-</div>,
+    cell: () => <div>-</div>,
     meta: {
       className: 'border-x',
     },
@@ -85,7 +85,7 @@ const PRODUCT_COLUMNS: ColumnDef<Product>[] = [
   {
     accessorKey: '',
     header: '상품상태',
-    cell: ({ row }) => <div>-</div>,
+    cell: () => <div>-</div>,
     meta: {
       className: 'border-x',
     },
@@ -101,7 +101,7 @@ const PRODUCT_COLUMNS: ColumnDef<Product>[] = [
   {
     accessorKey: '',
     header: 'RM 적용',
-    cell: ({ row }) => <div>-</div>,
+    cell: () => <div>-</div>,
     meta: {
       className: 'border-x',
     },
