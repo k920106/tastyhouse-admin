@@ -1,11 +1,5 @@
 'use client'
 
-import {
-  IconChevronLeft,
-  IconChevronRight,
-  IconChevronsLeft,
-  IconChevronsRight,
-} from '@tabler/icons-react'
 import { ColumnDef, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table'
 import * as React from 'react'
 import { useCallback } from 'react'
@@ -14,15 +8,6 @@ interface ColumnMeta {
   className?: string
 }
 
-import { Button } from '@/src/components/ui/Button'
-import { Label } from '@/src/components/ui/Label'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/src/components/ui/Select'
 import { TableRowSkeleton } from '@/src/components/ui/Skeleton'
 import {
   Table,
@@ -32,6 +17,15 @@ import {
   TableHeader,
   TableRow,
 } from '@/src/components/ui/Table'
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from '../ui/Pagination'
 interface DataTableProps<T> {
   columns: ColumnDef<T>[]
   data: T[]
@@ -102,12 +96,10 @@ export function CommonDataTable<T extends { id: number | string }>({
     [handlePageChange, pageCount, pageSize],
   )
 
-  const handlePageSizeChange = useCallback(
-    (newPageSize: number) => {
-      handlePageChange(0, newPageSize)
-    },
-    [handlePageChange],
-  )
+  // 현재 페이지가 속한 그룹의 시작 페이지 계산 (0-based)
+  const currentGroup = Math.floor(currentPage / 5)
+  const groupStartPage = currentGroup * 5
+  const groupEndPage = Math.min(groupStartPage + 5, pageCount)
 
   return (
     <div className="w-full flex-col justify-start gap-6">
@@ -164,85 +156,69 @@ export function CommonDataTable<T extends { id: number | string }>({
             </TableBody>
           </Table>
         </div>
-        <div className="flex items-center justify-between px-4">
-          {enableRowSelection ? (
-            <div className="text-muted-foreground hidden flex-1 text-sm lg:flex">
-              {table.getFilteredSelectedRowModel().rows.length} of{' '}
-              {table.getFilteredRowModel().rows.length} row(s) selected.
-            </div>
-          ) : (
-            <div className="hidden flex-1 lg:flex" />
-          )}
-          <div className="flex w-full items-center gap-8 lg:w-fit">
-            <div className="hidden items-center gap-2 lg:flex">
-              <Label htmlFor="rows-per-page" className="text-sm font-medium">
-                Rows per page
-              </Label>
-              <Select
-                value={`${pageSize}`}
-                disabled={loading}
-                onValueChange={(value) => {
-                  handlePageSizeChange(Number(value))
+        {totalCount > 0 && (
+          <Pagination>
+            <PaginationContent>
+              <PaginationPrevious
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault()
+                  if (canPreviousPage && !loading) {
+                    handlePageIndexChange(currentPage - 1)
+                  }
                 }}
-              >
-                <SelectTrigger size="sm" className="w-20" id="rows-per-page">
-                  <SelectValue placeholder={pageSize} />
-                </SelectTrigger>
-                <SelectContent side="top">
-                  {[10, 20, 30, 40, 50].map((size) => (
-                    <SelectItem key={size} value={`${size}`}>
-                      {size}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="flex w-fit items-center justify-center text-sm font-medium">
-              Page {currentPage + 1} of {pageCount}
-            </div>
-            <div className="ml-auto flex items-center gap-2 lg:ml-0">
-              <Button
-                variant="outline"
-                className="hidden h-8 w-8 p-0 lg:flex"
-                onClick={() => handlePageIndexChange(0)}
-                disabled={!canPreviousPage || loading}
-              >
-                <span className="sr-only">Go to first page</span>
-                <IconChevronsLeft />
-              </Button>
-              <Button
-                variant="outline"
-                className="size-8"
-                size="icon"
-                onClick={() => handlePageIndexChange(currentPage - 1)}
-                disabled={!canPreviousPage || loading}
-              >
-                <span className="sr-only">Go to previous page</span>
-                <IconChevronLeft />
-              </Button>
-              <Button
-                variant="outline"
-                className="size-8"
-                size="icon"
-                onClick={() => handlePageIndexChange(currentPage + 1)}
-                disabled={!canNextPage || loading}
-              >
-                <span className="sr-only">Go to next page</span>
-                <IconChevronRight />
-              </Button>
-              <Button
-                variant="outline"
-                className="hidden size-8 lg:flex"
-                size="icon"
-                onClick={() => handlePageIndexChange(pageCount - 1)}
-                disabled={!canNextPage || loading}
-              >
-                <span className="sr-only">Go to last page</span>
-                <IconChevronsRight />
-              </Button>
-            </div>
-          </div>
-        </div>
+                aria-disabled={!canPreviousPage || loading}
+                className={!canPreviousPage || loading ? 'pointer-events-none opacity-50' : ''}
+              />
+
+              {groupStartPage > 0 && (
+                <PaginationItem>
+                  <PaginationEllipsis />
+                </PaginationItem>
+              )}
+
+              {Array.from({ length: groupEndPage - groupStartPage }, (_, i) => groupStartPage + i).map(
+                (pageIndex) => (
+                  <PaginationLink
+                    key={pageIndex}
+                    href="#"
+                    onClick={(e) => {
+                      e.preventDefault()
+                      if (!loading && pageIndex !== currentPage) {
+                        handlePageIndexChange(pageIndex)
+                      }
+                    }}
+                    isActive={pageIndex === currentPage}
+                    aria-disabled={loading || pageIndex === currentPage}
+                    className={
+                      loading || pageIndex === currentPage ? 'pointer-events-none opacity-50' : ''
+                    }
+                  >
+                    {pageIndex + 1}
+                  </PaginationLink>
+                ),
+              )}
+
+              {groupEndPage < pageCount && (
+                <PaginationItem>
+                  <PaginationEllipsis />
+                </PaginationItem>
+              )}
+
+              <PaginationNext
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault()
+                  if (canNextPage && !loading) {
+                    handlePageIndexChange(currentPage + 1)
+                  }
+                }}
+                aria-disabled={!canNextPage || loading}
+                className={!canNextPage || loading ? 'pointer-events-none opacity-50' : ''}
+              />
+            </PaginationContent>
+          </Pagination>
+        )}
       </div>
     </div>
   )
