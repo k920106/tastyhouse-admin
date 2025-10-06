@@ -1,12 +1,8 @@
 'use client'
 
-import { useRouter } from 'next/navigation'
-import { useCallback } from 'react'
-
-import { CommonDataTable } from '@/src/components/shared/CommonDataTable'
+import { ListPageLayout } from '@/src/components/shared/ListPageLayout'
 import { ROUTES } from '@/src/constants/routes'
 import { useProductSearchWithQuery } from '@/src/hooks/product/useProductSearchWithQuery'
-import { type ApiPage } from '@/src/lib/pagination-utils'
 import { getProductDisplayStatusLabel, Product } from '@/src/types/product'
 import { ColumnDef } from '@tanstack/react-table'
 
@@ -15,7 +11,7 @@ const PRODUCT_COLUMNS: ColumnDef<Product>[] = [
     id: 'rowNumber',
     header: 'No.',
     meta: {
-      className: 'border-x text-center',
+      className: 'border-x',
     },
     cell: ({ row, table }) => {
       const state = table.getState().pagination
@@ -116,46 +112,20 @@ const PRODUCT_COLUMNS: ColumnDef<Product>[] = [
 ]
 
 export default function ProductList() {
-  const router = useRouter()
   const { currentPage, pageSize, updateUrl, data, isLoading, urlSearchForm } =
     useProductSearchWithQuery()
 
-  const handlePageChange = useCallback(
-    (newPage: number, newPageSize?: number) => {
-      updateUrl(null, newPage as ApiPage, newPageSize)
-    },
-    [updateUrl],
-  )
-
-  const handleRowClick = useCallback(
-    (productId: number | string) => {
-      router.push(ROUTES.PRODUCTS.DETAIL(productId))
-    },
-    [router],
-  )
-
   return (
-    <div className="flex flex-col gap-3">
-      <div className="flex justify-between items-center">
-        <div className="flex gap-4">
-          <p className="text-sm">
-            총 <span className="font-bold">{data?.totalElements || 0}</span> 건
-          </p>
-          {urlSearchForm.companyName && (
-            <p className="text-sm font-bold">{urlSearchForm.companyName}</p>
-          )}
-        </div>
-      </div>
-      <CommonDataTable
-        columns={PRODUCT_COLUMNS}
-        data={data?.products || []}
-        totalCount={data?.totalElements || 0}
-        currentPage={currentPage}
-        pageSize={pageSize}
-        loading={isLoading}
-        handlePageChange={handlePageChange}
-        onRowClick={handleRowClick}
-      />
-    </div>
+    <ListPageLayout
+      columns={PRODUCT_COLUMNS}
+      data={data?.products || []}
+      totalElements={data?.totalElements || 0}
+      currentPage={currentPage}
+      pageSize={pageSize}
+      loading={isLoading}
+      updateUrl={updateUrl}
+      detailRoute={ROUTES.PRODUCTS.DETAIL}
+      companyName={urlSearchForm.companyName}
+    />
   )
 }
