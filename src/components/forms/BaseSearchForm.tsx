@@ -1,17 +1,18 @@
 'use client'
 
 import { Card, CardContent, CardFooter } from '@/src/components/ui/Card'
+import { SpinnerButton } from '../ui/SpinnerButton'
 
 interface BaseSearchFormProps {
-  children: React.ReactNode
-  actions?: React.ReactNode
   className?: string
+  children: React.ReactNode
+  isLoading: boolean
 }
 
 export default function BaseSearchForm({
-  children,
-  actions: actions,
   className = '',
+  children,
+  isLoading,
 }: BaseSearchFormProps) {
   return (
     <Card className={`w-full shadow-none ${className}`}>
@@ -20,7 +21,11 @@ export default function BaseSearchForm({
           {children}
         </div>
       </CardContent>
-      {actions && <CardFooter className="flex justify-end gap-3">{actions}</CardFooter>}
+      <CardFooter className="flex justify-end gap-3">
+        <SpinnerButton type="submit" isLoading={isLoading}>
+          조회
+        </SpinnerButton>
+      </CardFooter>
     </Card>
   )
 }
