@@ -30,10 +30,6 @@ export const FAQ_UPDATE_BREADCRUMBS = [
   { label: '수정' },
 ]
 
-/**
- * FAQ 검색 폼 초기값 (날짜 제외)
- * URL이 비어있을 때 기본값으로 사용
- */
 export const INITIAL_FAQ_SEARCH_FORM = {
   companyId: 'all',
   title: '',
@@ -48,10 +44,6 @@ export const INITIAL_FAQ_CREATE_FORM = {
   sort: 0,
 }
 
-/**
- * FAQ 검색 폼 초기값을 생성하는 팩토리 함수
- * 날짜 값이 동적으로 생성되므로 함수로 제공
- */
 export const getInitialFaqSearchForm = (): FaqSearchFormInput => {
   return {
     ...INITIAL_FAQ_SEARCH_FORM,

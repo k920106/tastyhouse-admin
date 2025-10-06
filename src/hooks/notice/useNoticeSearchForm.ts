@@ -17,7 +17,6 @@ import {
 } from '@/src/types/notice'
 import { useNoticeSearchWithQuery } from './useNoticeSearchWithQuery'
 
-// 검색 폼 유효성 검사 스키마 (Form 입력용)
 const searchFormSchema = z.object({
   companyId: z
     .string()
@@ -32,7 +31,6 @@ const searchFormSchema = z.object({
   active: z.enum(['all', 'true', 'false']),
 }) satisfies z.ZodType<NoticeSearchFormInput>
 
-// API 쿼리 변환 스키마 (Form → Query 변환)
 export const noticeSearchQuerySchema = searchFormSchema.transform(
   (data): NoticeSearchQuery => ({
     companyId: parseInt(data.companyId),
@@ -43,10 +41,6 @@ export const noticeSearchQuerySchema = searchFormSchema.transform(
   }),
 )
 
-/**
- * URL 쿼리스트링을 NoticeSearchFormInput으로 파싱
- * 내부 헬퍼 함수로 사용
- */
 const useNoticeUrlSearchForm = (): NoticeSearchFormInput => {
   const searchParams = useSearchParams()
 
@@ -69,16 +63,13 @@ export interface UseNoticeSearchFormResult {
 export const useNoticeSearchForm = (): UseNoticeSearchFormResult => {
   const { updateUrl, isLoading } = useNoticeSearchWithQuery()
 
-  // URL에서 초기값 파싱
   const urlSearchForm = useNoticeUrlSearchForm()
 
-  // 폼 초기화 (values로 자동 동기화)
   const form = useForm<NoticeSearchFormInput>({
     resolver: zodResolver(searchFormSchema),
     values: urlSearchForm,
   })
 
-  // 제출 로직
   const onSubmit = useCallback(() => {
     const formValues = form.getValues()
     updateUrl(formValues, toApiPage(INITIAL_PAGINATION.currentPage))
@@ -91,5 +82,4 @@ export const useNoticeSearchForm = (): UseNoticeSearchFormResult => {
   }
 }
 
-// 외부에서 URL 파싱만 필요한 경우를 위해 export (필요시 사용)
 export { useNoticeUrlSearchForm }

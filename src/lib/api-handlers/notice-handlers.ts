@@ -2,9 +2,6 @@ import { api } from '@/src/lib/api'
 import { ApiResponse } from '@/src/types/api'
 import { NoticeCreateRequest, NoticeCreateResponse, NoticeFormInput } from '@/src/types/notice'
 
-/**
- * 공지사항 폼 데이터를 API 요청 형식으로 변환
- */
 export const transformNoticeFormToRequest = (
   data: NoticeFormInput,
 ): Omit<NoticeCreateRequest, 'id'> => ({

@@ -2,9 +2,6 @@ import { api } from '@/src/lib/api'
 import { ApiResponse } from '@/src/types/api'
 import { FaqCreateRequest, FaqCreateResponse, FaqFormInput } from '@/src/types/faq'
 
-/**
- * FAQ 폼 데이터를 API 요청 형식으로 변환
- */
 export const transformFaqFormToRequest = (data: FaqFormInput): Omit<FaqCreateRequest, 'id'> => ({
   companyId: Number(data.companyId),
   title: data.title,
