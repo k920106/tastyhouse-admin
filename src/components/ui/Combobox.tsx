@@ -1,9 +1,8 @@
 'use client'
 
-import * as React from 'react'
 import { Check, ChevronsUpDown } from 'lucide-react'
+import * as React from 'react'
 
-import { cn } from '@/src/lib/class-utils'
 import { Button } from '@/src/components/ui/Button'
 import {
   Command,
@@ -14,6 +13,7 @@ import {
   CommandList,
 } from '@/src/components/ui/Command'
 import { Popover, PopoverContent, PopoverTrigger } from '@/src/components/ui/Popover'
+import { cn } from '@/src/lib/class-utils'
 
 export interface ComboboxOption {
   value: string
@@ -33,6 +33,7 @@ interface ComboboxProps<T = Record<string, unknown>> {
   valueKey: keyof T
   labelKey: keyof T
   disabledOptions?: string[]
+  allLabel?: string
 }
 
 export function Combobox<T = Record<string, unknown>>({
@@ -50,6 +51,7 @@ export function Combobox<T = Record<string, unknown>>({
   valueKey,
   labelKey,
   disabledOptions = [],
+  allLabel = '전체',
 }: ComboboxProps<T>) {
   const [open, setOpen] = React.useState(false)
   const [internalValue, setInternalValue] = React.useState(value)
@@ -65,8 +67,8 @@ export function Combobox<T = Record<string, unknown>>({
       originalData: option,
     }))
 
-    return [{ value: 'all', label: '전체', originalData: null }, ...mappedOptions]
-  }, [options, valueKey, labelKey])
+    return [{ value: 'all', label: allLabel, originalData: null }, ...mappedOptions]
+  }, [options, valueKey, labelKey, allLabel])
 
   const handleSelect = (currentValue: string) => {
     const newValue = currentValue === internalValue ? '' : currentValue

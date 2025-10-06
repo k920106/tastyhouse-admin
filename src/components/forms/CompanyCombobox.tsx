@@ -26,6 +26,7 @@ export default function CompanyCombobox({
       onValueChange={onValueChange}
       disabled={disabled || isLoading}
       disabledOptions={['all']}
+      allLabel="-"
     />
   )
 }
