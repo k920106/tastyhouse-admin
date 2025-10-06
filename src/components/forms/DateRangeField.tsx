@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react'
 import { type DateRange } from 'react-day-picker'
-import { Control, useController } from 'react-hook-form'
+import { Control, FieldValues, Path, useController } from 'react-hook-form'
 import { LuCalendar } from 'react-icons/lu'
 
 import { Button } from '@/src/components/ui/Button'
@@ -10,28 +10,27 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/src/components/ui/Pop
 import { cn } from '@/src/lib/class-utils'
 import { formatDateRangeDisplay } from '@/src/lib/date-range-utils'
 import { formatToAPIDate } from '@/src/lib/date-utils'
-import { NoticeSearchFormInput } from '@/src/types/notice'
 
-interface DateRangeFieldProps {
-  control: Control<NoticeSearchFormInput>
+interface DateRangeFieldProps<T extends FieldValues> {
+  control: Control<T>
   disabled: boolean
 }
 
-const DateRangeField = React.memo(function DateRangeField({
+function DateRangeFieldInner<T extends FieldValues>({
   control,
   disabled = false,
-}: DateRangeFieldProps) {
+}: DateRangeFieldProps<T>) {
   const {
     field: { value: startDate, onChange: onStartDateChange },
   } = useController({
-    name: 'startDate',
+    name: 'startDate' as Path<T>,
     control,
   })
 
   const {
     field: { value: endDate, onChange: onEndDateChange },
   } = useController({
-    name: 'endDate',
+    name: 'endDate' as Path<T>,
     control,
   })
 
@@ -83,6 +82,8 @@ const DateRangeField = React.memo(function DateRangeField({
       </FormControl>
     </FormItem>
   )
-})
+}
+
+const DateRangeField = React.memo(DateRangeFieldInner) as typeof DateRangeFieldInner
 
 export default DateRangeField
