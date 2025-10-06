@@ -13,7 +13,6 @@ export const getNoticeTopStatusLabel = (top: boolean): string => {
 
 export type NoticeListItem = {
   id: number
-  companyName: string
   title: string
   content: string
   active: boolean

@@ -25,13 +25,6 @@ const NOTICE_COLUMNS: ColumnDef<NoticeListItem>[] = [
     },
   },
   {
-    accessorKey: 'companyName',
-    header: '매체사',
-    meta: {
-      className: 'border-x',
-    },
-  },
-  {
     accessorKey: 'title',
     header: '제목',
     meta: {
@@ -50,6 +43,14 @@ const NOTICE_COLUMNS: ColumnDef<NoticeListItem>[] = [
     accessorKey: 'active',
     header: '활성상태',
     cell: ({ row }) => <div>{getActiveStatusLabel(row.original.active)}</div>,
+    meta: {
+      className: 'border-x',
+    },
+  },
+  {
+    accessorKey: 'id',
+    header: 'ID',
+    cell: ({ row }) => <div>{row.original.id}</div>,
     meta: {
       className: 'border-x',
     },

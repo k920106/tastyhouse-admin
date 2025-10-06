@@ -122,7 +122,7 @@ export function CommonDataTable<T extends { id: number | string }>({
                       <TableHead
                         key={header.id}
                         colSpan={header.colSpan}
-                        className={(header.column.columnDef.meta as ColumnMeta)?.className}
+                        className={`text-center ${(header.column.columnDef.meta as ColumnMeta)?.className || ''}`}
                       >
                         {header.isPlaceholder
                           ? null
@@ -147,7 +147,7 @@ export function CommonDataTable<T extends { id: number | string }>({
                     {row.getVisibleCells().map((cell) => (
                       <TableCell
                         key={cell.id}
-                        className={(cell.column.columnDef.meta as ColumnMeta)?.className}
+                        className={`text-center ${(cell.column.columnDef.meta as ColumnMeta)?.className || ''}`}
                       >
                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                       </TableCell>
