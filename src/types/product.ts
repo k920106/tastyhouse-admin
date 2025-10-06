@@ -133,5 +133,13 @@ export interface ProductUpdateRequest {
   sort: number
 }
 
+export interface ProductSyncRequest {
+  companyId: number
+}
+
+export interface ProductSyncResponse {
+  message: string
+}
+
 export type ProductCreateFormInput = ProductFormInput
 export type ProductUpdateFormInput = ProductFormInput

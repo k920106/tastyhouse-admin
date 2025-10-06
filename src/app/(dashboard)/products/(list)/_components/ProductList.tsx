@@ -5,6 +5,7 @@ import { ROUTES } from '@/src/constants/routes'
 import { useProductSearchWithQuery } from '@/src/hooks/product/useProductSearchWithQuery'
 import { getProductDisplayStatusLabel, Product } from '@/src/types/product'
 import { ColumnDef } from '@tanstack/react-table'
+import { ProductSyncAlertDialog } from './ProductSyncAlertDialog'
 
 const PRODUCT_COLUMNS: ColumnDef<Product>[] = [
   {
@@ -115,6 +116,8 @@ export default function ProductList() {
   const { currentPage, pageSize, updateUrl, data, isLoading, urlSearchForm } =
     useProductSearchWithQuery()
 
+  const companyId = urlSearchForm.companyId ? Number(urlSearchForm.companyId) : null
+
   return (
     <ListPageLayout
       columns={PRODUCT_COLUMNS}
@@ -126,6 +129,8 @@ export default function ProductList() {
       updateUrl={updateUrl}
       detailRoute={ROUTES.PRODUCTS.DETAIL}
       companyName={urlSearchForm.companyName}
-    />
+    >
+      <ProductSyncAlertDialog companyId={companyId} />
+    </ListPageLayout>
   )
 }
