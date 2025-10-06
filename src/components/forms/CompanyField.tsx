@@ -9,6 +9,7 @@ interface CompanyFieldProps<T extends FieldValues> {
   name: Path<T>
   label?: string
   disabled: boolean
+  onValueChange?: (value: string) => void
 }
 
 function CompanyFieldInner<T extends FieldValues>({
@@ -16,12 +17,23 @@ function CompanyFieldInner<T extends FieldValues>({
   name,
   label = '매체사',
   disabled: disabled = false,
+  onValueChange: externalOnValueChange,
 }: CompanyFieldProps<T>) {
   return (
     <FormFieldWrapper name={name} label={label} control={control}>
-      {({ value, onChange }) => (
-        <CompanyCombobox value={value as string} onValueChange={onChange} disabled={disabled} />
-      )}
+      {({ value, onChange }) => {
+        const handleChange = (newValue: string) => {
+          onChange(newValue)
+          externalOnValueChange?.(newValue)
+        }
+        return (
+          <CompanyCombobox
+            value={value as string}
+            onValueChange={handleChange}
+            disabled={disabled}
+          />
+        )
+      }}
     </FormFieldWrapper>
   )
 }

@@ -62,7 +62,8 @@ const NOTICE_COLUMNS: ColumnDef<NoticeListItem>[] = [
 
 export default function NoticeList() {
   const router = useRouter()
-  const { currentPage, pageSize, updateUrl, data, isLoading } = useNoticeSearchWithQuery()
+  const { currentPage, pageSize, updateUrl, data, isLoading, urlSearchForm } =
+    useNoticeSearchWithQuery()
 
   const handlePageChange = useCallback(
     (newPage: number, newPageSize?: number) => {
@@ -85,7 +86,9 @@ export default function NoticeList() {
           <p className="text-sm">
             총 <span className="font-bold">{data?.totalElements || 0}</span> 건
           </p>
-          <p className="text-sm font-bold">밴드 기프트샵</p>
+          {urlSearchForm.companyName && (
+            <p className="text-sm font-bold">{urlSearchForm.companyName}</p>
+          )}
         </div>
         <Link
           href={ROUTES.NOTICES.CREATE}

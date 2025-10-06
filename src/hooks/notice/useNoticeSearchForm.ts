@@ -25,6 +25,7 @@ const searchFormSchema = z.object({
     .refine((value) => value !== 'all', {
       message: '매체사를 선택해 주세요',
     }),
+  companyName: z.string().optional(),
   title: z.string(),
   startDate: z.string(),
   endDate: z.string(),

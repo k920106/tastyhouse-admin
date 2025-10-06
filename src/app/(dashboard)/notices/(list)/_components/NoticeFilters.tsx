@@ -11,21 +11,34 @@ import ActiveStatusSelectFilter from '@/src/components/forms/ActiveStatusSelectF
 import CompanyField from '@/src/components/forms/CompanyField'
 import DateRangeField from '@/src/components/forms/DateRangeField'
 import TextField from '@/src/components/forms/TextField'
+import { useCompaniesQuery } from '@/src/hooks/queries/useCompanyQueries'
 import { handleFormError } from '@/src/lib/form-utils'
 
 const NoticeFilters = React.memo(function NoticeFilters() {
   const { form, onSubmit, isLoading } = useNoticeSearchForm()
+  const { data: companies = [] } = useCompaniesQuery()
 
   const { handleKeyDown } = useSearchFormKeyboard({
     onSubmit,
     isLoading,
   })
 
+  const handleCompanyChange = (value: string) => {
+    form.setValue('companyId', value)
+    const selectedCompany = companies.find((c) => c.id.toString() === value)
+    form.setValue('companyName', selectedCompany?.name)
+  }
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit, handleFormError)} onKeyDown={handleKeyDown}>
         <BaseSearchForm isLoading={isLoading}>
-          <CompanyField control={form.control} name="companyId" disabled={isLoading} />
+          <CompanyField
+            control={form.control}
+            name="companyId"
+            disabled={isLoading}
+            onValueChange={handleCompanyChange}
+          />
           <TextField name="title" label="제목" control={form.control} disabled={isLoading} />
           <ActiveStatusSelectFilter control={form.control} name="active" disabled={isLoading} />
           <DateRangeField control={form.control} disabled={isLoading} />

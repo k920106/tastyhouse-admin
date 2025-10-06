@@ -21,6 +21,7 @@ export type NoticeListItem = {
 
 export interface NoticeSearchFormInput {
   companyId: string
+  companyName?: string // 선택된 회사명 (URL 파라미터용)
   title: string
   startDate: string
   endDate: string
@@ -40,7 +41,7 @@ export type NoticeCreateFormInput = NoticeFormInput
 export type NoticeUpdateFormInput = NoticeFormInput
 
 export const isNoticeSearchKey = (key: string): key is keyof NoticeSearchFormInput => {
-  return ['companyId', 'title', 'startDate', 'endDate', 'active'].includes(key)
+  return ['companyId', 'companyName', 'title', 'startDate', 'endDate', 'active'].includes(key)
 }
 
 export interface NoticeSearchQuery {

@@ -55,6 +55,7 @@ export const INITIAL_NOTICE_CREATE_FORM = {
 export const getInitialNoticeSearchForm = (): NoticeSearchFormInput => {
   return {
     ...INITIAL_NOTICE_SEARCH_FORM,
+    companyName: undefined,
     startDate: getTodayYYYYMMDD(),
     endDate: getTodayYYYYMMDD(),
   }
