@@ -9,7 +9,8 @@
       "Bash(mv:*)",
       "Bash(npm run lint:*)",
       "Bash(ls:*)",
-      "Bash(npx eslint:*)"
+      "Bash(npx eslint:*)",
+      "Bash(rm:*)"
     ],
     "deny": [],
     "ask": []
