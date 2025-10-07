@@ -17,7 +17,7 @@ interface CompanyFieldProps<T extends FieldValues> {
   name: Path<T>
   disabled: boolean
   syncCompanyName?: boolean
-  label: string
+  label?: string
 }
 
 function CompanyFieldInner<T extends FieldValues>({

@@ -7,15 +7,15 @@ interface TextareaFieldProps<T extends FieldValues> {
   control: Control<T>
   name: Path<T>
   disabled: boolean
-  label: string
-  rows: number
+  label?: string
+  rows?: number
 }
 
 function TextareaField<T extends FieldValues>({
   control,
   name,
   disabled = false,
-  label,
+  label = '',
   rows = 15,
 }: TextareaFieldProps<T>) {
   return (

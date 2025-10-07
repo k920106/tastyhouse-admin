@@ -8,7 +8,7 @@ interface SwitchFieldProps<T extends FieldValues> {
   control: Control<T>
   name: Path<T>
   disabled: boolean
-  label: string
+  label?: string
 }
 
 function SwitchFieldInner<T extends FieldValues>({

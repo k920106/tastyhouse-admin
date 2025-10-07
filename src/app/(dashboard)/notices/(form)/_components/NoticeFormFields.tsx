@@ -21,31 +21,20 @@ export default function NoticeFormFields({ form, isSubmitting }: NoticeFormField
       <tbody className="border">
         <DetailTableDoubleRow>
           <DetailTableField label="매체사">
-            <CompanyField
-              control={form.control}
-              name="companyId"
-              disabled={isSubmitting}
-              label=""
-            />
+            <CompanyField control={form.control} name="companyId" disabled={isSubmitting} />
           </DetailTableField>
           <DetailTableField label="활성상태">
-            <SwitchField control={form.control} name="active" label="" disabled={isSubmitting} />
+            <SwitchField control={form.control} name="active" disabled={isSubmitting} />
           </DetailTableField>
         </DetailTableDoubleRow>
         <DetailTableRow label="상단 고정">
-          <SwitchField control={form.control} name="top" disabled={isSubmitting} label="" />
+          <SwitchField control={form.control} name="top" disabled={isSubmitting} />
         </DetailTableRow>
         <DetailTableRow label="제목">
-          <TextField control={form.control} name="title" disabled={isSubmitting} label="" />
+          <TextField control={form.control} name="title" disabled={isSubmitting} />
         </DetailTableRow>
         <DetailTableRow label="내용">
-          <TextareaField
-            control={form.control}
-            name="content"
-            disabled={isSubmitting}
-            label=""
-            rows={15}
-          />
+          <TextareaField control={form.control} name="content" disabled={isSubmitting} rows={15} />
         </DetailTableRow>
       </tbody>
     </table>

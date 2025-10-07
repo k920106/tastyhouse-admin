@@ -7,14 +7,14 @@ interface TextFieldProps<T extends FieldValues> {
   control: Control<T>
   name: Path<T>
   disabled: boolean
-  label: string
+  label?: string
 }
 
 function TextField<T extends FieldValues>({
   control,
   name,
   disabled = false,
-  label,
+  label = '',
 }: TextFieldProps<T>) {
   return (
     <FormFieldWrapper control={control} name={name} label={label}>

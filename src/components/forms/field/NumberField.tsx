@@ -7,14 +7,14 @@ interface NumberFieldProps<T extends FieldValues> {
   control: Control<T>
   name: Path<T>
   disabled: boolean
-  label: string
+  label?: string
 }
 
 function NumberField<T extends FieldValues>({
   control,
   name,
   disabled = false,
-  label,
+  label = '',
 }: NumberFieldProps<T>) {
   return (
     <FormFieldWrapper control={control} name={name} label={label}>
