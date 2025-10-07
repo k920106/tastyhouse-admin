@@ -116,12 +116,9 @@ export function ProductBulkUpdateDialog({ companyId }: ProductBulkUpdateDialogPr
               <Input
                 type="file"
                 accept=".xlsx,.xls"
-                className="hidden"
+                className="file:hidden"
                 onChange={handleFileChange}
               />
-              <div className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background hover:bg-accent hover:text-accent-foreground">
-                {selectedFile ? selectedFile.name : '파일을 선택하세요'}
-              </div>
             </label>
             <Button
               type="button"
