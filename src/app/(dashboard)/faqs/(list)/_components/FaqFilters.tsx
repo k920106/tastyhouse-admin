@@ -10,23 +10,15 @@ import { useSearchFormKeyboard } from '@/src/hooks/useSearchFormKeyboard'
 import ActiveStatusSelectFilter from '@/src/components/forms/ActiveStatusSelectFilter'
 import CompanyField from '@/src/components/forms/CompanyField'
 import TextField from '@/src/components/forms/TextField'
-import { useCompaniesQuery } from '@/src/hooks/queries/useCompanyQueries'
 import { handleFormError } from '@/src/lib/form-utils'
 
 const FaqFilters = React.memo(function FaqFilters() {
   const { form, onSubmit, isLoading } = useFaqSearchForm()
-  const { data: companies = [] } = useCompaniesQuery()
 
   const { handleKeyDown } = useSearchFormKeyboard({
     onSubmit,
     isLoading,
   })
-
-  const handleCompanyChange = (value: string) => {
-    form.setValue('companyId', value)
-    const selectedCompany = companies.find((c) => c.id.toString() === value)
-    form.setValue('companyName', selectedCompany?.name)
-  }
 
   return (
     <Form {...form}>
@@ -36,7 +28,7 @@ const FaqFilters = React.memo(function FaqFilters() {
             control={form.control}
             name="companyId"
             disabled={isLoading}
-            onValueChange={handleCompanyChange}
+            syncCompanyName={true}
           />
           <TextField name="title" label="제목" control={form.control} disabled={isLoading} />
           <ActiveStatusSelectFilter control={form.control} name="active" disabled={isLoading} />

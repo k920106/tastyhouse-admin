@@ -1,15 +1,20 @@
-import React from 'react'
-import { Control, FieldValues, Path } from 'react-hook-form'
+import React, { useCallback } from 'react'
+import { Control, FieldValues, Path, useFormContext } from 'react-hook-form'
 
 import CompanyCombobox from '@/src/components/forms/CompanyCombobox'
 import FormFieldWrapper from '@/src/components/forms/FormFieldWrapper'
+
+interface Company {
+  id: number
+  name: string
+}
 
 interface CompanyFieldProps<T extends FieldValues> {
   control: Control<T>
   name: Path<T>
   label?: string
   disabled: boolean
-  onValueChange?: (value: string) => void
+  syncCompanyName?: boolean
 }
 
 function CompanyFieldInner<T extends FieldValues>({
@@ -17,23 +22,29 @@ function CompanyFieldInner<T extends FieldValues>({
   name,
   label = '매체사',
   disabled: disabled = false,
-  onValueChange: externalOnValueChange,
+  syncCompanyName = false,
 }: CompanyFieldProps<T>) {
+  const form = useFormContext<T>()
+
+  const handleCompanySelect = useCallback(
+    (company: Company | null) => {
+      if (syncCompanyName && form && company) {
+        form.setValue('companyName' as Path<T>, company.name as never)
+      }
+    },
+    [syncCompanyName, form],
+  )
+
   return (
     <FormFieldWrapper name={name} label={label} control={control}>
-      {({ value, onChange }) => {
-        const handleChange = (newValue: string) => {
-          onChange(newValue)
-          externalOnValueChange?.(newValue)
-        }
-        return (
-          <CompanyCombobox
-            value={value as string}
-            onValueChange={handleChange}
-            disabled={disabled}
-          />
-        )
-      }}
+      {({ value, onChange }) => (
+        <CompanyCombobox
+          value={value as string}
+          onValueChange={onChange}
+          onCompanySelect={handleCompanySelect}
+          disabled={disabled}
+        />
+      )}
     </FormFieldWrapper>
   )
 }

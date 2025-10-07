@@ -10,25 +10,17 @@ import SupplyField from '@/src/components/forms/SupplyField'
 import TextField from '@/src/components/forms/TextField'
 import { Form } from '@/src/components/ui/Form'
 import { useProductSearchForm } from '@/src/hooks/product/useProductSearchForm'
-import { useCompaniesQuery } from '@/src/hooks/queries/useCompanyQueries'
 import { useSearchFormKeyboard } from '@/src/hooks/useSearchFormKeyboard'
 import { handleFormError } from '@/src/lib/form-utils'
 import { PRODUCT_STATUS_OPTIONS, PROUDCT_DISPLAY_STATUS } from '@/src/types/product'
 
 const ProductFilters = React.memo(function ProductFilters() {
   const { form, onSubmit, isLoading } = useProductSearchForm()
-  const { data: companies = [] } = useCompaniesQuery()
 
   const { handleKeyDown } = useSearchFormKeyboard({
     onSubmit,
     isLoading,
   })
-
-  const handleCompanyChange = (value: string) => {
-    form.setValue('companyId', value)
-    const selectedCompany = companies.find((c) => c.id.toString() === value)
-    form.setValue('companyName', selectedCompany?.name)
-  }
 
   return (
     <Form {...form}>
@@ -38,7 +30,7 @@ const ProductFilters = React.memo(function ProductFilters() {
             control={form.control}
             name="companyId"
             disabled={isLoading}
-            onValueChange={handleCompanyChange}
+            syncCompanyName={true}
           />
           <TextField
             name="productCode"

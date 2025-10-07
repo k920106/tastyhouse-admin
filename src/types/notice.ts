@@ -23,7 +23,7 @@ export interface Notice {
 
 export interface NoticeSearchFormInput {
   companyId: string
-  companyName?: string
+  companyName: string
   title: string
   startDate: string
   endDate: string
