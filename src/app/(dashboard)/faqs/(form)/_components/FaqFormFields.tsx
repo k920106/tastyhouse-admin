@@ -4,10 +4,11 @@ import {
   DetailTableField,
   DetailTableRow,
 } from '@/src/components/forms/DetailTable'
+import NumberField from '@/src/components/forms/field/NumberField'
+import SwitchField from '@/src/components/forms/field/SwitchField'
+import TextField from '@/src/components/forms/field/TextField'
+import TextareaField from '@/src/components/forms/field/TextareaField'
 import { FormControl, FormField, FormItem, FormMessage } from '@/src/components/ui/Form'
-import { Input } from '@/src/components/ui/Input'
-import { Switch } from '@/src/components/ui/Switch'
-import { Textarea } from '@/src/components/ui/Textarea'
 import { FaqFormInput } from '@/src/types/faq'
 import { UseFormReturn } from 'react-hook-form'
 
@@ -40,71 +41,24 @@ export default function FaqFormFields({ form, isSubmitting }: FaqFormFieldsProps
             />
           </DetailTableField>
           <DetailTableField label="활성상태">
-            <FormField
-              control={form.control}
-              name="active"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <Switch
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                      disabled={isSubmitting}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <SwitchField control={form.control} name="active" label="" disabled={isSubmitting} />
           </DetailTableField>
         </DetailTableDoubleRow>
         <DetailTableDoubleRow>
           <DetailTableField label="우선순위">
-            <FormField
-              control={form.control}
-              name="sort"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      type="number"
-                      disabled={isSubmitting}
-                      onChange={(e) => field.onChange(e.target.valueAsNumber || '')}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <NumberField control={form.control} name="sort" disabled={isSubmitting} label="" />
           </DetailTableField>
           <DetailTableField label="제목">
-            <FormField
-              control={form.control}
-              name="title"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <Input {...field} disabled={isSubmitting} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <TextField control={form.control} name="title" disabled={isSubmitting} label="" />
           </DetailTableField>
         </DetailTableDoubleRow>
         <DetailTableRow label="내용">
-          <FormField
+          <TextareaField
             control={form.control}
             name="content"
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <Textarea {...field} disabled={isSubmitting} rows={15} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
+            disabled={isSubmitting}
+            label=""
+            rows={15}
           />
         </DetailTableRow>
       </tbody>

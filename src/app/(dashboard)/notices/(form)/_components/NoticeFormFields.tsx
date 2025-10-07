@@ -4,10 +4,10 @@ import {
   DetailTableField,
   DetailTableRow,
 } from '@/src/components/forms/DetailTable'
+import SwitchField from '@/src/components/forms/field/SwitchField'
+import TextField from '@/src/components/forms/field/TextField'
+import TextareaField from '@/src/components/forms/field/TextareaField'
 import { FormControl, FormField, FormItem, FormMessage } from '@/src/components/ui/Form'
-import { Input } from '@/src/components/ui/Input'
-import { Switch } from '@/src/components/ui/Switch'
-import { Textarea } from '@/src/components/ui/Textarea'
 import { NoticeFormInput } from '@/src/types/notice'
 import { UseFormReturn } from 'react-hook-form'
 
@@ -40,68 +40,22 @@ export default function NoticeFormFields({ form, isSubmitting }: NoticeFormField
             />
           </DetailTableField>
           <DetailTableField label="활성상태">
-            <FormField
-              control={form.control}
-              name="active"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <Switch
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                      disabled={isSubmitting}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <SwitchField control={form.control} name="active" label="" disabled={isSubmitting} />
           </DetailTableField>
         </DetailTableDoubleRow>
         <DetailTableRow label="상단 고정">
-          <FormField
-            control={form.control}
-            name="top"
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <Switch
-                    checked={field.value}
-                    onCheckedChange={field.onChange}
-                    disabled={isSubmitting}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          <SwitchField control={form.control} name="top" disabled={isSubmitting} label="" />
         </DetailTableRow>
         <DetailTableRow label="제목">
-          <FormField
-            control={form.control}
-            name="title"
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <Input {...field} disabled={isSubmitting} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          <TextField control={form.control} name="title" disabled={isSubmitting} label="" />
         </DetailTableRow>
         <DetailTableRow label="내용">
-          <FormField
+          <TextareaField
             control={form.control}
             name="content"
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <Textarea {...field} disabled={isSubmitting} rows={15} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
+            disabled={isSubmitting}
+            label=""
+            rows={15}
           />
         </DetailTableRow>
       </tbody>

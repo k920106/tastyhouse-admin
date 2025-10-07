@@ -7,15 +7,15 @@ import { Switch } from '@/src/components/ui/Switch'
 interface SwitchFieldProps<T extends FieldValues> {
   control: Control<T>
   name: Path<T>
-  label: string
   disabled: boolean
+  label: string
 }
 
 function SwitchFieldInner<T extends FieldValues>({
   control,
   name,
-  label = '',
   disabled = false,
+  label = '',
 }: SwitchFieldProps<T>) {
   return (
     <FormFieldWrapper control={control} name={name} label={label}>
