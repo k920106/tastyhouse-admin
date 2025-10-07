@@ -7,9 +7,9 @@ import { Form } from '@/src/components/ui/Form'
 import { useFaqSearchForm } from '@/src/hooks/faq/useFaqSearchForm'
 import { useSearchFormKeyboard } from '@/src/hooks/useSearchFormKeyboard'
 
-import ActiveStatusSelectFilter from '@/src/components/forms/ActiveStatusSelectFilter'
-import CompanyField from '@/src/components/forms/CompanyField'
-import TextField from '@/src/components/forms/TextField'
+import ActiveStatusSelectField from '@/src/components/forms/field/ActiveStatusSelectField'
+import CompanyField from '@/src/components/forms/field/CompanyField'
+import TextField from '@/src/components/forms/field/TextField'
 import { handleFormError } from '@/src/lib/form-utils'
 
 const FaqFilters = React.memo(function FaqFilters() {
@@ -29,9 +29,15 @@ const FaqFilters = React.memo(function FaqFilters() {
             name="companyId"
             disabled={isLoading}
             syncCompanyName={true}
+            label="매체사"
           />
           <TextField name="title" label="제목" control={form.control} disabled={isLoading} />
-          <ActiveStatusSelectFilter control={form.control} name="active" disabled={isLoading} />
+          <ActiveStatusSelectField
+            control={form.control}
+            name="active"
+            disabled={isLoading}
+            label="활성상태"
+          />
         </BaseSearchForm>
       </form>
     </Form>

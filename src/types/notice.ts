@@ -1,3 +1,5 @@
+import { ActiveFilter } from './common'
+
 // 상단 고정
 export const NOTICE_TOP_STATUS = {
   TOP: { value: 'true', label: '적용' },
@@ -27,7 +29,7 @@ export interface NoticeSearchFormInput {
   title: string
   startDate: string
   endDate: string
-  active: 'all' | 'true' | 'false'
+  active: ActiveFilter
 }
 
 export interface NoticeFormInput {

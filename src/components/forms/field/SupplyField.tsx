@@ -1,26 +1,56 @@
+'use client'
+
 import React from 'react'
 import { Control, FieldValues, Path } from 'react-hook-form'
 
-import FormFieldWrapper from '@/src/components/forms/FormFieldWrapper'
-import SupplyCombobox from '@/src/components/forms/SupplyCombobox'
+import { Combobox } from '@/src/components/ui/Combobox'
+import FormFieldWrapper from '@/src/components/forms/field/FormFieldWrapper'
+import { useSuppliesQuery } from '@/src/hooks/queries/useSupplyQueries'
+
+interface SupplyComboboxProps {
+  value: string | undefined
+  onValueChange: (value: string) => void
+  disabled: boolean
+}
+
+function SupplyCombobox({
+  value,
+  onValueChange,
+  disabled = false,
+}: SupplyComboboxProps) {
+  const { data: supplies = [], isLoading } = useSuppliesQuery()
+
+  return (
+    <Combobox
+      width="w-full"
+      options={supplies}
+      valueKey="id"
+      labelKey="name"
+      value={value || 'all'}
+      onValueChange={onValueChange}
+      disabled={disabled || isLoading}
+      allLabel="전체"
+    />
+  )
+}
 
 interface SupplyFieldProps<T extends FieldValues> {
   control: Control<T>
   name: Path<T>
-  label?: string
   disabled: boolean
+  label: string
   onValueChange?: (value: string) => void
 }
 
 function SupplyFieldInner<T extends FieldValues>({
   control,
   name,
-  label = '공급사',
   disabled: disabled = false,
+  label = '공급사',
   onValueChange: externalOnValueChange,
 }: SupplyFieldProps<T>) {
   return (
-    <FormFieldWrapper name={name} label={label} control={control}>
+    <FormFieldWrapper control={control} name={name} label={label}>
       {({ value, onChange }) => {
         const handleChange = (newValue: string) => {
           onChange(newValue)

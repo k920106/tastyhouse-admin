@@ -1,13 +1,13 @@
 import React from 'react'
 import { Control, FieldValues, Path } from 'react-hook-form'
 
-import RadioField, { RadioOption } from '@/src/components/forms/RadioField'
+import RadioField, { RadioOption } from '@/src/components/forms/field/RadioField'
 import { ACTIVE_STATUS } from '@/src/types/common'
 
 interface ActiveStatusRadioFieldProps<T extends FieldValues> {
   control: Control<T>
   name: Path<T>
-  label?: string
+  label: string
 }
 
 const ACTIVE_STATUS_OPTIONS: RadioOption[] = [
@@ -28,7 +28,7 @@ function ActiveStatusRadioFieldInner<T extends FieldValues>({
   name,
   label = '활성상태',
 }: ActiveStatusRadioFieldProps<T>) {
-  return <RadioField control={control} name={name} label={label} options={ACTIVE_STATUS_OPTIONS} />
+  return <RadioField control={control} name={name} options={ACTIVE_STATUS_OPTIONS} label={label} />
 }
 
 const ActiveStatusRadioField = React.memo(

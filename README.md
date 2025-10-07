@@ -103,3 +103,17 @@ tastyhouse-admin/
 ├── tsconfig.json
 └── package.json
 ```
+
+Feild props 순서
+
+```
+<CompanyField
+    control={form.control} // ① 필수 (폼 제어)
+    name="companyId" // ① 필수 (필드명)
+    disabled={isLoading} // ② 상태 (비활성화 제어)
+    syncCompanyName // ② 기능 (회사명 동기화 여부)
+    label="매체사" // ③ UI (표시용 라벨)
+    placeholder="매체사를 선택하세요" // ③ UI (선택 안내 문구)
+    className="w-full" // ③ UI (스타일 관련)
+/>
+```

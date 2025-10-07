@@ -1,3 +1,5 @@
+import { ActiveFilter } from './common'
+
 export interface Faq {
   id: number
   companyId: number
@@ -17,7 +19,7 @@ export interface FaqSearchFormInput {
   title: string
   startDate: string
   endDate: string
-  active: 'all' | 'true' | 'false'
+  active: ActiveFilter
 }
 
 export interface FaqFormInput {

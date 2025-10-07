@@ -1,7 +1,7 @@
 import React from 'react'
 import { Control, FieldValues, Path } from 'react-hook-form'
 
-import FormFieldWrapper from '@/src/components/forms/FormFieldWrapper'
+import FormFieldWrapper from '@/src/components/forms/field/FormFieldWrapper'
 import {
   Select,
   SelectContent,
@@ -18,20 +18,20 @@ export interface SelectOption {
 interface SelectFieldProps<T extends FieldValues> {
   control: Control<T>
   name: Path<T>
+  disabled: boolean
   label: string
   options: SelectOption[]
-  disabled: boolean
 }
 
 function SelectFieldInner<T extends FieldValues>({
   control,
   name,
+  disabled = false,
   label,
   options,
-  disabled = false,
 }: SelectFieldProps<T>) {
   return (
-    <FormFieldWrapper name={name} label={label} control={control}>
+    <FormFieldWrapper control={control} name={name} label={label}>
       {({ value, onChange }) => (
         <Select value={(value as string) ?? 'all'} onValueChange={onChange} disabled={disabled}>
           <SelectTrigger className="w-full">

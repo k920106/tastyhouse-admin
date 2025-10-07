@@ -1,7 +1,7 @@
 import React from 'react'
 import { Control, FieldValues, Path } from 'react-hook-form'
 
-import FormFieldWrapper from '@/src/components/forms/FormFieldWrapper'
+import FormFieldWrapper from '@/src/components/forms/field/FormFieldWrapper'
 import {
   Select,
   SelectContent,
@@ -9,25 +9,23 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/src/components/ui/Select'
-import { getActiveStatusLabel } from '@/src/types/common'
+import { ActiveFilter, getActiveStatusLabel } from '@/src/types/common'
 
-type ActiveFilter = 'all' | 'true' | 'false'
-
-interface ActiveStatusSelectFilterProps<T extends FieldValues> {
+interface ActiveStatusSelectProps<T extends FieldValues> {
   control: Control<T>
   name: Path<T>
-  label?: string
   disabled: boolean
+  label: string
 }
 
 function ActiveStatusSelectFilterInner<T extends FieldValues>({
   control,
   name,
-  label = '활성상태',
   disabled = false,
-}: ActiveStatusSelectFilterProps<T>) {
+  label = '활성상태',
+}: ActiveStatusSelectProps<T>) {
   return (
-    <FormFieldWrapper name={name} label={label} control={control}>
+    <FormFieldWrapper control={control} name={name} label={label}>
       {({ value, onChange }) => (
         <Select
           value={(value as ActiveFilter) ?? 'all'}
@@ -48,8 +46,8 @@ function ActiveStatusSelectFilterInner<T extends FieldValues>({
   )
 }
 
-const ActiveStatusSelectFilter = React.memo(
+const ActiveStatusSelectField = React.memo(
   ActiveStatusSelectFilterInner,
 ) as typeof ActiveStatusSelectFilterInner
 
-export default ActiveStatusSelectFilter
+export default ActiveStatusSelectField

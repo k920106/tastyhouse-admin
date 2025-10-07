@@ -3,6 +3,8 @@ export interface ValidationResult {
   error?: string
 }
 
+export type ActiveFilter = 'all' | 'true' | 'false'
+
 // 활성상태
 export const ACTIVE_STATUS = {
   ACTIVE: { value: 'true', label: '활성' },

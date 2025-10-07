@@ -4,16 +4,16 @@ import { Control, FieldPath, FieldValues } from 'react-hook-form'
 import { FormControl, FormField, FormItem, FormLabel } from '@/src/components/ui/Form'
 
 interface FormFieldWrapperProps<T extends FieldValues> {
+  control: Control<T>
   name: FieldPath<T>
   label: string
-  control: Control<T>
   children: (field: { value: unknown; onChange: (value: unknown) => void }) => React.ReactNode
 }
 
 export default function FormFieldWrapper<T extends FieldValues>({
+  control,
   name,
   label,
-  control,
   children,
 }: FormFieldWrapperProps<T>) {
   return (

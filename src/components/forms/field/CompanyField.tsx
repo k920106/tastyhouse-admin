@@ -2,7 +2,7 @@ import React, { useCallback } from 'react'
 import { Control, FieldValues, Path, useFormContext } from 'react-hook-form'
 
 import CompanyCombobox from '@/src/components/forms/CompanyCombobox'
-import FormFieldWrapper from '@/src/components/forms/FormFieldWrapper'
+import FormFieldWrapper from '@/src/components/forms/field/FormFieldWrapper'
 
 interface Company {
   id: number
@@ -12,17 +12,17 @@ interface Company {
 interface CompanyFieldProps<T extends FieldValues> {
   control: Control<T>
   name: Path<T>
-  label?: string
   disabled: boolean
   syncCompanyName?: boolean
+  label: string
 }
 
 function CompanyFieldInner<T extends FieldValues>({
   control,
   name,
-  label = '매체사',
   disabled: disabled = false,
   syncCompanyName = false,
+  label = '매체사',
 }: CompanyFieldProps<T>) {
   const form = useFormContext<T>()
 
@@ -36,7 +36,7 @@ function CompanyFieldInner<T extends FieldValues>({
   )
 
   return (
-    <FormFieldWrapper name={name} label={label} control={control}>
+    <FormFieldWrapper control={control} name={name} label={label}>
       {({ value, onChange }) => (
         <CompanyCombobox
           value={value as string}

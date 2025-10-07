@@ -1,25 +1,25 @@
 import { Control, FieldValues, Path } from 'react-hook-form'
 
-import FormFieldWrapper from '@/src/components/forms/FormFieldWrapper'
+import FormFieldWrapper from '@/src/components/forms/field/FormFieldWrapper'
 import { Textarea } from '@/src/components/ui/Textarea'
 
 interface TextareaFieldProps<T extends FieldValues> {
   control: Control<T>
   name: Path<T>
-  label: string
   disabled: boolean
+  label: string
   rows: number
 }
 
 function TextareaField<T extends FieldValues>({
   control,
   name,
-  label,
   disabled = false,
+  label,
   rows = 15,
 }: TextareaFieldProps<T>) {
   return (
-    <FormFieldWrapper name={name} label={label} control={control}>
+    <FormFieldWrapper control={control} name={name} label={label}>
       {({ value, onChange }) => (
         <Textarea
           id={name}

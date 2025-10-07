@@ -1,9 +1,9 @@
 import React from 'react'
 import { Control, FieldValues, Path } from 'react-hook-form'
 
-import FormFieldWrapper from '@/src/components/forms/FormFieldWrapper'
-import { FormControl, FormItem, FormLabel } from '../ui/Form'
-import { RadioGroup, RadioGroupItem } from '../ui/RadioGroup'
+import FormFieldWrapper from '@/src/components/forms/field/FormFieldWrapper'
+import { FormControl, FormItem, FormLabel } from '../../ui/Form'
+import { RadioGroup, RadioGroupItem } from '../../ui/RadioGroup'
 
 export interface RadioOption {
   value: string
@@ -14,18 +14,18 @@ export interface RadioOption {
 interface RadioFieldProps<T extends FieldValues> {
   control: Control<T>
   name: Path<T>
-  label: string
   options: RadioOption[]
+  label: string
 }
 
 function RadioFieldInner<T extends FieldValues>({
   control,
   name,
-  label = '',
   options,
+  label = '',
 }: RadioFieldProps<T>) {
   return (
-    <FormFieldWrapper name={name} label={label} control={control}>
+    <FormFieldWrapper control={control} name={name} label={label}>
       {({ value, onChange }) => (
         <RadioGroup
           onValueChange={onChange}

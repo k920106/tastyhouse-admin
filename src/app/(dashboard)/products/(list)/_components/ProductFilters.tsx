@@ -3,11 +3,11 @@
 import React from 'react'
 
 import BaseSearchForm from '@/src/components/forms/BaseSearchForm'
-import BrandField from '@/src/components/forms/BrandField'
-import CompanyField from '@/src/components/forms/CompanyField'
-import SelectField from '@/src/components/forms/SelectField'
-import SupplyField from '@/src/components/forms/SupplyField'
-import TextField from '@/src/components/forms/TextField'
+import BrandField from '@/src/components/forms/field/BrandField'
+import CompanyField from '@/src/components/forms/field/CompanyField'
+import SelectField from '@/src/components/forms/field/SelectField'
+import SupplyField from '@/src/components/forms/field/SupplyField'
+import TextField from '@/src/components/forms/field/TextField'
 import { Form } from '@/src/components/ui/Form'
 import { useProductSearchForm } from '@/src/hooks/product/useProductSearchForm'
 import { useSearchFormKeyboard } from '@/src/hooks/useSearchFormKeyboard'
@@ -31,6 +31,7 @@ const ProductFilters = React.memo(function ProductFilters() {
             name="companyId"
             disabled={isLoading}
             syncCompanyName={true}
+            label="매체사"
           />
           <TextField
             name="productCode"
@@ -39,8 +40,8 @@ const ProductFilters = React.memo(function ProductFilters() {
             disabled={isLoading}
           />
           <TextField name="name" label="상품명" control={form.control} disabled={isLoading} />
-          <BrandField control={form.control} name="brandId" disabled={isLoading} />
-          <SupplyField control={form.control} name="supplyId" disabled={isLoading} />
+          <BrandField control={form.control} name="brandId" disabled={isLoading} label="교환처" />
+          <SupplyField control={form.control} name="supplyId" disabled={isLoading} label="공급사" />
           <SelectField
             control={form.control}
             name="display"

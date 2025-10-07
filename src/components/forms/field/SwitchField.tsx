@@ -1,7 +1,7 @@
 import React from 'react'
 import { Control, FieldValues, Path } from 'react-hook-form'
 
-import FormFieldWrapper from '@/src/components/forms/FormFieldWrapper'
+import FormFieldWrapper from '@/src/components/forms/field/FormFieldWrapper'
 import { Switch } from '@/src/components/ui/Switch'
 
 interface SwitchFieldProps<T extends FieldValues> {
@@ -18,7 +18,7 @@ function SwitchFieldInner<T extends FieldValues>({
   disabled = false,
 }: SwitchFieldProps<T>) {
   return (
-    <FormFieldWrapper name={name} label={label} control={control}>
+    <FormFieldWrapper control={control} name={name} label={label}>
       {({ value, onChange }) => (
         <Switch checked={value as boolean} onCheckedChange={onChange} disabled={disabled} />
       )}

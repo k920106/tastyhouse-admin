@@ -7,10 +7,10 @@ import { Form } from '@/src/components/ui/Form'
 import { useNoticeSearchForm } from '@/src/hooks/notice/useNoticeSearchForm'
 import { useSearchFormKeyboard } from '@/src/hooks/useSearchFormKeyboard'
 
-import ActiveStatusSelectFilter from '@/src/components/forms/ActiveStatusSelectFilter'
-import CompanyField from '@/src/components/forms/CompanyField'
+import ActiveStatusSelectField from '@/src/components/forms/field/ActiveStatusSelectField'
+import CompanyField from '@/src/components/forms/field/CompanyField'
 import DateRangeField from '@/src/components/forms/DateRangeField'
-import TextField from '@/src/components/forms/TextField'
+import TextField from '@/src/components/forms/field/TextField'
 import { handleFormError } from '@/src/lib/form-utils'
 
 const NoticeFilters = React.memo(function NoticeFilters() {
@@ -30,9 +30,15 @@ const NoticeFilters = React.memo(function NoticeFilters() {
             name="companyId"
             disabled={isLoading}
             syncCompanyName={true}
+            label="매체사"
           />
           <TextField name="title" label="제목" control={form.control} disabled={isLoading} />
-          <ActiveStatusSelectFilter control={form.control} name="active" disabled={isLoading} />
+          <ActiveStatusSelectField
+            control={form.control}
+            name="active"
+            disabled={isLoading}
+            label="활성상태"
+          />
           <DateRangeField control={form.control} disabled={isLoading} />
         </BaseSearchForm>
       </form>
