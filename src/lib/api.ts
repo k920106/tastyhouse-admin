@@ -1,3 +1,4 @@
+import { ApiResponse } from '@/src/types/api'
 import { ApiError, statusToErrorCode } from '@/src/types/error'
 
 interface apiOptions {
@@ -122,5 +123,69 @@ export class api {
     timeout?: number,
   ): Promise<T> {
     return this.request<T>(endpoint, { method: 'DELETE', headers, timeout })
+  }
+
+  static async download<T = unknown>(
+    endpoint: string,
+    filename: string,
+    headers?: Record<string, string>,
+    timeout = 30000,
+  ): Promise<ApiResponse<T>> {
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => controller.abort(), timeout)
+
+    try {
+      const response = await fetch(`${this.baseUrl}${endpoint}`, {
+        method: 'GET',
+        headers: headers as HeadersInit,
+        signal: controller.signal,
+      })
+
+      clearTimeout(timeoutId)
+
+      if (!response.ok) {
+        const status = response.status
+        const errorMessage = `파일 다운로드 실패: ${status} ${response.statusText}`
+        return {
+          success: false,
+          data: null,
+          message: errorMessage,
+        }
+      }
+
+      const blob = await response.blob()
+      const url = window.URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = filename
+      document.body.appendChild(a)
+      a.click()
+      window.URL.revokeObjectURL(url)
+      document.body.removeChild(a)
+
+      return {
+        success: true,
+        data: null,
+        message: '파일 다운로드 성공',
+      }
+    } catch (error) {
+      clearTimeout(timeoutId)
+
+      let errorMessage = '파일 다운로드 중 오류가 발생했습니다.'
+
+      if (error instanceof Error) {
+        if (error.name === 'AbortError') {
+          errorMessage = `Request timeout after ${timeout}ms`
+        } else {
+          errorMessage = error.message
+        }
+      }
+
+      return {
+        success: false,
+        data: null,
+        message: errorMessage,
+      }
+    }
   }
 }
