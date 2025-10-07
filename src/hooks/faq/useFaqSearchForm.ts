@@ -1,16 +1,13 @@
 'use client'
 
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useSearchParams } from 'next/navigation'
-import { useCallback, useMemo } from 'react'
+import { useCallback } from 'react'
 import { useForm } from 'react-hook-form'
 import * as z from 'zod'
 
-import { getInitialFaqSearchForm } from '@/src/constants/faq'
 import { INITIAL_PAGINATION } from '@/src/lib/constants'
 import { toApiPage } from '@/src/lib/pagination-utils'
-import { parseSearchParamsToForm } from '@/src/lib/url-utils'
-import { isFaqSearchKey, type FaqSearchFormInput, type FaqSearchQuery } from '@/src/types/faq'
+import { type FaqSearchFormInput, type FaqSearchQuery } from '@/src/types/faq'
 import { useFaqSearchWithQuery } from './useFaqSearchWithQuery'
 
 const searchFormSchema = z.object({
@@ -37,19 +34,6 @@ export const faqSearchQuerySchema = searchFormSchema.transform(
   }),
 )
 
-const useFaqUrlSearchForm = (): FaqSearchFormInput => {
-  const searchParams = useSearchParams()
-
-  return useMemo(() => {
-    const initialForm = getInitialFaqSearchForm()
-    return parseSearchParamsToForm(
-      searchParams,
-      initialForm as unknown as Record<string, unknown>,
-      isFaqSearchKey,
-    ) as unknown as FaqSearchFormInput
-  }, [searchParams])
-}
-
 export interface UseFaqSearchFormResult {
   form: ReturnType<typeof useForm<FaqSearchFormInput>>
   onSubmit: () => void
@@ -57,9 +41,7 @@ export interface UseFaqSearchFormResult {
 }
 
 export const useFaqSearchForm = (): UseFaqSearchFormResult => {
-  const { updateUrl, isLoading } = useFaqSearchWithQuery()
-
-  const urlSearchForm = useFaqUrlSearchForm()
+  const { updateUrl, isLoading, urlSearchForm } = useFaqSearchWithQuery()
 
   const form = useForm<FaqSearchFormInput>({
     resolver: zodResolver(searchFormSchema),
@@ -77,5 +59,3 @@ export const useFaqSearchForm = (): UseFaqSearchFormResult => {
     isLoading,
   }
 }
-
-export { useFaqUrlSearchForm }

@@ -10,13 +10,12 @@ import {
   type ApiPage,
   type UrlPage,
 } from '@/src/lib/pagination-utils'
-import { buildSearchParams } from '@/src/lib/url-utils'
+import { buildSearchParams, parseSearchParamsToForm } from '@/src/lib/url-utils'
 import { ProductSearchFormInput, isProductSearchKey } from '@/src/types/product'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useCallback, useMemo } from 'react'
 import { useProductsQuery, type ProductQueryData } from '../queries/useProductQueries'
 import { useToastError } from '../useToastError'
-import { useProductUrlSearchForm } from './useProductSearchForm'
 
 const parseIntSafely = (value: string | null, fallback: number): number => {
   if (!value) return fallback
@@ -42,7 +41,15 @@ export const useProductSearchWithQuery = (): ProductSearchWithQueryHookResult =>
   const searchParams = useSearchParams()
   const router = useRouter()
 
-  const urlSearchForm = useProductUrlSearchForm()
+  // URL 파싱 로직을 직접 처리 (중복 제거)
+  const urlSearchForm = useMemo(() => {
+    const initialForm = getInitialProductSearchForm()
+    return parseSearchParamsToForm(
+      searchParams,
+      initialForm as unknown as Record<string, unknown>,
+      isProductSearchKey,
+    ) as unknown as ProductSearchFormInput
+  }, [searchParams])
 
   const currentPage: ApiPage = useMemo(() => {
     const pageFromUrl = parseIntSafely(searchParams.get('page'), 1)

@@ -10,13 +10,12 @@ import {
   type ApiPage,
   type UrlPage,
 } from '@/src/lib/pagination-utils'
-import { buildSearchParams } from '@/src/lib/url-utils'
+import { buildSearchParams, parseSearchParamsToForm } from '@/src/lib/url-utils'
 import { FaqSearchFormInput, isFaqSearchKey } from '@/src/types/faq'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useCallback, useMemo } from 'react'
 import { useFaqsQuery, type FaqQueryData } from '../queries/useFaqQueries'
 import { useToastError } from '../useToastError'
-import { useFaqUrlSearchForm } from './useFaqSearchForm'
 
 const parseIntSafely = (value: string | null, fallback: number): number => {
   if (!value) return fallback
@@ -42,7 +41,15 @@ export const useFaqSearchWithQuery = (): FaqSearchWithQueryHookResult => {
   const searchParams = useSearchParams()
   const router = useRouter()
 
-  const urlSearchForm = useFaqUrlSearchForm()
+  // URL 파싱 로직을 직접 처리 (중복 제거)
+  const urlSearchForm = useMemo(() => {
+    const initialForm = getInitialFaqSearchForm()
+    return parseSearchParamsToForm(
+      searchParams,
+      initialForm as unknown as Record<string, unknown>,
+      isFaqSearchKey,
+    ) as unknown as FaqSearchFormInput
+  }, [searchParams])
 
   const currentPage: ApiPage = useMemo(() => {
     const pageFromUrl = parseIntSafely(searchParams.get('page'), 1)

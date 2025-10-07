@@ -1,20 +1,13 @@
 'use client'
 
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useSearchParams } from 'next/navigation'
-import { useCallback, useMemo } from 'react'
+import { useCallback } from 'react'
 import { useForm } from 'react-hook-form'
 import * as z from 'zod'
 
-import { getInitialProductSearchForm } from '@/src/constants/product'
 import { INITIAL_PAGINATION } from '@/src/lib/constants'
 import { toApiPage } from '@/src/lib/pagination-utils'
-import { parseSearchParamsToForm } from '@/src/lib/url-utils'
-import {
-  isProductSearchKey,
-  type ProductSearchFormInput,
-  type ProductSearchQuery,
-} from '@/src/types/product'
+import { type ProductSearchFormInput, type ProductSearchQuery } from '@/src/types/product'
 import { useProductSearchWithQuery } from './useProductSearchWithQuery'
 
 const searchFormSchema = z.object({
@@ -48,19 +41,6 @@ export const productSearchQuerySchema = searchFormSchema.transform(
   }),
 )
 
-const useProductUrlSearchForm = (): ProductSearchFormInput => {
-  const searchParams = useSearchParams()
-
-  return useMemo(() => {
-    const initialForm = getInitialProductSearchForm()
-    return parseSearchParamsToForm(
-      searchParams,
-      initialForm as unknown as Record<string, unknown>,
-      isProductSearchKey,
-    ) as unknown as ProductSearchFormInput
-  }, [searchParams])
-}
-
 export interface UseProductSearchFormResult {
   form: ReturnType<typeof useForm<ProductSearchFormInput>>
   onSubmit: () => void
@@ -68,9 +48,7 @@ export interface UseProductSearchFormResult {
 }
 
 export const useProductSearchForm = (): UseProductSearchFormResult => {
-  const { updateUrl, isLoading } = useProductSearchWithQuery()
-
-  const urlSearchForm = useProductUrlSearchForm()
+  const { updateUrl, isLoading, urlSearchForm } = useProductSearchWithQuery()
 
   const form = useForm<ProductSearchFormInput>({
     resolver: zodResolver(searchFormSchema),
@@ -88,5 +66,3 @@ export const useProductSearchForm = (): UseProductSearchFormResult => {
     isLoading,
   }
 }
-
-export { useProductUrlSearchForm }

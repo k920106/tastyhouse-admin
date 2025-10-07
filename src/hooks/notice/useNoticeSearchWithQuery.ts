@@ -10,13 +10,12 @@ import {
   type ApiPage,
   type UrlPage,
 } from '@/src/lib/pagination-utils'
-import { buildSearchParams } from '@/src/lib/url-utils'
+import { buildSearchParams, parseSearchParamsToForm } from '@/src/lib/url-utils'
 import { NoticeSearchFormInput, isNoticeSearchKey } from '@/src/types/notice'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useCallback, useMemo } from 'react'
 import { useNoticesQuery, type NoticeQueryData } from '../queries/useNoticeQueries'
 import { useToastError } from '../useToastError'
-import { useNoticeUrlSearchForm } from './useNoticeSearchForm'
 
 const parseIntSafely = (value: string | null, fallback: number): number => {
   if (!value) return fallback
@@ -42,7 +41,15 @@ export const useNoticeSearchWithQuery = (): NoticeSearchWithQueryHookResult => {
   const searchParams = useSearchParams()
   const router = useRouter()
 
-  const urlSearchForm = useNoticeUrlSearchForm()
+  // URL 파싱 로직을 직접 처리 (중복 제거)
+  const urlSearchForm = useMemo(() => {
+    const initialForm = getInitialNoticeSearchForm()
+    return parseSearchParamsToForm(
+      searchParams,
+      initialForm as unknown as Record<string, unknown>,
+      isNoticeSearchKey,
+    ) as unknown as NoticeSearchFormInput
+  }, [searchParams])
 
   const currentPage: ApiPage = useMemo(() => {
     const pageFromUrl = parseIntSafely(searchParams.get('page'), 1)

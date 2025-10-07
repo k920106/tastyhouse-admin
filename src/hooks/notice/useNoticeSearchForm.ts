@@ -1,20 +1,13 @@
 'use client'
 
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useSearchParams } from 'next/navigation'
-import { useCallback, useMemo } from 'react'
+import { useCallback } from 'react'
 import { useForm } from 'react-hook-form'
 import * as z from 'zod'
 
-import { getInitialNoticeSearchForm } from '@/src/constants/notice'
 import { INITIAL_PAGINATION } from '@/src/lib/constants'
 import { toApiPage } from '@/src/lib/pagination-utils'
-import { parseSearchParamsToForm } from '@/src/lib/url-utils'
-import {
-  isNoticeSearchKey,
-  type NoticeSearchFormInput,
-  type NoticeSearchQuery,
-} from '@/src/types/notice'
+import { type NoticeSearchFormInput, type NoticeSearchQuery } from '@/src/types/notice'
 import { useNoticeSearchWithQuery } from './useNoticeSearchWithQuery'
 
 const searchFormSchema = z.object({
@@ -29,7 +22,7 @@ const searchFormSchema = z.object({
   startDate: z.string(),
   endDate: z.string(),
   active: z.enum(['all', 'true', 'false']),
-})
+}) satisfies z.ZodType<NoticeSearchFormInput>
 
 export const noticeSearchQuerySchema = searchFormSchema.transform(
   (data): NoticeSearchQuery => ({
@@ -41,19 +34,6 @@ export const noticeSearchQuerySchema = searchFormSchema.transform(
   }),
 )
 
-const useNoticeUrlSearchForm = (): NoticeSearchFormInput => {
-  const searchParams = useSearchParams()
-
-  return useMemo(() => {
-    const initialForm = getInitialNoticeSearchForm()
-    return parseSearchParamsToForm(
-      searchParams,
-      initialForm as unknown as Record<string, unknown>,
-      isNoticeSearchKey,
-    ) as unknown as NoticeSearchFormInput
-  }, [searchParams])
-}
-
 export interface UseNoticeSearchFormResult {
   form: ReturnType<typeof useForm<NoticeSearchFormInput>>
   onSubmit: () => void
@@ -61,9 +41,7 @@ export interface UseNoticeSearchFormResult {
 }
 
 export const useNoticeSearchForm = (): UseNoticeSearchFormResult => {
-  const { updateUrl, isLoading } = useNoticeSearchWithQuery()
-
-  const urlSearchForm = useNoticeUrlSearchForm()
+  const { updateUrl, isLoading, urlSearchForm } = useNoticeSearchWithQuery()
 
   const form = useForm<NoticeSearchFormInput>({
     resolver: zodResolver(searchFormSchema),
@@ -81,5 +59,3 @@ export const useNoticeSearchForm = (): UseNoticeSearchFormResult => {
     isLoading,
   }
 }
-
-export { useNoticeUrlSearchForm }
