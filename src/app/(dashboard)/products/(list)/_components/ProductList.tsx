@@ -5,6 +5,7 @@ import { ROUTES } from '@/src/constants/routes'
 import { useProductSearchWithQuery } from '@/src/hooks/product/useProductSearchWithQuery'
 import { getProductDisplayStatusLabel, Product } from '@/src/types/product'
 import { ColumnDef } from '@tanstack/react-table'
+import { ProductBulkUpdateDialog } from './ProductBulkUpdateDialog'
 import { ProductSyncAlertDialog } from './ProductSyncAlertDialog'
 
 const PRODUCT_COLUMNS: ColumnDef<Product>[] = [
@@ -131,6 +132,7 @@ export default function ProductList() {
       companyName={urlSearchForm.companyName}
     >
       <ProductSyncAlertDialog companyId={companyId} />
+      <ProductBulkUpdateDialog companyId={companyId} />
     </ListPageLayout>
   )
 }

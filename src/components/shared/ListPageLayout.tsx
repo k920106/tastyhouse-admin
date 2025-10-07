@@ -33,7 +33,7 @@ interface ListPageLayoutProps<TData, TSearchForm = Record<string, never>> {
 
 export function ListPageLayout<
   TData extends { id: number | string },
-  TSearchForm = Record<string, never>
+  TSearchForm = Record<string, never>,
 >({
   columns,
   data,
@@ -69,11 +69,9 @@ export function ListPageLayout<
           <p className="text-sm">
             총 <span className="font-bold">{totalElements}</span> 건
           </p>
-          {companyName && (
-            <p className="text-sm font-bold">{companyName}</p>
-          )}
+          {companyName && <p className="text-sm font-bold">{companyName}</p>}
         </div>
-        {children}
+        <div className="flex gap-3">{children}</div>
       </div>
       <CommonDataTable
         columns={columns}

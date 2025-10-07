@@ -137,8 +137,8 @@ export interface ProductSyncRequest {
   companyId: number
 }
 
-export interface ProductSyncResponse {
-  message: string
+export interface ProductBulkResponse {
+  count: number
 }
 
 export type ProductCreateFormInput = ProductFormInput
