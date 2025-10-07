@@ -1,14 +1,13 @@
-import CompanyCombobox from '@/src/components/forms/CompanyCombobox'
 import {
   DetailTableDoubleRow,
   DetailTableField,
   DetailTableRow,
 } from '@/src/components/forms/DetailTable'
+import CompanyField from '@/src/components/forms/field/CompanyField'
 import NumberField from '@/src/components/forms/field/NumberField'
 import SwitchField from '@/src/components/forms/field/SwitchField'
 import TextField from '@/src/components/forms/field/TextField'
 import TextareaField from '@/src/components/forms/field/TextareaField'
-import { FormControl, FormField, FormItem, FormMessage } from '@/src/components/ui/Form'
 import { FaqFormInput } from '@/src/types/faq'
 import { UseFormReturn } from 'react-hook-form'
 
@@ -23,21 +22,11 @@ export default function FaqFormFields({ form, isSubmitting }: FaqFormFieldsProps
       <tbody className="border">
         <DetailTableDoubleRow>
           <DetailTableField label="매체사">
-            <FormField
+            <CompanyField
               control={form.control}
               name="companyId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <CompanyCombobox
-                      value={field.value as string}
-                      onValueChange={field.onChange}
-                      disabled={isSubmitting}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+              disabled={isSubmitting}
+              label=""
             />
           </DetailTableField>
           <DetailTableField label="활성상태">

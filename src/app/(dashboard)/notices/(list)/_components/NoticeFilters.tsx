@@ -9,7 +9,7 @@ import { useSearchFormKeyboard } from '@/src/hooks/useSearchFormKeyboard'
 
 import ActiveStatusSelectField from '@/src/components/forms/field/ActiveStatusSelectField'
 import CompanyField from '@/src/components/forms/field/CompanyField'
-import DateRangeField from '@/src/components/forms/DateRangeField'
+import DateRangeField from '@/src/components/forms/field/DateRangeField'
 import TextField from '@/src/components/forms/field/TextField'
 import { handleFormError } from '@/src/lib/form-utils'
 
