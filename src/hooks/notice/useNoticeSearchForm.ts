@@ -24,12 +24,12 @@ const searchFormSchema = z.object({
     .refine((value) => value !== 'all', {
       message: '매체사를 선택해 주세요',
     }),
-  companyName: z.string(),
+  companyName: z.string().optional(),
   title: z.string(),
   startDate: z.string(),
   endDate: z.string(),
   active: z.enum(['all', 'true', 'false']),
-}) satisfies z.ZodType<NoticeSearchFormInput>
+})
 
 export const noticeSearchQuerySchema = searchFormSchema.transform(
   (data): NoticeSearchQuery => ({
