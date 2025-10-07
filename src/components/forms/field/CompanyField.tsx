@@ -1,8 +1,11 @@
+'use client'
+
 import React, { useCallback } from 'react'
 import { Control, FieldValues, Path, useFormContext } from 'react-hook-form'
 
-import CompanyCombobox from '@/src/components/forms/CompanyCombobox'
 import FormFieldWrapper from '@/src/components/forms/field/FormFieldWrapper'
+import { Combobox } from '@/src/components/ui/Combobox'
+import { useCompaniesQuery } from '@/src/hooks/queries/useCompanyQueries'
 
 interface Company {
   id: number
@@ -25,6 +28,7 @@ function CompanyFieldInner<T extends FieldValues>({
   label = '매체사',
 }: CompanyFieldProps<T>) {
   const form = useFormContext<T>()
+  const { data: companies = [], isLoading } = useCompaniesQuery()
 
   const handleCompanySelect = useCallback(
     (company: Company | null) => {
@@ -35,14 +39,29 @@ function CompanyFieldInner<T extends FieldValues>({
     [syncCompanyName, form],
   )
 
+  const handleValueChange = useCallback(
+    (newValue: string, onChange: (value: string) => void) => {
+      onChange(newValue)
+
+      const selectedCompany = companies.find((c) => c.id.toString() === newValue)
+      handleCompanySelect(selectedCompany || null)
+    },
+    [companies, handleCompanySelect],
+  )
+
   return (
     <FormFieldWrapper control={control} name={name} label={label}>
       {({ value, onChange }) => (
-        <CompanyCombobox
-          value={value as string}
-          onValueChange={onChange}
-          onCompanySelect={handleCompanySelect}
-          disabled={disabled}
+        <Combobox
+          width="w-full"
+          options={companies}
+          valueKey="id"
+          labelKey="name"
+          value={(value as string) || 'all'}
+          onValueChange={(newValue) => handleValueChange(newValue, onChange)}
+          disabled={disabled || isLoading}
+          disabledOptions={['all']}
+          allLabel="-"
         />
       )}
     </FormFieldWrapper>
