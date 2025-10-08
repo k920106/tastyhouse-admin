@@ -4,6 +4,7 @@ import { ListPageLayout } from '@/src/components/shared/ListPageLayout'
 import { buttonVariants } from '@/src/components/ui/Button'
 import { ROUTES } from '@/src/constants/routes'
 import { useNoticeSearchWithQuery } from '@/src/hooks/notice/useNoticeSearchWithQuery'
+import { getTableData } from '@/src/lib/table-utils'
 import Link from 'next/link'
 import { NOTICE_COLUMNS } from './NoticeColumns'
 
@@ -14,7 +15,7 @@ export default function NoticeList() {
   return (
     <ListPageLayout
       columns={NOTICE_COLUMNS}
-      data={data?.notices || []}
+      data={getTableData(isLoading, data?.notices)}
       totalElements={data?.totalElements || 0}
       currentPage={currentPage}
       pageSize={pageSize}

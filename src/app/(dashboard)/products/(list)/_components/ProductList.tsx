@@ -3,6 +3,7 @@
 import { ListPageLayout } from '@/src/components/shared/ListPageLayout'
 import { ROUTES } from '@/src/constants/routes'
 import { useProductSearchWithQuery } from '@/src/hooks/product/useProductSearchWithQuery'
+import { getTableData } from '@/src/lib/table-utils'
 import { ProductBulkUpdateDialog } from './ProductBulkUpdateDialog'
 import { PRODUCT_COLUMNS } from './ProductColumns'
 import { ProductSyncAlertDialog } from './ProductSyncAlertDialog'
@@ -16,7 +17,7 @@ export default function ProductList() {
   return (
     <ListPageLayout
       columns={PRODUCT_COLUMNS}
-      data={data?.products || []}
+      data={getTableData(isLoading, data?.products)}
       totalElements={data?.totalElements || 0}
       currentPage={currentPage}
       pageSize={pageSize}
