@@ -1,3 +1,4 @@
+import { getRowNumber } from '@/src/lib/table-utils'
 import { getActiveStatusLabel } from '@/src/types/common'
 import { Faq } from '@/src/types/faq'
 import { ColumnDef } from '@tanstack/react-table'
@@ -8,7 +9,7 @@ export const FAQ_COLUMNS: ColumnDef<Faq>[] = [
     header: 'No.',
     cell: ({ row, table }) => {
       const state = table.getState().pagination
-      return <div>{state.pageIndex * state.pageSize + row.index + 1}</div>
+      return <div>{getRowNumber(state.pageIndex, state.pageSize, row.index)}</div>
     },
   },
   {

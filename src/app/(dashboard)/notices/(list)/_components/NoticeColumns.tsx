@@ -1,4 +1,5 @@
 import { formatToYYYYMMDD } from '@/src/lib/date-utils'
+import { getRowNumber } from '@/src/lib/table-utils'
 import { getActiveStatusLabel } from '@/src/types/common'
 import { Notice } from '@/src/types/notice'
 import { ColumnDef } from '@tanstack/react-table'
@@ -9,7 +10,7 @@ export const NOTICE_COLUMNS: ColumnDef<Notice>[] = [
     header: 'No.',
     cell: ({ row, table }) => {
       const state = table.getState().pagination
-      return <div>{state.pageIndex * state.pageSize + row.index + 1}</div>
+      return <div>{getRowNumber(state.pageIndex, state.pageSize, row.index)}</div>
     },
   },
   {

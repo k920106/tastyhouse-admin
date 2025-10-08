@@ -1,3 +1,4 @@
+import { getRowNumber } from '@/src/lib/table-utils'
 import { getProductDisplayStatusLabel, Product } from '@/src/types/product'
 import { ColumnDef } from '@tanstack/react-table'
 
@@ -7,7 +8,7 @@ export const PRODUCT_COLUMNS: ColumnDef<Product>[] = [
     header: 'No.',
     cell: ({ row, table }) => {
       const state = table.getState().pagination
-      return <div>{state.pageIndex * state.pageSize + row.index + 1}</div>
+      return <div>{getRowNumber(state.pageIndex, state.pageSize, row.index)}</div>
     },
   },
   {
