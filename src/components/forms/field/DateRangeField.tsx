@@ -1,11 +1,13 @@
-import React, { useMemo } from 'react'
+'use client'
+
+import React, { useCallback, useMemo } from 'react'
 import { type DateRange } from 'react-day-picker'
 import { Control, FieldValues, Path, useController } from 'react-hook-form'
 import { LuCalendar } from 'react-icons/lu'
 
+import FormFieldWrapper from '@/src/components/forms/field/FormFieldWrapper'
 import { Button } from '@/src/components/ui/Button'
 import { Calendar } from '@/src/components/ui/Calendar'
-import { FormControl, FormItem, FormLabel } from '@/src/components/ui/Form'
 import { Popover, PopoverContent, PopoverTrigger } from '@/src/components/ui/Popover'
 import { cn } from '@/src/lib/class-utils'
 import { formatDateRangeDisplay } from '@/src/lib/date-range-utils'
@@ -13,12 +15,16 @@ import { formatToAPIDate } from '@/src/lib/date-utils'
 
 interface DateRangeFieldProps<T extends FieldValues> {
   control: Control<T>
+  name: Path<T>
   disabled: boolean
+  label?: string
 }
 
 function DateRangeFieldInner<T extends FieldValues>({
   control,
-  disabled = false,
+  name,
+  disabled,
+  label = '',
 }: DateRangeFieldProps<T>) {
   const {
     field: { value: startDate, onChange: onStartDateChange },
@@ -42,18 +48,20 @@ function DateRangeFieldInner<T extends FieldValues>({
     return validFrom || validTo ? { from: validFrom, to: validTo } : undefined
   }, [startDate, endDate])
 
-  const handleDateRangeSelect = (range: DateRange | undefined) => {
-    const newStartDate = range?.from ? formatToAPIDate(range.from) : ''
-    const newEndDate = range?.to ? formatToAPIDate(range.to) : ''
+  const handleDateRangeSelect = useCallback(
+    (range: DateRange | undefined) => {
+      const newStartDate = range?.from ? formatToAPIDate(range.from) : ''
+      const newEndDate = range?.to ? formatToAPIDate(range.to) : ''
 
-    onStartDateChange(newStartDate)
-    onEndDateChange(newEndDate)
-  }
+      onStartDateChange(newStartDate)
+      onEndDateChange(newEndDate)
+    },
+    [onStartDateChange, onEndDateChange],
+  )
 
   return (
-    <FormItem>
-      <FormLabel className="font-semibold">등록일자</FormLabel>
-      <FormControl>
+    <FormFieldWrapper control={control} name={name} label={label}>
+      {() => (
         <Popover>
           <PopoverTrigger asChild>
             <Button
@@ -79,8 +87,8 @@ function DateRangeFieldInner<T extends FieldValues>({
             />
           </PopoverContent>
         </Popover>
-      </FormControl>
-    </FormItem>
+      )}
+    </FormFieldWrapper>
   )
 }
 

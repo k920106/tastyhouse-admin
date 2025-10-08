@@ -39,7 +39,12 @@ const NoticeFilters = React.memo(function NoticeFilters() {
             disabled={isLoading}
             label="활성상태"
           />
-          <DateRangeField control={form.control} disabled={isLoading} />
+          <DateRangeField
+            control={form.control}
+            name="startDate"
+            disabled={isLoading}
+            label="등록일자"
+          />
         </BaseSearchForm>
       </form>
     </Form>
