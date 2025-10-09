@@ -5,8 +5,6 @@ import { INITIAL_PAGINATION } from '@/src/lib/constants'
 import {
   apiPageToUrlPage,
   toApiPage,
-  toUrlPage,
-  urlPageToApiPage,
   type ApiPage,
   type UrlPage,
 } from '@/src/lib/pagination-utils'
@@ -15,13 +13,8 @@ import { FaqSearchFormInput, isFaqSearchKey } from '@/src/types/faq'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useCallback, useMemo } from 'react'
 import { useFaqsQuery, type FaqQueryData } from '../queries/useFaqQueries'
+import { usePaginationFromUrl } from '../usePaginationFromUrl'
 import { useToastError } from '../useToastError'
-
-const parseIntSafely = (value: string | null, fallback: number): number => {
-  if (!value) return fallback
-  const parsed = parseInt(value, 10)
-  return isNaN(parsed) ? fallback : parsed
-}
 
 export interface FaqSearchWithQueryHookResult {
   urlSearchForm: FaqSearchFormInput
@@ -50,15 +43,7 @@ export const useFaqSearchWithQuery = (): FaqSearchWithQueryHookResult => {
     )
   }, [searchParams])
 
-  const currentPage: ApiPage = useMemo(() => {
-    const pageFromUrl = parseIntSafely(searchParams.get('page'), 1)
-    return urlPageToApiPage(toUrlPage(pageFromUrl))
-  }, [searchParams])
-
-  const pageSize = useMemo(
-    () => parseIntSafely(searchParams.get('pageSize'), INITIAL_PAGINATION.pageSize),
-    [searchParams],
-  )
+  const { currentPage, pageSize } = usePaginationFromUrl()
 
   const updateUrl = useCallback(
     (formOverride?: Partial<FaqSearchFormInput> | null, page?: ApiPage, size?: number) => {
@@ -67,8 +52,7 @@ export const useFaqSearchWithQuery = (): FaqSearchWithQueryHookResult => {
       const targetPage: ApiPage = page ?? toApiPage(INITIAL_PAGINATION.currentPage)
       const targetPageForUrl: UrlPage = apiPageToUrlPage(targetPage)
 
-      const targetSize =
-        size ?? parseIntSafely(searchParams.get('pageSize'), INITIAL_PAGINATION.pageSize)
+      const targetSize = size ?? pageSize
 
       const params = buildSearchParams(
         finalForm,
@@ -82,7 +66,7 @@ export const useFaqSearchWithQuery = (): FaqSearchWithQueryHookResult => {
 
       router.push(url, { scroll: false })
     },
-    [router, searchParams, urlSearchForm],
+    [router, pageSize, urlSearchForm],
   )
 
   const hasSearchParams = useMemo(() => searchParams.size > 0, [searchParams])
