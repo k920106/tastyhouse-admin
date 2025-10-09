@@ -4,9 +4,9 @@ import { ListPageLayout } from '@/src/components/shared/ListPageLayout'
 import { ROUTES } from '@/src/constants/routes'
 import { useProductSearchWithQuery } from '@/src/hooks/product/useProductSearchWithQuery'
 import { getTableData } from '@/src/lib/table-utils'
-import { ProductBulkUpdateDialog } from './ProductBulkUpdateDialog'
 import { PRODUCT_COLUMNS } from './ProductColumns'
-import { ProductSyncAlertDialog } from './ProductSyncAlertDialog'
+import { ProductBulkUpdateDialog } from './dialog/ProductBulkUpdateDialog'
+import { ProductSyncAlertDialog } from './dialog/ProductSyncAlertDialog'
 
 export default function ProductList() {
   const { currentPage, pageSize, updateUrl, data, isLoading, urlSearchForm } =
