@@ -1,20 +1,36 @@
 'use client'
 
-import React from 'react'
+import React, { useCallback } from 'react'
 
 import BaseSearchForm from '@/src/components/forms/BaseSearchForm'
 import { Form } from '@/src/components/ui/Form'
-import { useNoticeSearchForm } from '@/src/hooks/notice/useNoticeSearchForm'
+import { useNoticeSearchWithQuery } from '@/src/hooks/notice/useNoticeSearchWithQuery'
 import { useSearchFormKeyboard } from '@/src/hooks/useSearchFormKeyboard'
 
 import ActiveStatusSelectField from '@/src/components/forms/field/ActiveStatusSelectField'
 import CompanyField from '@/src/components/forms/field/CompanyField'
 import DateRangeField from '@/src/components/forms/field/DateRangeField'
 import TextField from '@/src/components/forms/field/TextField'
+import { INITIAL_PAGINATION } from '@/src/lib/constants'
 import { handleFormError } from '@/src/lib/form-utils'
+import { toApiPage } from '@/src/lib/pagination-utils'
+import { noticeSearchFormSchema } from '@/src/lib/schemas/notice-schema'
+import { NoticeSearchFormInput } from '@/src/types/notice'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useForm } from 'react-hook-form'
 
 const NoticeFilters = React.memo(function NoticeFilters() {
-  const { form, onSubmit, isLoading } = useNoticeSearchForm()
+  const { urlSearchForm, updateUrl, isLoading } = useNoticeSearchWithQuery()
+
+  const form = useForm<NoticeSearchFormInput>({
+    resolver: zodResolver(noticeSearchFormSchema),
+    values: urlSearchForm,
+  })
+
+  const onSubmit = useCallback(() => {
+    const formValues = form.getValues()
+    updateUrl(formValues, toApiPage(INITIAL_PAGINATION.currentPage))
+  }, [updateUrl, form])
 
   const { handleKeyDown } = useSearchFormKeyboard({
     onSubmit,

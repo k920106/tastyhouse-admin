@@ -1,9 +1,9 @@
 import { api } from '@/src/lib/api'
 import { type ApiPage } from '@/src/lib/pagination-utils'
+import { faqSearchQuerySchema } from '@/src/lib/schemas/faq-schema'
 import { PagedApiResponse } from '@/src/types/api'
 import { Faq, FaqSearchFormInput } from '@/src/types/faq'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
-import { faqSearchQuerySchema } from '../faq/useFaqSearchForm'
 
 interface FaqQueryParams {
   searchForm: FaqSearchFormInput

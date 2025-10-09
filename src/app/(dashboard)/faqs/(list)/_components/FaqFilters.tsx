@@ -1,19 +1,35 @@
 'use client'
 
-import React from 'react'
+import React, { useCallback } from 'react'
 
 import BaseSearchForm from '@/src/components/forms/BaseSearchForm'
 import { Form } from '@/src/components/ui/Form'
-import { useFaqSearchForm } from '@/src/hooks/faq/useFaqSearchForm'
+import { useFaqSearchWithQuery } from '@/src/hooks/faq/useFaqSearchWithQuery'
 import { useSearchFormKeyboard } from '@/src/hooks/useSearchFormKeyboard'
 
 import ActiveStatusSelectField from '@/src/components/forms/field/ActiveStatusSelectField'
 import CompanyField from '@/src/components/forms/field/CompanyField'
 import TextField from '@/src/components/forms/field/TextField'
+import { INITIAL_PAGINATION } from '@/src/lib/constants'
 import { handleFormError } from '@/src/lib/form-utils'
+import { toApiPage } from '@/src/lib/pagination-utils'
+import { faqSearchFormSchema } from '@/src/lib/schemas/faq-schema'
+import { FaqSearchFormInput } from '@/src/types/faq'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useForm } from 'react-hook-form'
 
 const FaqFilters = React.memo(function FaqFilters() {
-  const { form, onSubmit, isLoading } = useFaqSearchForm()
+  const { urlSearchForm, updateUrl, isLoading } = useFaqSearchWithQuery()
+
+  const form = useForm<FaqSearchFormInput>({
+    resolver: zodResolver(faqSearchFormSchema),
+    values: urlSearchForm,
+  })
+
+  const onSubmit = useCallback(() => {
+    const formValues = form.getValues()
+    updateUrl(formValues, toApiPage(INITIAL_PAGINATION.currentPage))
+  }, [updateUrl, form])
 
   const { handleKeyDown } = useSearchFormKeyboard({
     onSubmit,

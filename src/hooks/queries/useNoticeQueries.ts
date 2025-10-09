@@ -1,9 +1,9 @@
 import { api } from '@/src/lib/api'
 import { type ApiPage } from '@/src/lib/pagination-utils'
+import { noticeSearchQuerySchema } from '@/src/lib/schemas/notice-schema'
 import { PagedApiResponse } from '@/src/types/api'
 import { Notice, NoticeSearchFormInput } from '@/src/types/notice'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
-import { noticeSearchQuerySchema } from '../notice/useNoticeSearchForm'
 
 interface NoticeQueryParams {
   searchForm: NoticeSearchFormInput
