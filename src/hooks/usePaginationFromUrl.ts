@@ -51,14 +51,18 @@ export interface PaginationFromUrlResult {
 export function usePaginationFromUrl(): PaginationFromUrlResult {
   const searchParams = useSearchParams()
 
-  const currentPage: ApiPage = useMemo(() => {
-    const pageFromUrl = parseIntSafely(searchParams.get('page'), 1)
-    return urlPageToApiPage(toUrlPage(pageFromUrl))
-  }, [searchParams])
+  // searchParams에서 필요한 값만 먼저 추출
+  const pageFromUrl = searchParams.get('page')
+  const pageSizeFromUrl = searchParams.get('pageSize')
+
+  const currentPage: ApiPage = useMemo(
+    () => urlPageToApiPage(toUrlPage(parseIntSafely(pageFromUrl, 1))),
+    [pageFromUrl],
+  )
 
   const pageSize = useMemo(
-    () => parseIntSafely(searchParams.get('pageSize'), INITIAL_PAGINATION.pageSize),
-    [searchParams],
+    () => parseIntSafely(pageSizeFromUrl, INITIAL_PAGINATION.pageSize),
+    [pageSizeFromUrl],
   )
 
   return { currentPage, pageSize }
