@@ -23,7 +23,7 @@ export interface Notice {
   updatedAt: string
 }
 
-export interface NoticeSearchFormInput {
+export interface NoticeSearchFormInput extends Record<string, unknown> {
   companyId: string
   companyName?: string
   title: string
@@ -40,7 +40,7 @@ export interface NoticeFormInput {
   top: boolean
 }
 
-export const isNoticeSearchKey = (key: string): key is keyof NoticeSearchFormInput => {
+export const isNoticeSearchKey = (key: string): boolean => {
   return ['companyId', 'companyName', 'title', 'startDate', 'endDate', 'active'].includes(key)
 }
 

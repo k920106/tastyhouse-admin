@@ -48,7 +48,7 @@ export interface Product {
   updatedAt: string
 }
 
-export interface ProductSearchFormInput {
+export interface ProductSearchFormInput extends Record<string, unknown> {
   companyId: string
   companyName?: string
   brandId: string
@@ -75,7 +75,7 @@ export interface ProductFormInput {
   sort: number
 }
 
-export const isProductSearchKey = (key: string): key is keyof ProductSearchFormInput => {
+export const isProductSearchKey = (key: string): boolean => {
   return [
     'companyId',
     'companyName',

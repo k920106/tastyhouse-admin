@@ -4,22 +4,25 @@ import { INITIAL_PAGINATION } from '@/src/lib/constants'
  * URL 쿼리 파라미터를 지정된 폼 타입으로 변환하는 범용 함수
  * @param searchParams - URL 검색 파라미터
  * @param defaultForm - 기본 폼 값 (타입 추론을 위한 템플릿)
- * @param typeGuard - 선택적 타입 가드 함수 (타입 안정성 강화)
+ * @param isValidKey - 타입 가드 함수 (타입 안정성 강화)
  */
-export const parseSearchParamsToForm = <T extends Record<string, unknown>>(
+export function parseSearchParamsToForm<T extends Record<string, unknown>>(
   searchParams: URLSearchParams,
   defaultForm: T,
-  typeGuard?: (key: string) => boolean,
-): T => {
-  const result = {} as T
+  isValidKey: (key: string) => boolean,
+): T {
+  const result = { ...defaultForm }
 
-  Object.keys(defaultForm).forEach((key) => {
-    // 타입 가드가 제공되고 검증 실패 시 스킵
-    if (typeGuard && !typeGuard(key)) {
-      return
+  for (const key of Object.keys(defaultForm)) {
+    if (!isValidKey(key)) {
+      continue
     }
-    result[key as keyof T] = (searchParams.get(key) ?? defaultForm[key as keyof T]) as T[keyof T]
-  })
+
+    const value = searchParams.get(key)
+    if (value !== null) {
+      result[key as keyof T] = value as T[keyof T]
+    }
+  }
 
   return result
 }
@@ -30,29 +33,29 @@ export const parseSearchParamsToForm = <T extends Record<string, unknown>>(
  * @param defaultForm - 기본 폼 값 (초기값 비교용)
  * @param currentPage - 현재 페이지 (선택)
  * @param pageSize - 페이지 크기 (선택)
- * @param typeGuard - 선택적 타입 가드 함수 (타입 안정성 강화)
+ * @param isValidKey - 타입 가드 함수 (타입 안정성 강화)
  */
-export const buildSearchParams = <T extends Record<string, unknown>>(
+export function buildSearchParams<T extends Record<string, unknown>>(
   form: T,
   defaultForm: T,
   currentPage?: number,
   pageSize?: number,
-  typeGuard?: (key: string) => boolean,
-): URLSearchParams => {
+  isValidKey?: (key: string) => boolean,
+): URLSearchParams {
   const params = new URLSearchParams()
 
   // 검색 폼 파라미터 추가 (초기값과 다른 경우만)
-  Object.entries(form).forEach(([key, value]) => {
+  for (const [key, value] of Object.entries(form)) {
     // 타입 가드가 제공되고 검증 실패 시 스킵
-    if (typeGuard && !typeGuard(key)) {
-      return
+    if (isValidKey && !isValidKey(key)) {
+      continue
     }
 
     const stringValue = String(value)
     if (stringValue && stringValue !== 'all' && stringValue !== String(defaultForm[key as keyof T])) {
       params.set(key, stringValue)
     }
-  })
+  }
 
   // 페이지네이션 파라미터 추가 (초기값과 다른 경우만)
   if (currentPage !== undefined && currentPage !== INITIAL_PAGINATION.currentPage) {

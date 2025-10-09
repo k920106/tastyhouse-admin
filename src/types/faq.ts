@@ -13,7 +13,7 @@ export interface Faq {
   updatedAt: string
 }
 
-export interface FaqSearchFormInput {
+export interface FaqSearchFormInput extends Record<string, unknown> {
   companyId: string
   companyName?: string
   title: string
@@ -28,7 +28,7 @@ export interface FaqFormInput {
   sort: number
 }
 
-export const isFaqSearchKey = (key: string): key is keyof FaqSearchFormInput => {
+export const isFaqSearchKey = (key: string): boolean => {
   return ['companyId', 'companyName', 'title', 'active'].includes(key)
 }
 

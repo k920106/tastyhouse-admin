@@ -42,13 +42,12 @@ export const useFaqSearchWithQuery = (): FaqSearchWithQueryHookResult => {
   const router = useRouter()
 
   // URL 파싱 로직을 직접 처리 (중복 제거)
-  const urlSearchForm = useMemo(() => {
-    const initialForm = getInitialFaqSearchForm()
-    return parseSearchParamsToForm(
+  const urlSearchForm = useMemo<FaqSearchFormInput>(() => {
+    return parseSearchParamsToForm<FaqSearchFormInput>(
       searchParams,
-      initialForm as unknown as Record<string, unknown>,
+      getInitialFaqSearchForm(),
       isFaqSearchKey,
-    ) as unknown as FaqSearchFormInput
+    )
   }, [searchParams])
 
   const currentPage: ApiPage = useMemo(() => {
@@ -63,9 +62,7 @@ export const useFaqSearchWithQuery = (): FaqSearchWithQueryHookResult => {
 
   const updateUrl = useCallback(
     (formOverride?: Partial<FaqSearchFormInput> | null, page?: ApiPage, size?: number) => {
-      const finalForm = (
-        formOverride ? { ...urlSearchForm, ...formOverride } : urlSearchForm
-      ) as FaqSearchFormInput
+      const finalForm = formOverride ? { ...urlSearchForm, ...formOverride } : urlSearchForm
 
       const targetPage: ApiPage = page ?? toApiPage(INITIAL_PAGINATION.currentPage)
       const targetPageForUrl: UrlPage = apiPageToUrlPage(targetPage)
@@ -74,8 +71,8 @@ export const useFaqSearchWithQuery = (): FaqSearchWithQueryHookResult => {
         size ?? parseIntSafely(searchParams.get('pageSize'), INITIAL_PAGINATION.pageSize)
 
       const params = buildSearchParams(
-        finalForm as unknown as Record<string, unknown>,
-        initialSearchForm as unknown as Record<string, unknown>,
+        finalForm,
+        initialSearchForm,
         targetPageForUrl,
         targetSize,
         isFaqSearchKey,

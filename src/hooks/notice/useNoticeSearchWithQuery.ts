@@ -42,13 +42,12 @@ export const useNoticeSearchWithQuery = (): NoticeSearchWithQueryHookResult => {
   const router = useRouter()
 
   // URL 파싱 로직을 직접 처리 (중복 제거)
-  const urlSearchForm = useMemo(() => {
-    const initialForm = getInitialNoticeSearchForm()
-    return parseSearchParamsToForm(
+  const urlSearchForm = useMemo<NoticeSearchFormInput>(() => {
+    return parseSearchParamsToForm<NoticeSearchFormInput>(
       searchParams,
-      initialForm as unknown as Record<string, unknown>,
+      getInitialNoticeSearchForm(),
       isNoticeSearchKey,
-    ) as unknown as NoticeSearchFormInput
+    )
   }, [searchParams])
 
   const currentPage: ApiPage = useMemo(() => {
@@ -63,9 +62,7 @@ export const useNoticeSearchWithQuery = (): NoticeSearchWithQueryHookResult => {
 
   const updateUrl = useCallback(
     (formOverride?: Partial<NoticeSearchFormInput> | null, page?: ApiPage, size?: number) => {
-      const finalForm = (
-        formOverride ? { ...urlSearchForm, ...formOverride } : urlSearchForm
-      ) as NoticeSearchFormInput
+      const finalForm = formOverride ? { ...urlSearchForm, ...formOverride } : urlSearchForm
 
       const targetPage: ApiPage = page ?? toApiPage(INITIAL_PAGINATION.currentPage)
       const targetPageForUrl: UrlPage = apiPageToUrlPage(targetPage)
@@ -74,8 +71,8 @@ export const useNoticeSearchWithQuery = (): NoticeSearchWithQueryHookResult => {
         size ?? parseIntSafely(searchParams.get('pageSize'), INITIAL_PAGINATION.pageSize)
 
       const params = buildSearchParams(
-        finalForm as unknown as Record<string, unknown>,
-        initialSearchForm as unknown as Record<string, unknown>,
+        finalForm,
+        initialSearchForm,
         targetPageForUrl,
         targetSize,
         isNoticeSearchKey,
