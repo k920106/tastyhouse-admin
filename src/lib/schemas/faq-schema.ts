@@ -10,8 +10,6 @@ export const faqSearchFormSchema = z.object({
     }),
   companyName: z.string().optional(),
   title: z.string(),
-  startDate: z.string(),
-  endDate: z.string(),
   active: z.enum(['all', 'true', 'false']),
 }) satisfies z.ZodType<FaqSearchFormInput>
 
@@ -19,8 +17,6 @@ export const faqSearchQuerySchema = faqSearchFormSchema.transform(
   (data): FaqSearchQuery => ({
     companyId: parseInt(data.companyId),
     title: data.title.trim() || null,
-    startDate: data.startDate,
-    endDate: data.endDate,
     active: data.active === 'all' ? null : data.active === 'true',
   }),
 )

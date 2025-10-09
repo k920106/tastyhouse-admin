@@ -17,8 +17,6 @@ export interface FaqSearchFormInput {
   companyId: string
   companyName?: string
   title: string
-  startDate: string
-  endDate: string
   active: ActiveFilter
 }
 
@@ -31,14 +29,12 @@ export interface FaqFormInput {
 }
 
 export const isFaqSearchKey = (key: string): key is keyof FaqSearchFormInput => {
-  return ['companyId', 'companyName', 'title', 'startDate', 'endDate', 'active'].includes(key)
+  return ['companyId', 'companyName', 'title', 'active'].includes(key)
 }
 
 export interface FaqSearchQuery {
   companyId: number
   title: string | null
-  startDate: string
-  endDate: string
   active: boolean | null
 }
 

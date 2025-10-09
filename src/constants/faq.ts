@@ -1,5 +1,4 @@
 import { ROUTES } from '@/src/constants/routes'
-import { getTodayYYYYMMDD } from '@/src/lib/date-utils'
 import { FaqSearchFormInput } from '@/src/types/faq'
 
 export const FAQ_LIST_BREADCRUMBS = [
@@ -48,7 +47,5 @@ export const getInitialFaqSearchForm = (): FaqSearchFormInput => {
   return {
     ...INITIAL_FAQ_SEARCH_FORM,
     companyName: undefined,
-    startDate: getTodayYYYYMMDD(),
-    endDate: getTodayYYYYMMDD(),
   }
 }
