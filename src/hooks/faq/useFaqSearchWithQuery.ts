@@ -2,16 +2,11 @@
 
 import { getInitialFaqSearchForm } from '@/src/constants/faq'
 import { INITIAL_PAGINATION } from '@/src/lib/constants'
-import {
-  apiPageToUrlPage,
-  toApiPage,
-  type ApiPage,
-  type UrlPage,
-} from '@/src/lib/pagination-utils'
+import { apiPageToUrlPage, toApiPage, type ApiPage, type UrlPage } from '@/src/lib/pagination-utils'
 import { buildSearchParams, parseSearchParamsToForm } from '@/src/lib/url-utils'
 import { FaqSearchFormInput, isFaqSearchKey } from '@/src/types/faq'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { useCallback, useMemo } from 'react'
+import { useCallback } from 'react'
 import { useFaqsQuery, type FaqQueryData } from '../queries/useFaqQueries'
 import { usePaginationFromUrl } from '../usePaginationFromUrl'
 import { useToastError } from '../useToastError'
@@ -34,14 +29,12 @@ export const useFaqSearchWithQuery = (): FaqSearchWithQueryHookResult => {
   const searchParams = useSearchParams()
   const router = useRouter()
 
-  // URL 파싱 로직을 직접 처리 (중복 제거)
-  const urlSearchForm = useMemo<FaqSearchFormInput>(() => {
-    return parseSearchParamsToForm<FaqSearchFormInput>(
-      searchParams,
-      getInitialFaqSearchForm(),
-      isFaqSearchKey,
-    )
-  }, [searchParams])
+  // searchParams 자체가 이미 메모이제이션되어 있어 useMemo 불필요
+  const urlSearchForm = parseSearchParamsToForm<FaqSearchFormInput>(
+    searchParams,
+    getInitialFaqSearchForm(),
+    isFaqSearchKey,
+  )
 
   const { currentPage, pageSize } = usePaginationFromUrl()
 
@@ -69,7 +62,8 @@ export const useFaqSearchWithQuery = (): FaqSearchWithQueryHookResult => {
     [router, pageSize, urlSearchForm],
   )
 
-  const hasSearchParams = useMemo(() => searchParams.size > 0, [searchParams])
+  // searchParams 자체가 이미 메모이제이션되어 있어 useMemo 불필요
+  const hasSearchParams = searchParams.size > 0
 
   const { data, isLoading, error } = useFaqsQuery(
     {
