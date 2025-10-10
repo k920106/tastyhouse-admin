@@ -3,7 +3,7 @@ import { type ApiPage } from '@/src/lib/pagination-utils'
 import { PagedApiResponse } from '@/src/types/api'
 import { Product, ProductSearchFormInput } from '@/src/types/product'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
-import { productSearchQuerySchema } from '../product/useProductSearchForm'
+import { productSearchQuerySchema } from './useProductSearchForm'
 
 interface ProductQueryParams {
   searchForm: ProductSearchFormInput

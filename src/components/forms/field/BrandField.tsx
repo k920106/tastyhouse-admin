@@ -5,7 +5,7 @@ import { Control, FieldValues, Path } from 'react-hook-form'
 
 import FormFieldWrapper from '@/src/components/forms/field/FormFieldWrapper'
 import { Combobox } from '@/src/components/ui/Combobox'
-import { useBrandsQuery } from '@/src/hooks/queries/useBrandQueries'
+import { useBrandsQuery } from '@/src/hooks/product/useBrandQueries'
 
 interface BrandFieldProps<T extends FieldValues> {
   control: Control<T>

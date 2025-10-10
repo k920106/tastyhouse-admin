@@ -5,7 +5,7 @@ import { Control, FieldValues, Path } from 'react-hook-form'
 
 import FormFieldWrapper from '@/src/components/forms/field/FormFieldWrapper'
 import { Combobox } from '@/src/components/ui/Combobox'
-import { useSuppliesQuery } from '@/src/hooks/queries/useSupplyQueries'
+import { useSuppliesQuery } from '@/src/hooks/product/useSupplyQueries'
 
 interface SupplyFieldProps<T extends FieldValues> {
   control: Control<T>

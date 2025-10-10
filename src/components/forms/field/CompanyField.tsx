@@ -5,7 +5,7 @@ import { Control, FieldValues, Path, useFormContext } from 'react-hook-form'
 
 import FormFieldWrapper from '@/src/components/forms/field/FormFieldWrapper'
 import { Combobox } from '@/src/components/ui/Combobox'
-import { useCompaniesQuery } from '@/src/hooks/queries/useCompanyQueries'
+import { useCompaniesQuery } from '@/src/hooks/company/useCompanyQueries'
 
 interface Company {
   id: number
