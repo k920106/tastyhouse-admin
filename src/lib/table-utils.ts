@@ -10,6 +10,12 @@ export const getRowNumber = (pageIndex: number, pageSize: number, rowIndex: numb
   pageIndex * pageSize + rowIndex + 1
 
 /**
+ * 빈 배열 상수 - 참조 동일성 보장을 위해 사용
+ * 매번 새로운 배열을 생성하지 않고 동일한 참조를 재사용하여 불필요한 리렌더 방지
+ */
+const EMPTY_ARRAY: never[] = []
+
+/**
  * 테이블 데이터 로딩 상태를 고려한 안전한 데이터 반환 함수
  *
  * @param isLoading - 로딩 상태
@@ -23,6 +29,6 @@ export const getRowNumber = (pageIndex: number, pageSize: number, rowIndex: numb
  * // 데이터 있음: data.notices
  */
 export const getTableData = <T>(isLoading: boolean, data: T[] | undefined): T[] => {
-  if (isLoading) return []
-  return data || []
+  if (isLoading) return EMPTY_ARRAY as T[]
+  return data || (EMPTY_ARRAY as T[])
 }
