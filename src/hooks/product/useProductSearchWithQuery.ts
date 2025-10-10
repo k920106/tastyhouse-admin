@@ -62,9 +62,6 @@ export const useProductSearchWithQuery = (): ProductSearchWithQueryHookResult =>
     [router, pageSize, urlSearchForm],
   )
 
-  // searchParams 자체가 이미 메모이제이션되어 있어 useMemo 불필요
-  const hasSearchParams = searchParams.size > 0
-
   const { data, isLoading, error } = useProductsQuery(
     {
       searchForm: urlSearchForm,
@@ -73,7 +70,7 @@ export const useProductSearchWithQuery = (): ProductSearchWithQueryHookResult =>
         size: pageSize,
       },
     },
-    hasSearchParams,
+    searchParams.size > 0,
   )
 
   useToastError(error, '상품 목록 조회 중 오류가 발생했습니다.')
