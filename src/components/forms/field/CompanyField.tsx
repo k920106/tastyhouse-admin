@@ -25,7 +25,7 @@ function CompanyFieldInner<T extends FieldValues>({
   name,
   disabled: disabled = false,
   syncCompanyName = false,
-  label = '매체사',
+  label = '',
 }: CompanyFieldProps<T>) {
   const form = useFormContext<T>()
   const { data: companies = [], isLoading } = useCompaniesQuery()
