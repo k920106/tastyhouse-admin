@@ -8,7 +8,7 @@ export const PRODUCT_COLUMNS: ColumnDef<Product>[] = [
     header: 'No.',
     cell: ({ row, table }) => {
       const state = table.getState().pagination
-      return <div>{getRowNumber(state.pageIndex, state.pageSize, row.index)}</div>
+      return getRowNumber(state.pageIndex, state.pageSize, row.index)
     },
   },
   {
@@ -30,37 +30,37 @@ export const PRODUCT_COLUMNS: ColumnDef<Product>[] = [
   {
     accessorKey: 'exhibitionPrice',
     header: '전시가',
-    cell: ({ row }) => <div>{row.original.exhibitionPrice.toLocaleString()}원</div>,
+    cell: ({ row }) => `${row.original.exhibitionPrice.toLocaleString()}원`,
   },
   {
     accessorKey: 'regularPrice',
     header: '판매가',
-    cell: ({ row }) => <div>{row.original.regularPrice.toLocaleString()}원</div>,
+    cell: ({ row }) => `${row.original.regularPrice.toLocaleString()}원`,
   },
   {
     accessorKey: '',
     header: '상품판매타입',
-    cell: () => <div>-</div>,
+    cell: () => '-',
   },
   {
     accessorKey: '',
     header: '유효일수',
-    cell: () => <div>-</div>,
+    cell: () => '-',
   },
   {
     accessorKey: '',
     header: '상품상태',
-    cell: () => <div>-</div>,
+    cell: () => '-',
   },
   {
     accessorKey: 'display',
     header: '전시상태',
-    cell: ({ row }) => <div>{getProductDisplayStatusLabel(row.original.display)}</div>,
+    cell: ({ row }) => getProductDisplayStatusLabel(row.original.display),
   },
   {
     accessorKey: '',
     header: 'RM 적용',
-    cell: () => <div>-</div>,
+    cell: () => '-',
   },
   {
     accessorKey: 'sort',

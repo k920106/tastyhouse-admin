@@ -10,7 +10,7 @@ export const NOTICE_COLUMNS: ColumnDef<Notice>[] = [
     header: 'No.',
     cell: ({ row, table }) => {
       const state = table.getState().pagination
-      return <div>{getRowNumber(state.pageIndex, state.pageSize, row.index)}</div>
+      return getRowNumber(state.pageIndex, state.pageSize, row.index)
     },
   },
   {
@@ -20,16 +20,15 @@ export const NOTICE_COLUMNS: ColumnDef<Notice>[] = [
   {
     accessorKey: 'createdAt',
     header: '등록일자',
-    cell: ({ row }) => <div>{formatToYYYYMMDD(row.original.createdAt)}</div>,
+    cell: ({ row }) => formatToYYYYMMDD(row.original.createdAt),
   },
   {
     accessorKey: 'active',
     header: '활성상태',
-    cell: ({ row }) => <div>{getActiveStatusLabel(row.original.active)}</div>,
+    cell: ({ row }) => getActiveStatusLabel(row.original.active),
   },
   {
     accessorKey: 'id',
     header: 'ID',
-    cell: ({ row }) => <div>{row.original.id}</div>,
   },
 ]

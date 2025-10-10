@@ -9,7 +9,7 @@ export const FAQ_COLUMNS: ColumnDef<Faq>[] = [
     header: 'No.',
     cell: ({ row, table }) => {
       const state = table.getState().pagination
-      return <div>{getRowNumber(state.pageIndex, state.pageSize, row.index)}</div>
+      return getRowNumber(state.pageIndex, state.pageSize, row.index)
     },
   },
   {
@@ -19,11 +19,10 @@ export const FAQ_COLUMNS: ColumnDef<Faq>[] = [
   {
     accessorKey: 'active',
     header: '활성상태',
-    cell: ({ row }) => <div>{getActiveStatusLabel(row.original.active)}</div>,
+    cell: ({ row }) => getActiveStatusLabel(row.original.active),
   },
   {
     accessorKey: 'sort',
     header: '우선순위',
-    cell: ({ row }) => <div>{row.original.sort}</div>,
   },
 ]
